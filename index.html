@@ -1,1677 +1,304 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>春秋阁编程工作室 - 专业的编程服务提供商</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GSAP 动画库 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#e6f1fe',
-                            100: '#cce3fd',
-                            200: '#99c7fb',
-                            300: '#66aaf9',
-                            400: '#338ef7',
-                            500: '#1E88E5', // 主色调：深蓝色
-                            600: '#1976d2',
-                            700: '#1565c0',
-                            800: '#0d47a1',
-                            900: '#0a2351',
-                        },
-                        secondary: {
-                            500: '#9C27B0', // 辅助色：紫色
-                        },
-                        accent: {
-                            500: '#FF9800', // 强调色：橙色
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        /* 3D背景容器 */
-        #hero-bg-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        
-        /* 案例卡片翻转效果 */
-        .case-card {
-            perspective: 1000px;
-        }
-        
-        .case-card-inner {
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-        
-        .case-card:hover .case-card-inner {
-            transform: rotateY(180deg);
-        }
-        
-        .case-card-front, .case-card-back {
-            backface-visibility: hidden;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .case-card-back {
-            transform: rotateY(180deg);
-        }
-        
-        /* 聊天窗口样式 */
-        .chat-window {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 18px;
-            max-width: 80%;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .user-message {
-            background-color: #E3F2FD;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-        
-        .ai-message {
-            background-color: #F5F5F5;
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* 导航栏滚动效果 */
-        .navbar-fixed {
-            backdrop-filter: blur(8px);
-            background-color: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* 滚动动画类 */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* 预算计算器滑块样式 */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #E3F2FD;
-            outline: none;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #1E88E5;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            background: #1976D2;
-        }
-        
-        /* 移动端菜单样式 */
-        .mobile-menu {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
-        }
-        
-        .mobile-menu.open {
-            transform: translateX(0);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>春秋阁编程工作室 - 极致视觉特效官网</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;background:#020614}
+html{scroll-behavior:smooth}
+#particles-js{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(1200px 600px at 50% -100px,#1a237e,#020614)}
+.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1)}
+.text-gradient{background:linear-gradient(90deg,#4fc3f7,#7e57c2,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn-glow{position:relative;overflow:hidden}
+.btn-glow::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,#4fc3f7,#7e57c2,#ec4899,#4fc3f7);animation:rotate 4s linear infinite}
+@keyframes rotate{100%{transform:rotate(360deg)}}
+.btn-glow::after{content:'';position:absolute;inset:1px;background:#0f172a;border-radius:inherit}
+.card-hover{transition:all 0.3s ease}
+.card-hover:hover{transform:translateY(-8px);box-shadow:0 20px 60px -10px rgba(79,195,247,0.4)}
+.chat-container{scrollbar-width:thin}
+.chat-container::-webkit-scrollbar{width:4px}
+.chat-container::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.5);border-radius:4px}
+.float{animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.pulse{animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.7}50%{opacity:1}}
+</style>
+<script>
+tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',accent:'#ec4899',dark:'#020614',darklight:'#0f172a'}}}}}
+</script>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <!-- 导航栏 -->
-    <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-4">
-        <div class="container mx-auto px-4 md:px-6 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-2">
-                <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/91c2fc008b6e4c98b53eed5ffd00381a~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858079&x-signature=AdTDa7M4I0Flh9gKAfgKP%2FCv5OA%3D" alt="春秋阁编程工作室" class="h-10">
-                <span class="text-xl font-bold text-primary-500">春秋阁</span>
-            </a>
-            
-            <!-- 桌面端导航菜单 -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#about" class="text-gray-700 hover:text-primary-500 transition-colors">关于我们</a>
-                <a href="#services" class="text-gray-700 hover:text-primary-500 transition-colors">服务项目</a>
-                <a href="#cases" class="text-gray-700 hover:text-primary-500 transition-colors">案例展示</a>
-                <a href="#team" class="text-gray-700 hover:text-primary-500 transition-colors">团队成员</a>
-                <a href="#estimator" class="text-gray-700 hover:text-primary-500 transition-colors">预算估算</a>
-                <a href="#contact" class="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors">联系我们</a>
-            </div>
-            
-            <!-- 移动端菜单按钮 -->
-            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-        </div>
-        
-        <!-- 移动端菜单 -->
-        <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 h-full w-4/5 bg-white shadow-lg z-50 md:hidden">
-            <div class="p-4 border-b">
-                <div class="flex justify-between items-center">
-                    <a href="#" class="flex items-center space-x-2">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/91c2fc008b6e4c98b53eed5ffd00381a~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858079&x-signature=AdTDa7M4I0Flh9gKAfgKP%2FCv5OA%3D" alt="春秋阁编程工作室" class="h-8">
-                        <span class="text-lg font-bold text-primary-500">春秋阁</span>
-                    </a>
-                    <button id="close-menu-button" class="text-gray-700 focus:outline-none">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="p-4">
-                <ul class="space-y-4">
-                    <li><a href="#about" class="block py-2 text-gray-700 hover:text-primary-500">关于我们</a></li>
-                    <li><a href="#services" class="block py-2 text-gray-700 hover:text-primary-500">服务项目</a></li>
-                    <li><a href="#cases" class="block py-2 text-gray-700 hover:text-primary-500">案例展示</a></li>
-                    <li><a href="#team" class="block py-2 text-gray-700 hover:text-primary-500">团队成员</a></li>
-                    <li><a href="#estimator" class="block py-2 text-gray-700 hover:text-primary-500">预算估算</a></li>
-                    <li><a href="#contact" class="block py-2 text-gray-700 hover:text-primary-500">联系我们</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body>
 
-    <!-- 英雄区域 -->
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
-        <!-- 3D背景 -->
-        <canvas id="hero-bg-canvas"></canvas>
-        
-        <!-- 英雄内容 -->
-        <div class="container mx-auto px-4 md:px-6 text-center z-10">
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                <span class="block">用代码创造</span>
-                <span class="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-primary-300 to-secondary-400">无限可能</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-100 mb-10 max-w-3xl mx-auto">
-                春秋阁编程工作室 - 专业的软件开发团队，为您提供高质量的编程解决方案
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#services" class="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors">
-                    了解我们的服务
-                </a>
-                <a href="#contact" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-500 px-8 py-3 rounded-md text-lg font-medium transition-colors">
-                    联系我们
-                </a>
-            </div>
-        </div>
-        
-        <!-- 向下滚动指示 -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#about" class="text-white">
-                <i class="fas fa-chevron-down text-2xl"></i>
-            </a>
-        </div>
-    </section>
+<div id="particles-js"></div>
 
-    <!-- 关于我们 -->
-    <section id="about" class="py-20 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">关于春秋阁编程工作室</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    我们是一支充满激情和创造力的编程团队，致力于为客户提供高质量、高效率的软件开发服务
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="fade-in-up">
-                    <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/8fe5b4816aa74f3c84932a715bc31b2e~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858090&x-signature=WfGTB3A%2FXuTgrlmXXvS79kV0%2FAE%3D" alt="关于我们" class="rounded-lg shadow-xl w-full">
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-6 text-primary-500 fade-in-up" style="transition-delay: 0.2s;">我们的故事</h3>
-                    <p class="text-gray-700 mb-6 fade-in-up" style="transition-delay: 0.3s;">
-                        春秋阁编程工作室成立于2018年，由一群热爱编程的年轻人创立。我们的名字灵感来源于中国古代的"春秋"时期，象征着我们对传统智慧的尊重和对创新的追求。
-                    </p>
-                    <p class="text-gray-700 mb-8 fade-in-up" style="transition-delay: 0.4s;">
-                        多年来，我们已经为众多企业和个人客户提供了优质的软件开发服务，涵盖网站开发、移动应用、企业系统等多个领域。我们相信，优秀的代码不仅能够解决问题，还能够创造价值。
-                    </p>
-                    
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex items-start space-x-4 fade-in-up" style="transition-delay: 0.5s;">
-                            <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                <i class="fas fa-code text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-lg mb-1">专业技术</h4>
-                                <p class="text-gray-600">精通多种编程语言和框架</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-4 fade-in-up" style="transition-delay: 0.6s;">
-                            <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                <i class="fas fa-lightbulb text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-lg mb-1">创新思维</h4>
-                                <p class="text-gray-600">不断探索新技术和解决方案</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-4 fade-in-up" style="transition-delay: 0.7s;">
-                            <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                <i class="fas fa-users text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-lg mb-1">团队协作</h4>
-                                <p class="text-gray-600">高效协作，共同完成项目</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-4 fade-in-up" style="transition-delay: 0.8s;">
-                            <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                <i class="fas fa-shield-alt text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-lg mb-1">品质保证</h4>
-                                <p class="text-gray-600">严格的质量控制和测试流程</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 导航 -->
+<nav class="fixed top-0 left-0 w-full z-50 glass py-4 px-6 transition-all duration-500" id="navbar">
+<div class="max-w-7xl mx-auto flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold">春</div>
+<h1 class="text-xl md:text-2xl font-bold text-gradient">春秋阁编程工作室</h1>
+</div>
+<div class="hidden md:flex gap-8">
+<a href="#home" class="text-white/80 hover:text-white transition-colors">首页</a>
+<a href="#about" class="text-white/80 hover:text-white transition-colors">关于</a>
+<a href="#service" class="text-white/80 hover:text-white transition-colors">服务</a>
+<a href="#team" class="text-white/80 hover:text-white transition-colors">团队</a>
+<a href="#chat" class="text-white/80 hover:text-white transition-colors">在线咨询</a>
+</div>
+<button class="md:hidden text-white text-2xl" id="menuBtn"><i class="fa fa-bars"></i></button>
+</div>
+</nav>
 
-    <!-- 服务项目 -->
-    <section id="services" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">我们的服务</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    我们提供全方位的软件开发服务，满足您的各种需求
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 服务项目1 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-laptop-code text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">网站开发</h3>
-                    <p class="text-gray-600 mb-6">
-                        为您打造专业的企业网站、电商平台、个人博客等各类网站，提供完整的前后端开发服务。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>响应式网站设计</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>前端交互开发</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>后端系统开发</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                
-                <!-- 服务项目2 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up" style="transition-delay: 0.2s;">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-mobile-alt text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">移动应用开发</h3>
-                    <p class="text-gray-600 mb-6">
-                        开发高质量的iOS和Android应用，帮助您的业务触达更多移动用户。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>原生应用开发</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>跨平台应用开发</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>应用UI/UX设计</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                
-                <!-- 服务项目3 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up" style="transition-delay: 0.4s;">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-server text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">后端系统开发</h3>
-                    <p class="text-gray-600 mb-6">
-                        构建稳定、高效的后端系统，为您的应用提供强大的技术支持。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>API设计与开发</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>数据库设计与优化</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>服务器部署与维护</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                
-                <!-- 服务项目4 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up" style="transition-delay: 0.6s;">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-robot text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">AI应用开发</h3>
-                    <p class="text-gray-600 mb-6">
-                        将人工智能技术应用到您的业务中，提升效率和用户体验。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>智能聊天机器人</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>数据分析与预测</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>图像识别应用</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                
-                <!-- 服务项目5 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up" style="transition-delay: 0.8s;">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-cloud text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">云服务与DevOps</h3>
-                    <p class="text-gray-600 mb-6">
-                        提供云平台部署、自动化运维等服务，确保您的系统稳定运行。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>云平台迁移与部署</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>CI/CD流程搭建</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>系统监控与告警</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                
-                <!-- 服务项目6 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow fade-in-up" style="transition-delay: 1s;">
-                    <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-primary-500">
-                        <i class="fas fa-search text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">技术咨询与培训</h3>
-                    <p class="text-gray-600 mb-6">
-                        提供专业的技术咨询和培训服务，帮助您的团队提升技术能力。
-                    </p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>技术架构设计咨询</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>编程技能培训</span>
-                        </li>
-                        <li class="flex items-center text-gray-700">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>项目管理咨询</span>
-                        </li>
-                    </ul>
-                    <a href="#contact" class="inline-block text-primary-500 hover:text-primary-600 font-medium">
-                        了解更多 <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 首屏 -->
+<section id="home" class="min-h-screen flex items-center justify-center px-6 pt-32 pb-20 relative">
+<div class="max-w-6xl mx-auto text-center z-10">
+<h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold leading-tight text-gradient mb-6">
+用代码<br>构筑无限可能
+</h1>
+<p class="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+专业定制开发 | 视觉极致呈现 | 智能交互体验 | 一站式技术解决方案
+</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<a href="#chat" class="btn-glow relative px-8 py-4 rounded-full text-white font-medium text-lg z-10">
+<span class="relative z-10">立即咨询</span>
+</a>
+<a href="#service" class="glass px-8 py-4 rounded-full text-white font-medium text-lg hover:bg-white/10 transition-colors">
+查看服务
+</a>
+</div>
+</div>
+<div class="absolute w-96 h-96 rounded-full bg-primary/20 blur-3xl top-1/3 -left-48 pulse"></div>
+<div class="absolute w-96 h-96 rounded-full bg-accent/20 blur-3xl bottom-1/3 -right-48 pulse"></div>
+</section>
 
-    <!-- 案例展示 -->
-    <section id="cases" class="py-20 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">成功案例</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    我们已经成功完成了众多项目，以下是部分案例展示
-                </p>
-            </div>
-            
-            <!-- 案例筛选 -->
-            <div class="flex flex-wrap justify-center mb-12 fade-in-up" style="transition-delay: 0.4s;">
-                <button class="case-filter-btn active m-2 px-4 py-2 rounded-full bg-primary-500 text-white hover:bg-primary-600 transition-colors" data-filter="all">
-                    全部案例
-                </button>
-                <button class="case-filter-btn m-2 px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors" data-filter="website">
-                    网站开发
-                </button>
-                <button class="case-filter-btn m-2 px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors" data-filter="app">
-                    移动应用
-                </button>
-                <button class="case-filter-btn m-2 px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors" data-filter="ai">
-                    AI应用
-                </button>
-            </div>
-            
-            <!-- 案例展示 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 案例1 -->
-                <div class="case-card fade-in-up" data-category="website">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/aa83e6bf00bb432d86e2aac2d2c219e7~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858120&x-signature=QNINW95%2FrkyQDWqm5sJt8fhVBKU%3D" alt="企业官网设计" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">企业官网设计</h3>
-                                <p class="text-gray-600">为某大型企业打造的现代化官网，提升品牌形象</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-primary-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">企业官网设计</h3>
-                            <p class="mb-4">
-                                为客户打造了响应式企业官网，包含产品展示、新闻动态、在线咨询等功能。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>响应式设计</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>产品展示系统</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>内容管理系统</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">网站开发</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 案例2 -->
-                <div class="case-card fade-in-up" style="transition-delay: 0.2s;" data-category="app">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/aa83e6bf00bb432d86e2aac2d2c219e7~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858120&x-signature=QNINW95%2FrkyQDWqm5sJt8fhVBKU%3D" alt="电商平台界面" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">电商平台应用</h3>
-                                <p class="text-gray-600">为电商企业开发的移动应用，提升用户购物体验</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-secondary-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">电商平台应用</h3>
-                            <p class="mb-4">
-                                开发了跨平台电商应用，支持商品浏览、购物车、支付等功能，提升用户购物体验。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>跨平台开发</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>支付系统集成</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>用户评价系统</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">移动应用</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 案例3 -->
-                <div class="case-card fade-in-up" style="transition-delay: 0.4s;" data-category="ai">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/8fe5b4816aa74f3c84932a715bc31b2e~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858090&x-signature=WfGTB3A%2FXuTgrlmXXvS79kV0%2FAE%3D" alt="AI智能助手" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">AI智能助手</h3>
-                                <p class="text-gray-600">为客户开发的智能客服系统，提升服务效率</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-accent-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">AI智能助手</h3>
-                            <p class="mb-4">
-                                开发了基于自然语言处理的智能客服系统，能够自动回答用户问题，提升服务效率。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>自然语言处理</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>多渠道集成</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>智能学习系统</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">AI应用</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 案例4 -->
-                <div class="case-card fade-in-up" style="transition-delay: 0.6s;" data-category="website">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/aa83e6bf00bb432d86e2aac2d2c219e7~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858120&x-signature=QNINW95%2FrkyQDWqm5sJt8fhVBKU%3D" alt="教育类网站首页" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">在线教育平台</h3>
-                                <p class="text-gray-600">为教育机构开发的在线学习平台，提供优质教育资源</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-primary-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">在线教育平台</h3>
-                            <p class="mb-4">
-                                开发了功能完善的在线教育平台，支持课程管理、在线学习、互动讨论等功能。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>课程管理系统</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>在线视频播放</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>学习进度跟踪</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">网站开发</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 案例5 -->
-                <div class="case-card fade-in-up" style="transition-delay: 0.8s;" data-category="app">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/8fe5b4816aa74f3c84932a715bc31b2e~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858090&x-signature=WfGTB3A%2FXuTgrlmXXvS79kV0%2FAE%3D" alt="健康管理应用" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">健康管理应用</h3>
-                                <p class="text-gray-600">为医疗机构开发的健康管理应用，帮助用户追踪健康数据</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-secondary-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">健康管理应用</h3>
-                            <p class="mb-4">
-                                开发了健康管理移动应用，支持健康数据记录、分析和分享，帮助用户保持健康生活。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>健康数据记录</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>数据可视化分析</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>医生在线咨询</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">移动应用</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 案例6 -->
-                <div class="case-card fade-in-up" style="transition-delay: 1s;" data-category="ai">
-                    <div class="case-card-inner relative w-full h-80">
-                        <div class="case-card-front bg-white rounded-xl shadow-lg overflow-hidden">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/8fe5b4816aa74f3c84932a715bc31b2e~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858090&x-signature=WfGTB3A%2FXuTgrlmXXvS79kV0%2FAE%3D" alt="数据分析平台" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold mb-2">智能数据分析平台</h3>
-                                <p class="text-gray-600">为企业开发的数据分析平台，提供数据洞察和决策支持</p>
-                            </div>
-                        </div>
-                        <div class="case-card-back bg-accent-500 rounded-xl shadow-lg p-6 flex flex-col justify-center text-white">
-                            <h3 class="text-xl font-bold mb-4">智能数据分析平台</h3>
-                            <p class="mb-4">
-                                开发了基于AI的数据分析平台，能够自动分析企业数据，提供洞察和决策支持。
-                            </p>
-                            <ul class="space-y-2 mb-6">
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>大数据处理</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>智能数据可视化</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    <span>预测分析模型</span>
-                                </li>
-                            </ul>
-                            <div class="mt-auto">
-                                <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">AI应用</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 关于 -->
+<section id="about" class="py-20 px-6 relative">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-bold text-gradient mb-4">关于我们</h2>
+<div class="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+</div>
+<div class="grid md:grid-cols-2 gap-12 items-center">
+<div class="glass rounded-3xl p-8 card-hover float">
+<h3 class="text-2xl font-bold text-white mb-4">春秋阁 · 技术与美学共生</h3>
+<p class="text-white/70 mb-6">我们专注高端定制化开发，以极致视觉、流畅交互、稳定架构为核心，打造兼具艺术感与实用性的数字化产品。</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-primary text-3xl mb-2"><i class="fa fa-code"></i></div>
+<p class="text-white font-medium">专业技术</p>
+</div>
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-secondary text-3xl mb-2"><i class="fa fa-paint-brush"></i></div>
+<p class="text-white font-medium">视觉设计</p>
+</div>
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-accent text-3xl mb-2"><i class="fa fa-rocket"></i></div>
+<p class="text-white font-medium">高效交付</p>
+</div>
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-primary text-3xl mb-2"><i class="fa fa-shield"></i></div>
+<p class="text-white font-medium">安全稳定</p>
+</div>
+</div>
+</div>
+<div class="relative">
+<img src="https://picsum.photos/800/600" class="rounded-3xl shadow-2xl w-full card-hover" alt="">
+</div>
+</div>
+</div>
+</section>
 
-    <!-- 团队成员 -->
-    <section id="team" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">我们的团队</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    我们拥有一支专业、充满激情的团队，致力于为客户提供最好的服务
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- 团队成员1 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in-up">
-                    <div class="relative">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/9eda49dbe8e442aaa7211a849563ae29~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858102&x-signature=UC1YAoHt%2BF5nMq1H7fxRm9Q32jE%3D" alt="张三" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition-opacity flex items-end">
-                            <div class="p-6 text-white">
-                                <p class="mb-4">
-                                    拥有10年软件开发经验，精通多种编程语言和框架，曾主导多个大型项目的开发。
-                                </p>
-                                <div class="flex space-x-3">
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-github text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-linkedin text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fas fa-envelope text-xl"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-1">张三</h3>
-                        <p class="text-primary-500 mb-3">技术总监</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">JavaScript</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Python</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Node.js</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 团队成员2 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in-up" style="transition-delay: 0.2s;">
-                    <div class="relative">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/9eda49dbe8e442aaa7211a849563ae29~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858102&x-signature=UC1YAoHt%2BF5nMq1H7fxRm9Q32jE%3D" alt="李四" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition-opacity flex items-end">
-                            <div class="p-6 text-white">
-                                <p class="mb-4">
-                                    前端开发专家，擅长创建美观、高效的用户界面，对用户体验有深刻理解。
-                                </p>
-                                <div class="flex space-x-3">
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-github text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-linkedin text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fas fa-envelope text-xl"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-1">李四</h3>
-                        <p class="text-primary-500 mb-3">前端开发工程师</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">React</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Vue</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">CSS</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 团队成员3 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in-up" style="transition-delay: 0.4s;">
-                    <div class="relative">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/9eda49dbe8e442aaa7211a849563ae29~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858102&x-signature=UC1YAoHt%2BF5nMq1H7fxRm9Q32jE%3D" alt="王五" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition-opacity flex items-end">
-                            <div class="p-6 text-white">
-                                <p class="mb-4">
-                                    后端开发专家，擅长设计和实现高性能、可扩展的系统架构，对数据库优化有深入研究。
-                                </p>
-                                <div class="flex space-x-3">
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-github text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-linkedin text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fas fa-envelope text-xl"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-1">王五</h3>
-                        <p class="text-primary-500 mb-3">后端开发工程师</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Java</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Spring</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">MySQL</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 团队成员4 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in-up" style="transition-delay: 0.6s;">
-                    <div class="relative">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/9eda49dbe8e442aaa7211a849563ae29~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858102&x-signature=UC1YAoHt%2BF5nMq1H7fxRm9Q32jE%3D" alt="赵六" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-70 transition-opacity flex items-end">
-                            <div class="p-6 text-white">
-                                <p class="mb-4">
-                                    AI专家，专注于机器学习和自然语言处理，曾在多个AI项目中担任技术负责人。
-                                </p>
-                                <div class="flex space-x-3">
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-github text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fab fa-linkedin text-xl"></i>
-                                    </a>
-                                    <a href="#" class="text-white hover:text-primary-300">
-                                        <i class="fas fa-envelope text-xl"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-1">赵六</h3>
-                        <p class="text-primary-500 mb-3">AI工程师</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Python</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">TensorFlow</span>
-                            <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">NLP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 服务 -->
+<section id="service" class="py-20 px-6 bg-darklight relative">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-bold text-gradient mb-4">服务项目</h2>
+<div class="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl mb-6">
+<i class="fa fa-globe"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">官网定制开发</h3>
+<p class="text-white/70">视觉拉满、响应式、动画特效、SEO优化一站式企业官网。</p>
+</div>
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-2xl mb-6">
+<i class="fa fa-mobile"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">小程序 / APP</h3>
+<p class="text-white/70">微信小程序、跨端APP，界面精美，交互流畅，功能完整。</p>
+</div>
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center text-accent text-2xl mb-6">
+<i class="fa fa-robot"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">AI智能系统</h3>
+<p class="text-white/70">智能对话、数据分析、自动化流程、AI视觉与语音交互。</p>
+</div>
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl mb-6">
+<i class="fa fa-database"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">后台管理系统</h3>
+<p class="text-white/70">高可用权限管理、数据可视化、业务流程自动化开发。</p>
+</div>
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-2xl mb-6">
+<i class="fa fa-gamepad"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">互动网页游戏</h3>
+<p class="text-white/70">H5小游戏、互动营销页面、3D场景、粒子特效沉浸式体验。</p>
+</div>
+<div class="glass rounded-2xl p-8 card-hover">
+<div class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center text-accent text-2xl mb-6">
+<i class="fa fa-pencil"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">UI/UX高端设计</h3>
+<p class="text-white/70">品牌视觉、界面设计、动效设计、交互体验全流程设计。</p>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- AI智能预算估算器 -->
-    <section id="estimator" class="py-20 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">AI智能预算估算器</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    通过我们的智能预算估算器，快速获取您项目的预算范围
-                </p>
-            </div>
-            
-            <div class="max-w-4xl mx-auto bg-gray-50 rounded-2xl shadow-lg p-8 fade-in-up" style="transition-delay: 0.4s;">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-bold mb-6">项目信息</h3>
-                        
-                        <!-- 项目类型 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">项目类型</label>
-                            <select id="project-type" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="website">网站开发</option>
-                                <option value="app">移动应用开发</option>
-                                <option value="backend">后端系统开发</option>
-                                <option value="ai">AI应用开发</option>
-                            </select>
-                        </div>
-                        
-                        <!-- 项目复杂度 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">项目复杂度</label>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>简单</span>
-                                <span>中等</span>
-                                <span>复杂</span>
-                            </div>
-                            <input type="range" id="complexity" min="1" max="3" value="2" class="w-full">
-                        </div>
-                        
-                        <!-- 项目功能数量 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">功能数量</label>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>少 (3-5个)</span>
-                                <span>中等 (6-10个)</span>
-                                <span>多 (10个以上)</span>
-                            </div>
-                            <input type="range" id="features" min="1" max="3" value="2" class="w-full">
-                        </div>
-                        
-                        <!-- 项目时间要求 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">时间要求</label>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>宽松</span>
-                                <span>适中</span>
-                                <span>紧急</span>
-                            </div>
-                            <input type="range" id="urgency" min="1" max="3" value="2" class="w-full">
-                        </div>
-                        
-                        <!-- 是否需要设计 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">是否需要设计服务</label>
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="design" value="yes" checked class="form-radio text-primary-500">
-                                    <span class="ml-2">是</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="design" value="no" class="form-radio text-primary-500">
-                                    <span class="ml-2">否</span>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <!-- 是否需要维护 -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">是否需要后续维护</label>
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="maintenance" value="yes" class="form-radio text-primary-500">
-                                    <span class="ml-2">是</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="maintenance" value="no" checked class="form-radio text-primary-500">
-                                    <span class="ml-2">否</span>
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <button id="calculate-btn" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-md font-medium transition-colors">
-                            计算预算
-                        </button>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow p-6">
-                        <h3 class="text-xl font-bold mb-6">预算估算结果</h3>
-                        
-                        <div id="result-container" class="hidden">
-                            <div class="mb-8">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-700">项目类型</span>
-                                    <span id="result-type" class="font-medium">网站开发</span>
-                                </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-700">复杂度</span>
-                                    <span id="result-complexity" class="font-medium">中等</span>
-                                </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-700">功能数量</span>
-                                    <span id="result-features" class="font-medium">中等 (6-10个)</span>
-                                </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-700">时间要求</span>
-                                    <span id="result-urgency" class="font-medium">适中</span>
-                                </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-700">设计服务</span>
-                                    <span id="result-design" class="font-medium">是</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-700">后续维护</span>
-                                    <span id="result-maintenance" class="font-medium">否</span>
-                                </div>
-                            </div>
-                            
-                            <div class="border-t pt-6">
-                                <h4 class="text-lg font-bold mb-4">预算范围</h4>
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-gray-700">基础预算</span>
-                                    <span id="base-budget" class="text-xl font-bold text-primary-500">¥30,000</span>
-                                </div>
-                                <div id="design-cost-container" class="flex items-center justify-between mb-4">
-                                    <span class="text-gray-700">设计费用</span>
-                                    <span id="design-cost" class="text-xl font-bold text-primary-500">¥8,000</span>
-                                </div>
-                                <div id="maintenance-cost-container" class="flex items-center justify-between mb-4 hidden">
-                                    <span class="text-gray-700">维护费用 (每年)</span>
-                                    <span id="maintenance-cost" class="text-xl font-bold text-primary-500">¥10,000</span>
-                                </div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-gray-700">紧急费用</span>
-                                    <span id="urgency-cost" class="text-xl font-bold text-primary-500">¥0</span>
-                                </div>
-                                <div class="border-t pt-4 mt-4">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-lg font-bold">总预算</span>
-                                        <span id="total-budget" class="text-2xl font-bold text-secondary-500">¥38,000</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-8 text-center">
-                                <p class="text-gray-600 mb-4">
-                                    这是一个初步估算，实际价格可能会根据项目具体需求有所调整。
-                                </p>
-                                <a href="#contact" class="inline-block bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-md font-medium transition-colors">
-                                    联系我们获取详细报价
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div id="initial-message" class="text-center py-12">
-                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/91c2fc008b6e4c98b53eed5ffd00381a~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858079&x-signature=AdTDa7M4I0Flh9gKAfgKP%2FCv5OA%3D" alt="春秋阁编程工作室" class="w-24 h-24 mx-auto mb-6">
-                            <h4 class="text-xl font-bold mb-4">填写左侧表单</h4>
-                            <p class="text-gray-600">
-                                输入您的项目信息，我们的AI系统将为您提供初步预算估算
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 团队 -->
+<section id="team" class="py-20 px-6 relative">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-bold text-gradient mb-4">核心团队</h2>
+<div class="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="glass rounded-2xl overflow-hidden card-hover">
+<img src="https://picsum.photos/400/500?random=1" class="w-full h-64 object-cover" alt="">
+<div class="p-6 text-center">
+<h3 class="text-xl font-bold text-white mb-1">苏烨城</h3>
+<p class="text-primary">全栈工程师 / 负责人</p>
+</div>
+</div>
+<div class="glass rounded-2xl overflow-hidden card-hover">
+<img src="https://picsum.photos/400/500?random=2" class="w-full h-64 object-cover" alt="">
+<div class="p-6 text-center">
+<h3 class="text-xl font-bold text-white mb-1">设计师</h3>
+<p class="text-secondary">UI/UX 视觉总监</p>
+</div>
+</div>
+<div class="glass rounded-2xl overflow-hidden card-hover">
+<img src="https://picsum.photos/400/500?random=3" class="w-full h-64 object-cover" alt="">
+<div class="p-6 text-center">
+<h3 class="text-xl font-bold text-white mb-1">前端工程师</h3>
+<p class="text-accent">动效与交互专家</p>
+</div>
+</div>
+<div class="glass rounded-2xl overflow-hidden card-hover">
+<img src="https://picsum.photos/400/500?random=4" class="w-full h-64 object-cover" alt="">
+<div class="p-6 text-center">
+<h3 class="text-xl font-bold text-white mb-1">后端工程师</h3>
+<p class="text-primary">系统架构师</p>
+</div>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- 联系我们 -->
-    <section id="contact" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-up">联系我们</h2>
-                <div class="w-24 h-1 bg-primary-500 mx-auto mb-6 fade-in-up" style="transition-delay: 0.2s;"></div>
-                <p class="text-gray-600 max-w-3xl mx-auto text-lg fade-in-up" style="transition-delay: 0.3s;">
-                    如果您有任何问题或需求，请随时联系我们，我们将尽快回复您
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- 联系表单 -->
-                <div class="bg-white rounded-xl shadow-lg p-8 fade-in-up">
-                    <h3 class="text-2xl font-bold mb-6">发送消息</h3>
-                    <form id="contact-form">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label for="name" class="block text-gray-700 font-medium mb-2">姓名</label>
-                                <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="请输入您的姓名">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-gray-700 font-medium mb-2">邮箱</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="请输入您的邮箱">
-                            </div>
-                        </div>
-                        <div class="mb-6">
-                            <label for="subject" class="block text-gray-700 font-medium mb-2">主题</label>
-                            <input type="text" id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="请输入消息主题">
-                        </div>
-                        <div class="mb-6">
-                            <label for="message" class="block text-gray-700 font-medium mb-2">消息内容</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="请输入您的消息内容"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-md font-medium transition-colors">
-                            发送消息
-                        </button>
-                    </form>
-                </div>
-                
-                <!-- 联系信息 -->
-                <div class="fade-in-up" style="transition-delay: 0.2s;">
-                    <!-- 联系信息卡片 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-                        <h3 class="text-2xl font-bold mb-6">联系方式</h3>
-                        <div class="space-y-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                    <i class="fas fa-map-marker-alt text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">地址</h4>
-                                    <p class="text-gray-600">北京市海淀区中关村科技园区8号楼</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                    <i class="fas fa-phone-alt text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">电话</h4>
-                                    <p class="text-gray-600">+86 10 8888 8888</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-primary-100 p-3 rounded-full text-primary-500">
-                                    <i class="fas fa-envelope text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-1">邮箱</h4>
-                                    <p class="text-gray-600">contact@chunqiuge.com</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-8">
-                            <h4 class="font-semibold text-lg mb-4">关注我们</h4>
-                            <div class="flex space-x-4">
-                                <a href="#" class="bg-primary-100 p-3 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors">
-                                    <i class="fab fa-weixin text-xl"></i>
-                                </a>
-                                <a href="#" class="bg-primary-100 p-3 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors">
-                                    <i class="fab fa-weibo text-xl"></i>
-                                </a>
-                                <a href="#" class="bg-primary-100 p-3 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors">
-                                    <i class="fab fa-github text-xl"></i>
-                                </a>
-                                <a href="#" class="bg-primary-100 p-3 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors">
-                                    <i class="fab fa-linkedin text-xl"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- AI聊天窗口 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold">AI智能助手</h3>
-                            <div class="bg-green-100 text-green-500 px-3 py-1 rounded-full text-sm">
-                                <i class="fas fa-circle text-xs mr-1"></i> 在线
-                            </div>
-                        </div>
-                        
-                        <div id="chat-window" class="chat-window bg-gray-50 rounded-lg p-4 mb-4">
-                            <div class="chat-message ai-message">
-                                <p>您好！我是春秋阁编程工作室的AI助手，有什么可以帮助您的吗？</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex">
-                            <input type="text" id="chat-input" class="flex-1 px-4 py-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="请输入您的问题...">
-                            <button id="send-message" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-r-md transition-colors">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="mt-4 text-center">
-                            <p class="text-gray-500 text-sm">
-                                常见问题：<a href="#" class="quick-question text-primary-500 hover:underline">服务流程是什么？</a> | 
-                                <a href="#" class="quick-question text-primary-500 hover:underline">如何开始合作？</a> | 
-                                <a href="#" class="quick-question text-primary-500 hover:underline">有哪些成功案例？</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 在线聊天 -->
+<section id="chat" class="py-20 px-6 bg-darklight relative">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-4xl md:text-5xl font-bold text-gradient mb-4">在线咨询</h2>
+<div class="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+<p class="text-white/70 mt-4">24小时智能客服 + 人工极速响应</p>
+</div>
+<div class="glass rounded-3xl p-8 max-w-3xl mx-auto">
+<div class="chat-container h-[350px] mb-6 overflow-y-auto flex flex-col gap-4" id="msgBox">
+<div class="glass py-3 px-5 rounded-2xl max-w-[80%] text-white self-start">
+你好！我是春秋阁智能助手，有什么可以帮你？
+</div>
+</div>
+<div class="flex gap-4">
+<input type="text" id="msgInput" placeholder="输入你的问题..." class="flex-1 glass rounded-full px-6 py-4 text-white outline-none">
+<button onclick="sendMsg()" class="btn-glow relative px-6 py-4 rounded-full text-white font-medium z-10">
+<span class="relative z-10">发送</span>
+</button>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- 页脚 -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                <!-- 公司信息 -->
-                <div>
-                    <div class="flex items-center space-x-2 mb-6">
-                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/91c2fc008b6e4c98b53eed5ffd00381a~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260404092728297927F365A9D8CB8755&rrcfp=f06b921b&x-expires=1777858079&x-signature=AdTDa7M4I0Flh9gKAfgKP%2FCv5OA%3D" alt="春秋阁编程工作室" class="h-10">
-                        <span class="text-xl font-bold">春秋阁</span>
-                    </div>
-                    <p class="text-gray-400 mb-6">
-                        专业的编程服务提供商，致力于为客户提供高质量、高效率的软件开发服务。
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-weixin text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-weibo text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-github text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-linkedin text-xl"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 快速链接 -->
-                <div>
-                    <h4 class="text-lg font-bold mb-6">快速链接</h4>
-                    <ul class="space-y-4">
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
-                        <li><a href="#services" class="text-gray-400 hover:text-white transition-colors">服务项目</a></li>
-                        <li><a href="#cases" class="text-gray-400 hover:text-white transition-colors">案例展示</a></li>
-                        <li><a href="#team" class="text-gray-400 hover:text-white transition-colors">团队成员</a></li>
-                        <li><a href="#estimator" class="text-gray-400 hover:text-white transition-colors">预算估算</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
-                    </ul>
-                </div>
-                
-                <!-- 服务 -->
-                <div>
-                    <h4 class="text-lg font-bold mb-6">我们的服务</h4>
-                    <ul class="space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">网站开发</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">移动应用开发</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">后端系统开发</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">AI应用开发</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">云服务与DevOps</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">技术咨询与培训</a></li>
-                    </ul>
-                </div>
-                
-                <!-- 联系信息 -->
-                <div>
-                    <h4 class="text-lg font-bold mb-6">联系我们</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-map-marker-alt mt-1 text-gray-400"></i>
-                            <span class="text-gray-400">北京市海淀区中关村科技园区8号楼</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-phone-alt mt-1 text-gray-400"></i>
-                            <span class="text-gray-400">+86 10 8888 8888</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-envelope mt-1 text-gray-400"></i>
-                            <span class="text-gray-400">contact@chunqiuge.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 pt-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 mb-4 md:mb-0">
-                        &copy; 2023 春秋阁编程工作室. 保留所有权利.
-                    </p>
-                    <div class="flex space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">隐私政策</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">服务条款</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">网站地图</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+<!-- 页脚 -->
+<footer class="py-10 px-6 glass text-center text-white/60">
+<p>© 2026 春秋阁编程工作室 版权所有 | 极致视觉 · 技术赋能</p>
+</footer>
 
-    <!-- 返回顶部按钮 -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+<script>
+// 粒子背景
+particlesJS('particles-js',{
+particles:{
+number:{value:120,density:{enable:true,value_area:800}},
+color:{value:'#ffffff'},
+shape:{type:'circle'},
+opacity:{value:0.4,random:true},
+size:{value:3,random:true},
+line_linked:{enable:true,distance:150,color:'#4fc3f7',opacity:0.2,width:1},
+move:{enable:true,speed:1,direction:'none',random:true,straight:false,out_mode:'out',bounce:false}
+},
+interactivity:{
+detect_on:'canvas',
+events:{
+onhover:{enable:true,mode:'grab'},
+onclick:{enable:true,mode:'push'},
+resize:true
+}
+},
+retina_detect:true
+})
 
-    <script>
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 导航栏滚动效果
-            const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 50) {
-                    navbar.classList.add('navbar-fixed');
-                } else {
-                    navbar.classList.remove('navbar-fixed');
-                }
-            });
-            
-            // 移动端菜单
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const closeMenuButton = document.getElementById('close-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.add('open');
-            });
-            
-            closeMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.remove('open');
-            });
-            
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenu.classList.remove('open');
-                });
-            });
-            
-            // 滚动动画
-            const fadeElements = document.querySelectorAll('.fade-in-up');
-            
-            const fadeInObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            fadeElements.forEach(element => {
-                fadeInObserver.observe(element);
-            });
-            
-            // 案例筛选
-            const filterButtons = document.querySelectorAll('.case-filter-btn');
-            const caseCards = document.querySelectorAll('.case-card');
-            
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // 移除所有按钮的active状态
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('active', 'bg-primary-500', 'text-white');
-                        btn.classList.add('bg-gray-200', 'text-gray-700');
-                    });
-                    
-                    // 添加当前按钮的active状态
-                    this.classList.add('active', 'bg-primary-500', 'text-white');
-                    this.classList.remove('bg-gray-200', 'text-gray-700');
-                    
-                    const filter = this.getAttribute('data-filter');
-                    
-                    // 筛选案例卡片
-                    caseCards.forEach(card => {
-                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-            
-            // AI预算估算器
-            const calculateBtn = document.getElementById('calculate-btn');
-            const resultContainer = document.getElementById('result-container');
-            const initialMessage = document.getElementById('initial-message');
-            
-            // 项目类型映射
-            const projectTypes = {
-                'website': '网站开发',
-                'app': '移动应用开发',
-                'backend': '后端系统开发',
-                'ai': 'AI应用开发'
-            };
-            
-            // 复杂度映射
-            const complexityLevels = {
-                '1': '简单',
-                '2': '中等',
-                '3': '复杂'
-            };
-            
-            // 功能数量映射
-            const featureCounts = {
-                '1': '少 (3-5个)',
-                '2': '中等 (6-10个)',
-                '3': '多 (10个以上)'
-            };
-            
-            // 时间要求映射
-            const urgencyLevels = {
-                '1': '宽松',
-                '2': '适中',
-                '3': '紧急'
-            };
-            
-            // 基础预算映射
-            const baseBudgets = {
-                'website': { '1': 15000, '2': 30000, '3': 50000 },
-                'app': { '1': 25000, '2': 45000, '3': 80000 },
-                'backend': { '1': 20000, '2': 40000, '3': 70000 },
-                'ai': { '1': 30000, '2': 60000, '3': 100000 }
-            };
-            
-            calculateBtn.addEventListener('click', function() {
-                // 获取表单值
-                const projectType = document.getElementById('project-type').value;
-                const complexity = document.getElementById('complexity').value;
-                const features = document.getElementById('features').value;
-                const urgency = document.getElementById('urgency').value;
-                const design = document.querySelector('input[name="design"]:checked').value;
-                const maintenance = document.querySelector('input[name="maintenance"]:checked').value;
-                
-                // 更新结果显示
-                document.getElementById('result-type').textContent = projectTypes[projectType];
-                document.getElementById('result-complexity').textContent = complexityLevels[complexity];
-                document.getElementById('result-features').textContent = featureCounts[features];
-                document.getElementById('result-urgency').textContent = urgencyLevels[urgency];
-                document.getElementById('result-design').textContent = design === 'yes' ? '是' : '否';
-                document.getElementById('result-maintenance').textContent = maintenance === 'yes' ? '是' : '否';
-                
-                // 计算预算
-                const baseBudget = baseBudgets[projectType][complexity];
-                const designCost = design === 'yes' ? Math.round(baseBudget * 0.2) : 0;
-                const maintenanceCost = maintenance === 'yes' ? Math.round(baseBudget * 0.2) : 0;
-                const urgencyCost = urgency === '3' ? Math.round(baseBudget * 0.15) : 0;
-                
-                // 根据功能数量调整预算
-                let featureMultiplier = 1;
-                if (features === '2') featureMultiplier = 1.2;
-                if (features === '3') featureMultiplier = 1.5;
-                
-                const adjustedBaseBudget = Math.round(baseBudget * featureMultiplier);
-                const totalBudget = adjustedBaseBudget + designCost + urgencyCost;
-                
-                // 更新预算显示
-                document.getElementById('base-budget').textContent = `¥${adjustedBaseBudget.toLocaleString()}`;
-                document.getElementById('design-cost').textContent = `¥${designCost.toLocaleString()}`;
-                document.getElementById('maintenance-cost').textContent = `¥${maintenanceCost.toLocaleString()}`;
-                document.getElementById('urgency-cost').textContent = `¥${urgencyCost.toLocaleString()}`;
-                document.getElementById('total-budget').textContent = `¥${totalBudget.toLocaleString()}`;
-                
-                // 显示或隐藏设计和维护费用
-                const designCostContainer = document.getElementById('design-cost-container');
-                const maintenanceCostContainer = document.getElementById('maintenance-cost-container');
-                
-                if (design === 'yes') {
-                    designCostContainer.style.display = 'flex';
-                } else {
-                    designCostContainer.style.display = 'none';
-                }
-                
-                if (maintenance === 'yes') {
-                    maintenanceCostContainer.classList.remove('hidden');
-                } else {
-                    maintenanceCostContainer.classList.add('hidden');
-                }
-                
-                // 显示结果容器，隐藏初始消息
-                resultContainer.classList.remove('hidden');
-                initialMessage.classList.add('hidden');
-            });
-            
-            // AI聊天功能
-            const chatInput = document.getElementById('chat-input');
-            const sendMessageBtn = document.getElementById('send-message');
-            const chatWindow = document.getElementById('chat-window');
-            const quickQuestions = document.querySelectorAll('.quick-question');
-            
-            // 预设问答
-            const presetAnswers = {
-                '服务流程是什么？': '我们的服务流程包括：需求分析、方案设计、开发实施、测试验收和维护支持。首先，我们会与您深入沟通，了解您的具体需求；然后，我们的团队会设计一个详细的解决方案；接着，我们会按照方案进行开发；完成后，我们会进行全面测试并交付给您；最后，我们提供持续的技术支持和维护服务。',
-                '如何开始合作？': '开始合作非常简单！您可以通过我们网站上的联系表单、电话或邮箱与我们取得联系，告诉我们您的需求。我们的团队会在24小时内回复您，并安排一次详细的需求沟通会议。在了解您的需求后，我们会提供一个详细的方案和报价，双方确认后即可开始项目。',
-                '有哪些成功案例？': '我们已经成功完成了众多项目，包括企业官网、电商平台、移动应用和AI系统等。您可以在我们网站的"案例展示"部分查看部分成功案例，包括企业官网设计、电商平台应用、AI智能助手等。如果您有特定行业或类型的项目需求，我们也可以提供更多相关案例供您参考。'
-            };
-            
-            // 添加用户消息到聊天窗口
-            function addUserMessage(message) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'chat-message user-message';
-                messageDiv.innerHTML = `<p>${message}</p>`;
-                chatWindow.appendChild(messageDiv);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            }
-            
-            // 添加AI消息到聊天窗口
-            function addAIMessage(message) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'chat-message ai-message';
-                messageDiv.innerHTML = `<p>${message}</p>`;
-                chatWindow.appendChild(messageDiv);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            }
-            
-            // 处理用户输入
-            function handleUserInput(message) {
-                if (!message.trim()) return;
-                
-                // 添加用户消息
-                addUserMessage(message);
-                
-                // 清空输入框
-                chatInput.value = '';
-                
-                // 模拟AI思考
-                setTimeout(() => {
-                    // 检查是否有预设回答
-                    if (presetAnswers[message]) {
-                        addAIMessage(presetAnswers[message]);
-                    } else {
-                        // 生成通用回答
-                        addAIMessage('感谢您的咨询！这是一个自动回复，我们的客服人员会尽快与您联系。您也可以直接拨打我们的电话 +86 10 8888 8888 或发送邮件至 contact@chunqiuge.com 获取更多信息。');
-                    }
-                }, 1000);
-            }
-            
-            // 发送按钮点击事件
-            sendMessageBtn.addEventListener('click', function() {
-                handleUserInput(chatInput.value);
-            });
-            
-            // 输入框回车事件
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleUserInput(chatInput.value);
-                }
-            });
-            
-            // 快速问题点击事件
-            quickQuestions.forEach(question => {
-                question.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    handleUserInput(this.textContent);
-                });
-            });
-            
-            // 联系表单提交
-            const contactForm = document.getElementById('contact-form');
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // 获取表单数据
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value;
-                const message = document.getElementById('message').value;
-                
-                // 简单验证
-                if (!name || !email || !subject || !message) {
-                    alert('请填写所有必填字段');
-                    return;
-                }
-                
-                // 模拟表单提交
-                alert('感谢您的留言！我们会尽快与您联系。');
-                contactForm.reset();
-            });
-            
-            // 返回顶部按钮
-            const backToTopBtn = document.getElementById('back-to-top');
-            
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
-                    backToTopBtn.classList.remove('opacity-0', 'invisible');
-                    backToTopBtn.classList.add('opacity-100', 'visible');
-                } else {
-                    backToTopBtn.classList.add('opacity-0', 'invisible');
-                    backToTopBtn.classList.remove('opacity-100', 'visible');
-                }
-            });
-            
-            backToTopBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // 初始化Three.js背景
-            initThreeJsBackground();
-        });
-        
-        // Three.js背景
-        function initThreeJsBackground() {
-            const canvas = document.getElementById('hero-bg-canvas');
-            
-            // 创建场景
-            const scene = new THREE.Scene();
-            
-            // 创建相机
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
-            
-            // 创建渲染器
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            
-            // 创建粒子系统
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 1500;
-            
-            const posArray = new Float32Array(particlesCount * 3);
-            
-            for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 15;
-            }
-            
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            
-            // 创建材质
-            const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.02,
-                color: 0x1E88E5,
-                transparent: true,
-                opacity: 0.8
-            });
-            
-            // 创建粒子系统
-            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-            scene.add(particlesMesh);
-            
-            // 添加光线
-            const light = new THREE.DirectionalLight(0xffffff, 1);
-            light.position.set(0, 0, 1);
-            scene.add(light);
-            
-            // 动画函数
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                particlesMesh.rotation.y += 0.001;
-                particlesMesh.rotation.x += 0.0005;
-                
-                renderer.render(scene, camera);
-            }
-            
-            // 窗口大小调整
-            window.addEventListener('resize', function() {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-            
-            // 开始动画
-            animate();
-        }
-    </script>
+// 导航滚动
+window.addEventListener('scroll',()=>{
+document.getElementById('navbar').classList.toggle('py-2',window.scrollY>50)
+document.getElementById('navbar').classList.toggle('py-4',window.scrollY<=50)
+})
+
+// 聊天
+function sendMsg(){
+const input=document.getElementById('msgInput')
+const msg=input.value.trim()
+if(!msg)return
+const box=document.getElementById('msgBox')
+const user=document.createElement('div')
+user.className='glass py-3 px-5 rounded-2xl max-w-[80%] text-white self-end bg-primary/20'
+user.textContent=msg
+box.appendChild(user)
+input.value=''
+box.scrollTop=box.scrollHeight
+setTimeout(()=>{
+const ai=document.createElement('div')
+ai.className='glass py-3 px-5 rounded-2xl max-w-[80%] text-white self-start'
+ai.textContent='已收到你的消息，我们会尽快人工回复你～'
+box.appendChild(ai)
+box.scrollTop=box.scrollHeight
+},800)
+}
+document.getElementById('msgInput').addEventListener('keypress',(e)=>{
+if(e.key==='Enter')sendMsg()
+})
+
+// 滚动动画
+gsap.utils.toArray('.card-hover').forEach((el,i)=>{
+gsap.from(el,{
+scrollTrigger:el,
+y:40,opacity:0,duration:0.8,delay:i*0.1
+})
+})
+</script>
 </body>
 </html>
