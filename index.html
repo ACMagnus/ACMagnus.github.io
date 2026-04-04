@@ -39,7 +39,6 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 
 <div id="particles-js"></div>
 
-<!-- 导航 -->
 <nav class="fixed top-0 left-0 w-full z-50 glass py-4 px-6 transition-all duration-500" id="navbar">
 <div class="max-w-7xl mx-auto flex justify-between items-center">
 <div class="flex items-center gap-2">
@@ -57,7 +56,6 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 </div>
 </nav>
 
-<!-- 首屏 -->
 <section id="home" class="min-h-screen flex items-center justify-center px-6 pt-32 pb-20 relative">
 <div class="max-w-6xl mx-auto text-center z-10">
 <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold leading-tight text-gradient mb-6">
@@ -79,7 +77,6 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 <div class="absolute w-96 h-96 rounded-full bg-accent/20 blur-3xl bottom-1/3 -right-48 pulse"></div>
 </section>
 
-<!-- 关于 -->
 <section id="about" class="py-20 px-6 relative">
 <div class="max-w-6xl mx-auto">
 <div class="text-center mb-16">
@@ -116,7 +113,6 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 </div>
 </section>
 
-<!-- 服务 -->
 <section id="service" class="py-20 px-6 bg-darklight relative">
 <div class="max-w-6xl mx-auto">
 <div class="text-center mb-16">
@@ -170,7 +166,6 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 </div>
 </section>
 
-<!-- 团队 -->
 <section id="team" class="py-20 px-6 relative">
 <div class="max-w-6xl mx-auto">
 <div class="text-center mb-16">
@@ -188,29 +183,28 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 <div class="glass rounded-2xl overflow-hidden card-hover">
 <img src="https://picsum.photos/400/500?random=2" class="w-full h-64 object-cover" alt="">
 <div class="p-6 text-center">
-<h3 class="text-xl font-bold text-white mb-1">实体303</h3>
-<p class="text-secondary">副室长</p>
+<h3 class="text-xl font-bold text-white mb-1">设计师</h3>
+<p class="text-secondary">UI/UX 视觉总监</p>
 </div>
 </div>
 <div class="glass rounded-2xl overflow-hidden card-hover">
 <img src="https://picsum.photos/400/500?random=3" class="w-full h-64 object-cover" alt="">
 <div class="p-6 text-center">
-<h3 class="text-xl font-bold text-white mb-1">半人大黄鸡</h3>
-<p class="text-accent">前端工程师</p>
+<h3 class="text-xl font-bold text-white mb-1">前端工程师</h3>
+<p class="text-accent">动效与交互专家</p>
 </div>
 </div>
 <div class="glass rounded-2xl overflow-hidden card-hover">
 <img src="https://picsum.photos/400/500?random=4" class="w-full h-64 object-cover" alt="">
 <div class="p-6 text-center">
-<h3 class="text-xl font-bold text-white mb-1">胡罗啵啵</h3>
-<p class="text-primary">情报处</p>
+<h3 class="text-xl font-bold text-white mb-1">后端工程师</h3>
+<p class="text-primary">系统架构师</p>
 </div>
 </div>
 </div>
 </div>
 </section>
 
-<!-- 在线聊天 -->
 <section id="chat" class="py-20 px-6 bg-darklight relative">
 <div class="max-w-6xl mx-auto">
 <div class="text-center mb-16">
@@ -234,13 +228,11 @@ tailwind.config={theme:{extend:{colors:{primary:'#4fc3f7',secondary:'#7e57c2',ac
 </div>
 </section>
 
-<!-- 页脚 -->
 <footer class="py-10 px-6 glass text-center text-white/60">
 <p>© 2026 春秋阁编程工作室 版权所有 | 极致视觉 · 技术赋能</p>
 </footer>
 
 <script>
-// 粒子背景
 particlesJS('particles-js',{
 particles:{
 number:{value:120,density:{enable:true,value_area:800}},
@@ -262,13 +254,11 @@ resize:true
 retina_detect:true
 })
 
-// 导航滚动
 window.addEventListener('scroll',()=>{
 document.getElementById('navbar').classList.toggle('py-2',window.scrollY>50)
 document.getElementById('navbar').classList.toggle('py-4',window.scrollY<=50)
 })
 
-// 聊天
 function sendMsg(){
 const input=document.getElementById('msgInput')
 const msg=input.value.trim()
@@ -292,7 +282,6 @@ document.getElementById('msgInput').addEventListener('keypress',(e)=>{
 if(e.key==='Enter')sendMsg()
 })
 
-// 滚动动画
 gsap.utils.toArray('.card-hover').forEach((el,i)=>{
 gsap.from(el,{
 scrollTrigger:el,
