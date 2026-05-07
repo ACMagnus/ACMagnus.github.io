@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatPro - 专业聊天应用</title>
@@ -146,10 +144,14 @@
                 
                 <!-- 登录表单 -->
                 <div id="login-form" class="p-6">
-                    <div class="mb-6 flex justify-center">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/86c2c99f476c4a3bacdb2dd8ac1e9c71~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260506194644F7E0F703B8F864749154&rrcfp=f06b921b&x-expires=1780660029&x-signature=Q1at7bXaVF0gQglwpEXqT%2FE71oo%3D" alt="ChatPro Logo" class="h-24 shadow-lg rounded-xl">
+                    <div class="mb-6 flex flex-col items-center">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/86c2c99f476c4a3bacdb2dd8ac1e9c71~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260506194644F7E0F703B8F864749154&amp;rrcfp=f06b921b&amp;x-expires=1780660029&amp;x-signature=Q1at7bXaVF0gQglwpEXqT%2FE71oo%3D" alt="ChatPro Logo" class="h-24 shadow-lg rounded-xl mb-2">
+                        <p class="text-gray-600 text-sm" style="font-size: 32px; color: rgba(17, 98, 212, 0.84); line-height: 30px; font-weight: bold;">chat pro</p>
                     </div>
-                    <h1 class="text-2xl font-bold text-center mb-6 gradient-text">ChatPro</h1>
+                    <div class="flex items-center justify-center mb-6">
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/977981cc7ee1440c8e37df72707afff2~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605071920385AECAE7160A2310651A9&amp;rrcfp=e75484ac&amp;x-expires=1778757638&amp;x-signature=oxRpCwGyMKQWYbSr25l3%2FjPqSpQ%3D" alt="ChatPro Logo" class="h-8 w-8 mr-2">
+                        <h1 class="text-2xl font-bold gradient-text">猫民自己的聊天软件</h1>
+                    </div>
                     <div class="mb-4">
                         <label for="login-username" class="block text-gray-700 text-sm font-medium mb-2">用户名</label>
                         <input type="text" id="login-username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入用户名">
@@ -200,7 +202,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center overflow-hidden">
-                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793618845&x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
+                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1793618845&amp;x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <h3 id="user-name" class="font-medium text-dark">用户名</h3>
@@ -267,7 +269,7 @@
                 <div id="chat-header" class="bg-white p-4 border-b border-gray-200 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div id="chat-avatar" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center overflow-hidden">
-                            <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793618845&x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="聊天对象头像" class="w-full h-full object-cover">
+                            <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1793618845&amp;x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="聊天对象头像" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <h3 id="chat-name" class="font-medium text-dark">选择一个好友开始聊天</h3>
@@ -287,7 +289,7 @@
                 <!-- 聊天内容区 -->
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
                     <div class="flex flex-col items-center justify-center h-full">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/3baff8e663c040ee9321ec77dd210f7b~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=202605061926570C3113123A01FDDB6450&rrcfp=f06b921b&x-expires=1780658877&x-signature=1I2D%2BOAFNAr9bX6xQz%2FOyX5X%2Bf0%3D" alt="应用Logo" class="h-24 mb-4 opacity-50">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/3baff8e663c040ee9321ec77dd210f7b~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=202605061926570C3113123A01FDDB6450&amp;rrcfp=f06b921b&amp;x-expires=1780658877&amp;x-signature=1I2D%2BOAFNAr9bX6xQz%2FOyX5X%2Bf0%3D" alt="应用Logo" class="h-24 mb-4 opacity-50">
                         <p class="text-gray-medium text-center">选择一个好友或群组开始聊天</p>
                     </div>
                 </div>
@@ -350,7 +352,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div id="settings-user-avatar" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center overflow-hidden">
-                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793618845&x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
+                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1793618845&amp;x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <h3 id="settings-user-name" class="font-medium text-dark">用户名</h3>
@@ -479,7 +481,7 @@
                         <!-- 头像上传 -->
                         <div class="flex flex-col items-center">
                             <div id="edit-avatar" class="w-24 h-24 rounded-full bg-primary text-white flex items-center justify-center overflow-hidden mb-2">
-                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793618845&x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
+                                <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1793618845&amp;x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
                             </div>
                             <button id="change-avatar-button" class="text-primary text-sm hover:underline">更换头像</button>
                             <input type="file" id="avatar-input" class="hidden" accept="image/*">
@@ -576,7 +578,7 @@
                 </div>
                 <div class="flex flex-col items-center mb-4">
                     <div id="view-profile-avatar" class="w-24 h-24 rounded-full bg-primary text-white flex items-center justify-center overflow-hidden mb-2">
-                        <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793618845&x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
+                        <img src="https://p11-doubao-search-sign.byteimg.com/labis/92cad84ba9424f4bd60d1b7a003a7b7c~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&amp;x-expires=1793618845&amp;x-signature=ClCymFyC1dFf9InDNMP8xQZ%2BlkY%3D" alt="用户头像" class="w-full h-full object-cover">
                     </div>
                     <h4 id="view-profile-name" class="text-lg font-medium text-dark mb-1">用户名</h4>
                     <p id="view-profile-bio" class="text-sm text-gray-medium text-center">个人简介</p>
@@ -1101,11 +1103,350 @@
             
             // 编辑个人资料
             elements.changeAvatarButton.addEventListener('click', () => {
-                console.log('点击更换头像按钮');
-                elements.avatarInput.click();
+                showAvatarUploadModal();
             });
+            
+            // 头像上传功能
+            function showAvatarUploadModal() {
+                // 创建头像上传模态框
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center animate-fade-in';
+                modal.id = 'avatar-upload-modal';
+                
+                // 模态框内容
+                modal.innerHTML = `
+                    <div class="bg-white rounded-lg w-full max-w-md overflow-hidden animate-slide-up">
+                        <!-- 头部 -->
+                        <div class="sticky top-0 bg-white border-b border-gray-200 z-10">
+                            <div class="flex items-center justify-between p-4">
+                                <div class="flex items-center">
+                                    <button id="close-avatar-upload" class="mr-3 text-gray-600">
+                                        <i class="fa fa-chevron-left text-lg"></i>
+                                    </button>
+                                    <h2 class="text-lg font-medium">更换头像</h2>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容 -->
+                        <div class="p-6">
+                            <!-- 当前头像预览 -->
+                            <div class="flex flex-col items-center mb-6">
+                                <div class="relative mb-4">
+                                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                                        <img id="current-avatar-preview" src="${appState.currentUser?.avatar || 'https://p11-doubao-search-sign.byteimg.com/pgc-image/c08d127babb24fd18653ed1303111fbf~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793622078&x-signature=cacYyhZ2yi5VRmKwJS2A57IcvS8%3D'}" alt="当前头像" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white shadow-lg">
+                                        <i class="fa fa-camera"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500">点击选择新头像</p>
+                            </div>
+                            
+                            <!-- 头像选择选项 -->
+                            <div class="space-y-4">
+                                <!-- 从相册选择 -->
+                                <button id="select-from-album" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all-300">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                                            <i class="fa fa-image text-blue-500 text-xl"></i>
+                                        </div>
+                                        <span class="text-base">从相册选择</span>
+                                    </div>
+                                    <i class="fa fa-chevron-right text-gray-400"></i>
+                                </button>
+                                
+                                <!-- 拍照 -->
+                                <button id="take-photo" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all-300">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                                            <i class="fa fa-camera text-green-500 text-xl"></i>
+                                        </div>
+                                        <span class="text-base">拍照</span>
+                                    </div>
+                                    <i class="fa fa-chevron-right text-gray-400"></i>
+                                </button>
+                                
+                                <!-- 使用默认头像 -->
+                                <button id="use-default-avatar" class="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all-300">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                                            <i class="fa fa-user text-purple-500 text-xl"></i>
+                                        </div>
+                                        <span class="text-base">使用默认头像</span>
+                                    </div>
+                                    <i class="fa fa-chevron-right text-gray-400"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- 隐藏的文件输入 -->
+                            <input type="file" id="avatar-file-input" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+                `;
+                
+                // 添加到页面
+                document.body.appendChild(modal);
+                
+                // 绑定事件
+                bindAvatarUploadEvents(modal);
+            }
+            
+            // 绑定头像上传事件
+            function bindAvatarUploadEvents(modal) {
+                // 关闭按钮
+                modal.querySelector('#close-avatar-upload').addEventListener('click', () => {
+                    closeAvatarUploadModal(modal);
+                });
+                
+                // 从相册选择
+                modal.querySelector('#select-from-album').addEventListener('click', () => {
+                    modal.querySelector('#avatar-file-input').click();
+                });
+                
+                // 拍照
+                modal.querySelector('#take-photo').addEventListener('click', () => {
+                    showToast('拍照功能需要相机权限，暂不支持');
+                });
+                
+                // 使用默认头像
+                modal.querySelector('#use-default-avatar').addEventListener('click', () => {
+                    showDefaultAvatarGallery(modal);
+                });
+                
+                // 文件选择事件
+                modal.querySelector('#avatar-file-input').addEventListener('change', (e) => {
+                    handleAvatarFileSelect(e, modal);
+                });
+                
+                // 点击模态框背景关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeAvatarUploadModal(modal);
+                    }
+                });
+            }
+            
+            // 处理头像文件选择
+            function handleAvatarFileSelect(event, modal) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // 检查文件类型
+                if (!file.type.startsWith('image/')) {
+                    showToast('请选择图片文件');
+                    return;
+                }
+                
+                // 检查文件大小（限制为5MB）
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('图片大小不能超过5MB');
+                    return;
+                }
+                
+                // 创建预览
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // 显示裁剪界面
+                    showAvatarCropInterface(e.target.result, modal);
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // 显示头像裁剪界面
+            function showAvatarCropInterface(imageDataUrl, modal) {
+                // 替换模态框内容为裁剪界面
+                modal.querySelector('.p-6').innerHTML = `
+                    <div class="flex flex-col items-center mb-4">
+                        <h3 class="text-base font-medium mb-4">裁剪头像</h3>
+                        <div class="relative w-64 h-64 mb-4">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <img id="crop-preview-image" src="${imageDataUrl}" alt="预览" class="max-w-full max-h-full object-contain">
+                            </div>
+                            <!-- 裁剪框覆盖层 -->
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div class="w-48 h-48 border-2 border-white rounded-full overflow-hidden">
+                                    <img id="crop-image" src="${imageDataUrl}" alt="裁剪" class="w-full h-full object-cover transform -translate-x-1/2 -translate-y-1/2 origin-top-left" style="transform: scale(1.5) translate(-33.33%, -33.33%);">
+                                </div>
+                            </div>
+                        </div>
+                        <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1.5" class="w-full max-w-xs mb-4">
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button id="cancel-crop" class="flex-1 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium">
+                            取消
+                        </button>
+                        <button id="confirm-crop" class="flex-1 py-3 bg-primary text-white rounded-lg font-medium">
+                            确定
+                        </button>
+                    </div>
+                `;
+                
+                // 绑定裁剪事件
+                bindCropEvents(modal, imageDataUrl);
+            }
+            
+            // 绑定裁剪事件
+            function bindCropEvents(modal, originalImageDataUrl) {
+                const zoomSlider = modal.querySelector('#zoom-slider');
+                const cropImage = modal.querySelector('#crop-image');
+                
+                // 缩放功能
+                zoomSlider.addEventListener('input', () => {
+                    const scale = parseFloat(zoomSlider.value);
+                    const translatePercent = (100 / scale) / 2;
+                    cropImage.style.transform = `scale(${scale}) translate(-${translatePercent}%, -${translatePercent}%)`;
+                });
+                
+                // 拖动功能
+                let isDragging = false;
+                let startX, startY;
+                let translateX = 0, translateY = 0;
+                
+                cropImage.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    cropImage.style.cursor = 'grabbing';
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    
+                    const scale = parseFloat(zoomSlider.value);
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    
+                    // 限制拖动范围
+                    const maxTranslateX = (cropImage.offsetWidth * scale - 192) / 2;
+                    const maxTranslateY = (cropImage.offsetHeight * scale - 192) / 2;
+                    
+                    translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, translateX));
+                    translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, translateY));
+                    
+                    const translatePercentX = (translateX / (cropImage.offsetWidth * scale)) * 100;
+                    const translatePercentY = (translateY / (cropImage.offsetHeight * scale)) * 100;
+                    
+                    cropImage.style.transform = `scale(${scale}) translate(${translatePercentX}%, ${translatePercentY}%)`;
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    cropImage.style.cursor = 'grab';
+                });
+                
+                // 取消按钮
+                modal.querySelector('#cancel-crop').addEventListener('click', () => {
+                    // 恢复到选择界面
+                    showAvatarUploadModal();
+                    closeAvatarUploadModal(modal);
+                });
+                
+                // 确定按钮
+                modal.querySelector('#confirm-crop').addEventListener('click', () => {
+                    // 模拟裁剪并保存头像
+                    saveAvatar(originalImageDataUrl);
+                    closeAvatarUploadModal(modal);
+                });
+            }
+            
+            // 显示默认头像图库
+            function showDefaultAvatarGallery(modal) {
+                const defaultAvatars = [
+                    'https://p11-doubao-search-sign.byteimg.com/pgc-image/c08d127babb24fd18653ed1303111fbf~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793622078&x-signature=cacYyhZ2yi5VRmKwJS2A57IcvS8%3D',
+                    'https://p3-doubao-search-sign.byteimg.com/pgc-image/9ca09431c57246c9b946390e073cbc2e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793622078&x-signature=B8H9AYqPYGOPRwyYCNgTv1HwtJY%3D',
+                    'https://p26-doubao-search-sign.byteimg.com/pgc-image/46f73272094342569b9a8222558119b7~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793622078&x-signature=dcwrE9WkvDeH8luKZddNg4JlNU0%3D',
+                    'https://p11-doubao-search-sign.byteimg.com/pgc-image/bce7af84e86d4a62b767faca60c01c35~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1793622078&x-signature=UyF4Y3dxQR00DwMBdm55c3%2BDC7M%3D'
+                ];
+                
+                // 替换模态框内容为默认头像选择界面
+                modal.querySelector('.p-6').innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-base font-medium mb-4">选择默认头像</h3>
+                        <div class="grid grid-cols-4 gap-4">
+                            ${defaultAvatars.map((avatar, index) => `
+                                <div class="default-avatar-item cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-all-300 ${appState.currentUser?.avatar === avatar ? 'ring-2 ring-primary ring-offset-2' : ''}" data-avatar="${avatar}">
+                                    <div class="w-16 h-16 rounded-full overflow-hidden mx-auto">
+                                        <img src="${avatar}" alt="默认头像${index + 1}" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button id="cancel-default-avatar" class="flex-1 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium">
+                            取消
+                        </button>
+                    </div>
+                `;
+                
+                // 绑定默认头像选择事件
+                modal.querySelectorAll('.default-avatar-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const avatarUrl = item.dataset.avatar;
+                        saveAvatar(avatarUrl);
+                        closeAvatarUploadModal(modal);
+                    });
+                });
+                
+                // 取消按钮
+                modal.querySelector('#cancel-default-avatar').addEventListener('click', () => {
+                    // 恢复到选择界面
+                    showAvatarUploadModal();
+                    closeAvatarUploadModal(modal);
+                });
+            }
+            
+            // 保存头像
+            function saveAvatar(avatarUrl) {
+                if (appState.currentUser) {
+                    // 更新用户头像
+                    appState.currentUser.avatar = avatarUrl;
+                    
+                    // 保存到localStorage
+                    localStorage.setItem('wechatCurrentUser', JSON.stringify(appState.currentUser));
+                    
+                    // 更新界面上的头像显示
+                    updateAvatarDisplay(avatarUrl);
+                    
+                    showToast('头像已更新');
+                }
+            }
+            
+            // 更新头像显示
+            function updateAvatarDisplay(avatarUrl) {
+                // 更新个人页面的头像
+                const profileAvatars = document.querySelectorAll('#profile-page .w-20.h-20.rounded-full img, #profile-page .w-10.h-10.rounded-full img');
+                profileAvatars.forEach(img => {
+                    img.src = avatarUrl;
+                });
+                
+                // 更新聊天页面中的当前用户头像
+                const chatAvatars = document.querySelectorAll('#chat-detail-page .flex-shrink-0 img[alt="我"]');
+                chatAvatars.forEach(img => {
+                    img.src = avatarUrl;
+                });
+                
+                // 更新其他可能显示头像的地方
+                document.querySelectorAll(`img[src="${appState.currentUser?.avatar}"]`).forEach(img => {
+                    img.src = avatarUrl;
+                });
+            }
+            
+            // 关闭头像上传模态框
+            function closeAvatarUploadModal(modal) {
+                modal.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                }, 300);
+            }
             elements.avatarInput.addEventListener('change', handleAvatarChange);
             elements.saveProfileButton.addEventListener('click', handleSaveProfile);
+            
+            // 头像上传处理
+            elements.avatarInput.addEventListener('change', handleAvatarUpload);
         }
 
         // 显示页面
@@ -2726,5 +3067,5 @@
         // 初始化应用
         initApp();
     </script>
-</body>
-</html>
+
+</body></html>
