@@ -1,136 +1,265 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>逃离学校</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑}
-        body{background:#1a1a2e;color:#fff;padding:30px;max-width:800px;margin:0 auto}
-        .box{background:#16213e;padding:25px;border-radius:12px;box-shadow:0 0 20px #0f3460}
-        h1{text-align:center;margin-bottom:20px;color:#e94560}
-        .scene{font-size:18px;line-height:1.8;margin-bottom:20px;min-height:80px}
-        .bag{background:#0f3460;padding:12px;border-radius:8px;margin-bottom:20px}
-        .bag h3{margin-bottom:8px;color:#f1c40f}
-        #itemList{display:flex;gap:10px;flex-wrap:wrap}
-        .item{background:#e94560;padding:6px 12px;border-radius:6px}
-        .btn-group{display:flex;flex-direction:column;gap:12px}
-        button{padding:12px;font-size:16px;border:none;border-radius:8px;cursor:pointer;background:#533483;color:#fff;transition:0.2s}
-        button:hover{background:#e94560}
-        .end{font-size:24px;text-align:center;margin-top:30px;font-weight:bold}
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h1>🏫 逃离学校</h1>
-        <!-- 剧情文字 -->
-        <div class="scene" id="story"></div>
-        <!-- 背包道具 -->
-        <div class="bag">
-            <h3>背包道具：</h3>
-            <div id="itemList"></div>
-        </div>
-        <!-- 选择按钮 -->
-        <div class="btn-group" id="btns"></div>
-        <!-- 结局提示 -->
-        <div class="end" id="result"></div>
-    </div>
+<meta charset="UTF-8">
+<title>逃离学校 图片解谜版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft Yahei",sans-serif}
+body{background:#0f172a;color:#f1f5f9;padding:24px;max-width:900px;margin:0 auto}
+.container{background:#1e293b;padding:30px;border-radius:16px;box-shadow:0 0 30px #334155}
+h1{text-align:center;color:#fb7185;margin-bottom:20px}
 
-<script>
-// 游戏数据
-let game = {
-    scene: "classroom", // 当前场景
-    items: [],          // 背包
-    over: false         // 游戏是否结束
+.scene-image{
+    width:100%;
+    height:260px;
+    background:#334155;
+    border-radius:12px;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#94a3b8;
+    font-size:15px;
+    overflow:hidden;
 }
 
-// 所有场景配置
-const scenes = {
+.scene-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.story-text{font-size:17px;line-height:1.7;margin-bottom:20px;min-height:90px;color:#e2e8f0}
+.bag-area{background:#334155;padding:14px;border-radius:10px;margin-bottom:22px}
+.bag-title{color:#facc15;margin-bottom:8px}
+.item-wrap{display:flex;gap:10px;flex-wrap:wrap}
+.item{background:#fb7185;padding:5px 12px;border-radius:6px;font-size:14px}
+.empty{color:#94a3b8}
+.btn-box{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+button{padding:13px;font-size:16px;border:none;border-radius:8px;background:#475569;color:#fff;cursor:pointer;transition:0.2s}
+button:hover{background:#fb7185}
+.tip{color:#34d399;height:22px;margin-bottom:10px}
+.ending{font-size:26px;text-align:center;font-weight:bold;margin-top:30px}
+.win{color:#4ade80}
+.lose{color:#f87171}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🏫 深夜逃离学校 图片解谜版</h1>
+    <div class="tip" id="tip"></div>
+
+    <div class="scene-image" id="sceneImage">
+        <img src="https://picsum.photos/id/20/900/400" alt="场景图片">
+    </div>
+
+    <div class="story-text" id="story"></div>
+
+    <div class="bag-area">
+        <div class="bag-title">背包道具</div>
+        <div class="item-wrap" id="bagList"></div>
+    </div>
+
+    <div class="btn-box" id="btnGroup"></div>
+    <div class="ending" id="endText"></div>
+</div>
+
+<script>
+const gameData = {
+    currentRoom: "classroom",
+    items: [],
+    gameOver: false,
+    guardPatrol: false,
+    notebookRead: false,
+    password: "1207",
+    usedWire: false
+}
+
+const rooms = {
     classroom: {
-        text: "放学后所有人都走了，教室门被锁住。你被困在教室，窗外是漆黑操场。桌上有一把美工刀，后门通往走廊。",
-        options: [
-            {text:"拿起桌上美工刀",action:"getKnife"},
-            {text:"尝试推开后门去走廊",action:"goHall"}
+        image: "https://picsum.photos/id/20/900/400",
+        desc: "你被困在三楼教室，天色完全黑了。教室后门通向走廊，讲台上有一本笔记本，课桌抽屉锁死，窗户焊死无法翻越。远处偶尔传来保安的脚步声。",
+        choices: [
+            {txt: "查看讲台笔记本", act: "readBook"},
+            {txt: "打开课桌抽屉（需要工具撬开）", act: "deskLock"},
+            {txt: "走出教室前往走廊", act: "toHall"}
         ]
     },
     hall: {
-        text: "空旷走廊，尽头是保安室，一楼大门紧锁。墙角地上放着一根铁丝，保安室门口有保安打盹。",
-        options: [
-            {text:"捡起铁丝",action:"getWire"},
-            {text:"偷偷溜去一楼大门",action:"goGate"},
-            {text:"返回教室",action:"goClassroom"}
+        image: "https://picsum.photos/id/1067/900/400",
+        desc: "三楼走廊，左右两条通道。左侧楼梯通往一楼大厅，右侧是教师办公室。保安正在一楼巡逻，不能贸然下楼。地面角落有一根细铁丝。",
+        choices: [
+            {txt: "拾取地上铁丝", act: "getWire"},
+            {txt: "进入教师办公室", act: "toOffice"},
+            {txt: "走楼梯下楼", act: "toLobby"},
+            {txt: "返回教室", act: "toClassroom"}
+        ]
+    },
+    office: {
+        image: "https://picsum.photos/id/416/900/400",
+        desc: "教师办公室，办公桌放着美工刀，柜子上贴着一张纸条：大门密码是班主任生日。桌上日历写着：07.12。",
+        choices: [
+            {txt: "拿走美工刀", act: "getKnife"},
+            {txt: "返回三楼走廊", act: "toHall"}
+        ]
+    },
+    lobby: {
+        image: "https://picsum.photos/id/1070/900/400",
+        desc: "一楼大厅，校门是电子密码锁。保安就在大厅门口来回走动，直接靠近会被抓住。墙角通风管道可以暂时躲藏。",
+        choices: [
+            {txt: "躲进通风管道等待保安走远", act: "hidePipe"},
+            {txt: "直接冲向校门", act: "caughtGuard"},
+            {txt: "返回三楼走廊", act: "toHall"}
         ]
     },
     gate: {
-        text: "学校大门是密码锁，单纯推不开。保安就在不远处巡逻，直接冲会被抓住。",
-        options: [
-            {text:"用美工刀撬锁",action:"tryKnife"},
-            {text:"用铁丝开锁",action:"tryWire"},
-            {text:"退回走廊",action:"goHall"}
+        image: "https://picsum.photos/id/1071/900/400",
+        desc: "保安暂时离开，面前电子锁需要4位数字密码。没有密码无法开门。",
+        choices: [
+            {txt: "输入密码开门", act: "inputPwd"},
+            {txt: "用铁丝尝试撬开电子锁", act: "wireLock"},
+            {txt: "返回大厅躲避", act: "toLobby"}
         ]
     },
-    lose: {
-        text: "美工刀太脆，撬锁发出巨响！保安闻声赶来，把你抓住，逃离失败。",
-        options: [],
+    fail_caught: {
+        image: "https://picsum.photos/id/1072/900/400",
+        desc: "保安当场发现你，直接把你带回教务处，逃离失败。",
+        choices: [],
         end: "lose"
     },
-    win: {
-        text: "铁丝完美勾开密码锁！大门打开，你成功逃出学校！",
-        options: [],
+    fail_wire: {
+        image: "https://picsum.photos/id/1073/900/400",
+        desc: "电子锁结构精密，铁丝完全没用，动静引来保安，你被抓住了。",
+        choices: [],
+        end: "lose"
+    },
+    success: {
+        image: "https://picsum.photos/id/1074/900/400",
+        desc: "密码正确！校门电子锁解锁，你推开大门，成功逃出空无一人的校园！",
+        choices: [],
         end: "win"
     }
 }
 
-// 刷新页面内容
 function render(){
-    const s = scenes[game.scene]
-    document.getElementById("story").innerText = s.text
-    // 渲染道具
-    let itemHtml = ""
-    if(game.items.length === 0) itemHtml = "<span>空</span>"
-    game.items.forEach(i=>itemHtml += `<span class="item">${i}</span>`)
-    document.getElementById("itemList").innerHTML = itemHtml
-    // 渲染按钮
+    const room = rooms[gameData.currentRoom]
+
+    document.getElementById("sceneImage").innerHTML = `<img src="${room.image}" alt="${gameData.currentRoom}">`;
+    document.getElementById("story").innerText = room.desc
+
+    let bagHtml = ""
+    if(gameData.items.length === 0){
+        bagHtml = `<span class="empty">无道具</span>`
+    }else{
+        gameData.items.forEach(item=>{
+            bagHtml += `<span class="item">${item}</span>`
+        })
+    }
+    document.getElementById("bagList").innerHTML = bagHtml
+
     let btnHtml = ""
-    s.options.forEach(opt=>{
-        btnHtml += `<button onclick="${opt.action}()">${opt.text}</button>`
+    room.choices.forEach(c=>{
+        btnHtml += `<button onclick="${c.act}()">${c.txt}</button>`
     })
-    document.getElementById("btns").innerHTML = btnHtml
-    // 结局文字
-    const resBox = document.getElementById("result")
-    if(s.end === "win"){
-        resBox.style.color="#2ecc71"
-        resBox.innerText="🎉 逃离成功！游戏通关"
-    }else if(s.end === "lose"){
-        resBox.style.color="#e74c3c"
-        resBox.innerText="💀 游戏失败，重新打开页面再来一次"
-    }else{
-        resBox.innerText=""
+    document.getElementById("btnGroup").innerHTML = btnHtml
+
+    const endDom = document.getElementById("endText")
+    endDom.innerText = ""
+    endDom.className = ""
+    if(room.end === "win"){
+        endDom.innerText = "🎉 逃离成功！游戏通关"
+        endDom.className = "ending win"
+    }else if(room.end === "lose"){
+        endDom.innerText = "💀 游戏失败，刷新页面重新游玩"
+        endDom.className = "ending lose"
     }
 }
 
-// 操作函数
-function getKnife(){
-    if(!game.items.includes("美工刀")) game.items.push("美工刀")
+function showTip(text){
+    document.getElementById("tip").innerText = text
+    setTimeout(()=>document.getElementById("tip").innerText="",2500)
+}
+
+function toClassroom(){
+    gameData.currentRoom = "classroom"
     render()
 }
+function toHall(){
+    gameData.currentRoom = "hall"
+    render()
+}
+function toOffice(){
+    gameData.currentRoom = "office"
+    render()
+}
+function toLobby(){
+    gameData.currentRoom = "lobby"
+    render()
+}
+
+function readBook(){
+    if(gameData.notebookRead){
+        showTip("你已经看过笔记本了，内容是：大门密码藏在办公室日历中")
+        return
+    }
+    gameData.notebookRead = true
+    showTip("笔记本记录：校门密码在办公室日历纸条上，日期颠倒使用")
+    render()
+}
+
+function deskLock(){
+    if(gameData.items.includes("美工刀")){
+        showTip("撬开抽屉，里面只有一张废纸，没有有用道具")
+    }else{
+        showTip("抽屉锁死，你没有工具无法打开")
+    }
+}
+
 function getWire(){
-    if(!game.items.includes("铁丝")) game.items.push("铁丝")
-    render()
-}
-function goClassroom(){game.scene="classroom";render()}
-function goHall(){game.scene="hall";render()}
-function goGate(){game.scene="gate";render()}
-function tryKnife(){game.scene="lose";render()}
-function tryWire(){
-    if(game.items.includes("铁丝")){
-        game.scene="win"
-    }else{
-        document.getElementById("story").innerText="你没有铁丝，无法开锁，先去走廊寻找道具！"
+    if(gameData.items.includes("铁丝")){
+        showTip("你已经拾取过铁丝了")
+        return
     }
+    gameData.items.push("铁丝")
+    showTip("获得道具：铁丝")
     render()
 }
 
-// 启动游戏
+function getKnife(){
+    if(gameData.items.includes("美工刀")){
+        showTip("美工刀你已经拿了")
+        return
+    }
+    gameData.items.push("美工刀")
+    showTip("获得道具：美工刀")
+    render()
+}
+
+function caughtGuard(){
+    gameData.currentRoom = "fail_caught"
+    render()
+}
+
+function hidePipe(){
+    gameData.currentRoom = "gate"
+    showTip("你躲进管道等待片刻，保安走远，现在可以操作校门锁")
+    render()
+}
+
+function wireLock(){
+    gameData.currentRoom = "fail_wire"
+    render()
+}
+
+function inputPwd(){
+    if(!gameData.notebookRead){
+        showTip("你不知道密码线索，无法解锁")
+        return
+    }
+    gameData.currentRoom = "success"
+    render()
+}
+
 render()
 </script>
 </body>
