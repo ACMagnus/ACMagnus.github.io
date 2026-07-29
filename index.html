@@ -2,444 +2,136 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>逃离午夜校园 | 2D恐怖逃脱</title>
+    <title>逃离学校</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei}
-        body{background:#000;display:flex;flex-direction:column;align-items:center;overflow:hidden;color:#fff}
-        #gameCanvas{border:3px solid #333;background:#0a0a0a;image-rendering:pixelated}
-        .ui-panel{width:1000px;max-width:100%;padding:10px;margin-top:8px;display:flex;justify-content:space-between}
-        .tip{color:#aaa;font-size:14px}
-        .game-btn{padding:6px 16px;background:#600;border:none;color:#fff;border-radius:4px;cursor:pointer}
-        .game-btn:hover{background:#900}
-        #startScreen,#gameOver,#winScreen{
-            position:absolute;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);
-            display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99
-        }
-        .hide{display:none !important}
-        h1{font-size:48px;color:#c22222;margin-bottom:20px}
-        .desc{max-width:600px;text-align:center;color:#bbb;line-height:1.8;margin:12px 0}
-        .control-desc{margin-top:30px;color:#888}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑}
+        body{background:#1a1a2e;color:#fff;padding:30px;max-width:800px;margin:0 auto}
+        .box{background:#16213e;padding:25px;border-radius:12px;box-shadow:0 0 20px #0f3460}
+        h1{text-align:center;margin-bottom:20px;color:#e94560}
+        .scene{font-size:18px;line-height:1.8;margin-bottom:20px;min-height:80px}
+        .bag{background:#0f3460;padding:12px;border-radius:8px;margin-bottom:20px}
+        .bag h3{margin-bottom:8px;color:#f1c40f}
+        #itemList{display:flex;gap:10px;flex-wrap:wrap}
+        .item{background:#e94560;padding:6px 12px;border-radius:6px}
+        .btn-group{display:flex;flex-direction:column;gap:12px}
+        button{padding:12px;font-size:16px;border:none;border-radius:8px;cursor:pointer;background:#533483;color:#fff;transition:0.2s}
+        button:hover{background:#e94560}
+        .end{font-size:24px;text-align:center;margin-top:30px;font-weight:bold}
     </style>
 </head>
 <body>
-<!-- 开始界面 -->
-<div id="startScreen">
-    <h1>逃离午夜校园</h1>
-    <p class="desc">放学后你被困在了废弃的旧教学楼，大门全部锁死。校园里游荡着被怨灵附身的教师，灯光会频繁短路闪烁。收集钥匙、工具解开层层门锁，从学校后门逃生。一旦被怨灵抓到，游戏直接结束。</p>
-    <div class="control-desc">
-        WASD 移动 | E 互动开门/拾取道具 | 空格关闭弹窗 | ESC 暂停
+    <div class="box">
+        <h1>🏫 逃离学校</h1>
+        <!-- 剧情文字 -->
+        <div class="scene" id="story"></div>
+        <!-- 背包道具 -->
+        <div class="bag">
+            <h3>背包道具：</h3>
+            <div id="itemList"></div>
+        </div>
+        <!-- 选择按钮 -->
+        <div class="btn-group" id="btns"></div>
+        <!-- 结局提示 -->
+        <div class="end" id="result"></div>
     </div>
-    <button class="game-btn" style="margin-top:30px;font-size:20px;padding:10px 40px" onclick="game.startGame()">开始游戏</button>
-</div>
-
-<!-- 失败界面 -->
-<div id="gameOver" class="hide">
-    <h1 style="color:#800">你被抓住了...</h1>
-    <p class="desc">冰冷的手抓住了你的肩膀，黑暗吞噬了一切</p>
-    <button class="game-btn" onclick="game.restart()">重新开始</button>
-</div>
-
-<!-- 通关界面 -->
-<div id="winScreen" class="hide">
-    <h1 style="color:#28a048">成功逃出校园！</h1>
-    <p class="desc">你冲出后门，远处的警笛声越来越近，身后的校园恢复死寂</p>
-    <button class="game-btn" onclick="game.restart()">再玩一次</button>
-</div>
-
-<!-- 游戏画布 -->
-<canvas id="gameCanvas" width="1000" height="600"></canvas>
-<!-- UI状态栏 -->
-<div class="ui-panel">
-    <div class="tip">道具栏：<span id="itemList">无</span></div>
-    <div class="tip">当前房间：<span id="roomName">教学楼大厅</span></div>
-    <div>
-        <button class="game-btn" onclick="game.saveGame()">存档</button>
-        <button class="game-btn" onclick="game.loadGame()">读档</button>
-    </div>
-</div>
 
 <script>
-// 游戏核心对象（全流程防Bug设计：边界检测、碰撞容错、状态锁、空值判断）
-const game = {
-    canvas: document.getElementById("gameCanvas"),
-    ctx: null,
-    running: false,
-    paused: false,
-    // 玩家数据
-    player: {
-        x: 80, y: 260, w: 32, h:48, speed:3,
-        dir: "down", hp:1, items:[],
-        isTouchGhost:false, interactCooldown:0
+// 游戏数据
+let game = {
+    scene: "classroom", // 当前场景
+    items: [],          // 背包
+    over: false         // 游戏是否结束
+}
+
+// 所有场景配置
+const scenes = {
+    classroom: {
+        text: "放学后所有人都走了，教室门被锁住。你被困在教室，窗外是漆黑操场。桌上有一把美工刀，后门通往走廊。",
+        options: [
+            {text:"拿起桌上美工刀",action:"getKnife"},
+            {text:"尝试推开后门去走廊",action:"goHall"}
+        ]
     },
-    // 怨灵AI（追逐机制，房间巡逻）
-    ghost: {
-        x:600, y:260, w:36, h:52, speed:1.2,
-        patrolPoints:[{x:200,y:150},{x:750,y:400}],
-        targetPatrol:0, chasePlayer:false, cooldown:0
+    hall: {
+        text: "空旷走廊，尽头是保安室，一楼大门紧锁。墙角地上放着一根铁丝，保安室门口有保安打盹。",
+        options: [
+            {text:"捡起铁丝",action:"getWire"},
+            {text:"偷偷溜去一楼大门",action:"goGate"},
+            {text:"返回教室",action:"goClassroom"}
+        ]
     },
-    // 房间地图系统（多房间互通、门锁判定、道具刷新）
-    rooms: {
-        hall: {
-            name:"教学楼大厅",
-            walls:[
-                {x:0,y:0,w:1000,h:600},{x:380,y:100,w:240,h:30},
-                {x:120,y:220,w:30,h:160},{x:850,y:220,w:30,h:160}
-            ],
-            doors:[
-                {x:480,y:420,w:40,h:80,target:"corridor",locked:false,needKey:false},
-                {x:150,y:80,w:80,h:30,target:"library",locked:true,needKey:"goldKey"}
-            ],
-            items:[{x:820,y:320,type:"silverKey",picked:false}],
-            dark:false
-        },
-        corridor: {
-            name:"走廊",
-            walls:[{x:0,y:0,w:1000,h:600},{x:280,y:120,w:440,h:25}],
-            doors:[
-                {x:480,y:10,w:40,h:80,target:"hall",locked:false,needKey:false},
-                {x:800,y:420,w:40,h:80,target:"exit",locked:true,needKey:"exitKey"}
-            ],
-            items:[{x:320,y:400,type:"goldKey",picked:false}],
-            dark:true
-        },
-        library: {
-            name:"废弃图书室",
-            walls:[{x:0,y:0,w:1000,h:600},{x:100,y:180,w:800,h:25}],
-            doors:[{x:150,y:420,w:40,h:80,target:"hall",locked:false,needKey:false}],
-            items:[{x:760,y:300,type:"exitKey",picked:false}],
-            dark:true
-        },
-        exit: {
-            name:"校园后门",
-            walls:[{x:0,y:0,w:1000,h:600}],
-            doors:[{x:480,y:10,w:40,h:80,target:"corridor",locked:false,needKey:false}],
-            items:[],
-            dark:false,
-            winZone:{x:420,y:10,w:120,h:60}
-        }
+    gate: {
+        text: "学校大门是密码锁，单纯推不开。保安就在不远处巡逻，直接冲会被抓住。",
+        options: [
+            {text:"用美工刀撬锁",action:"tryKnife"},
+            {text:"用铁丝开锁",action:"tryWire"},
+            {text:"退回走廊",action:"goHall"}
+        ]
     },
-    currentRoom: "hall",
-    // 灯光闪烁恐怖特效计时器
-    flickerTimer:0, flickerState:false,
-    // 按键输入状态
-    keys:{w:false,a:false,s:false,d:false,e:false},
-    // 初始化画布
-    init(){
-        this.ctx = this.canvas.getContext("2d");
-        this.bindKeyEvent();
-        this.loop = this.loop.bind(this);
+    lose: {
+        text: "美工刀太脆，撬锁发出巨响！保安闻声赶来，把你抓住，逃离失败。",
+        options: [],
+        end: "lose"
     },
-    // 启动游戏
-    startGame(){
-        document.getElementById("startScreen").classList.add("hide");
-        this.running = true;
-        this.paused = false;
-        this.loop();
-    },
-    // 游戏主循环（帧渲染，所有逻辑分层，杜绝卡顿/逻辑错乱Bug）
-    loop(){
-        if(!this.running) return;
-        if(this.paused){
-            requestAnimationFrame(this.loop);
-            return;
-        }
-        // 帧更新逻辑
-        this.update();
-        // 渲染画面
-        this.render();
-        requestAnimationFrame(this.loop);
-    },
-    // 游戏逻辑更新
-    update(){
-        const room = this.rooms[this.currentRoom];
-        // 灯光闪烁
-        this.flickerTimer++;
-        if(this.flickerTimer > 120){
-            this.flickerTimer = 0;
-            this.flickerState = !this.flickerState;
-        }
-        // 玩家冷却防连点交互Bug
-        if(this.player.interactCooldown>0) this.player.interactCooldown--;
-        // 玩家移动逻辑 + 碰撞检测（全边界防穿模）
-        this.movePlayer(room);
-        // 怨灵AI逻辑
-        this.updateGhost(room);
-        // 怨灵碰撞检测（死亡判定，加冷却防止瞬间多次触发）
-        if(!this.player.isTouchGhost && this.checkCollision(this.player,this.ghost)){
-            this.player.isTouchGhost = true;
-            this.gameOver();
-        }else if(!this.checkCollision(this.player,this.ghost)){
-            this.player.isTouchGhost = false;
-        }
-        // E键交互逻辑
-        if(this.keys.e && this.player.interactCooldown===0){
-            this.interact(room);
-            this.player.interactCooldown = 20;
-            this.keys.e = false;
-        }
-        // 更新UI文字
-        this.updateUI();
-    },
-    // 玩家移动+墙体碰撞（精准矩形碰撞，无穿墙Bug）
-    movePlayer(room){
-        let dx=0, dy=0;
-        if(this.keys.w){dy=-this.player.speed;this.player.dir="up"}
-        if(this.keys.s){dy=this.player.speed;this.player.dir="down"}
-        if(this.keys.a){dx=-this.player.speed;this.player.dir="left"}
-        if(this.keys.d){dx=this.player.speed;this.player.dir="right"}
-        // X轴移动碰撞校验
-        this.player.x += dx;
-        for(let wall of room.walls){
-            if(this.checkCollision(this.player,wall)){
-                this.player.x -= dx; break;
-            }
-        }
-        // Y轴移动碰撞校验
-        this.player.y += dy;
-        for(let wall of room.walls){
-            if(this.checkCollision(this.player,wall)){
-                this.player.y -= dy; break;
-            }
-        }
-        // 画布边界锁死，防止跑出地图
-        this.player.x = Math.max(0, Math.min(this.player.x, this.canvas.width-this.player.w));
-        this.player.y = Math.max(0, Math.min(this.player.y, this.canvas.height-this.player.h));
-    },
-    // 怨灵AI：巡逻+玩家追逐逻辑
-    updateGhost(room){
-        const pDist = Math.hypot(this.player.x-this.ghost.x, this.player.y-this.ghost.y);
-        // 玩家距离过近切换追逐模式
-        if(pDist < 220){
-            this.ghost.chasePlayer = true;
-        }else if(pDist>450){
-            this.ghost.chasePlayer = false;
-        }
-        if(this.ghost.chasePlayer){
-            // 追逐玩家
-            let gdx=0, gdy=0;
-            if(this.player.x > this.ghost.x) gdx=this.ghost.speed;
-            if(this.player.x < this.ghost.x) gdx=-this.ghost.speed;
-            if(this.player.y > this.ghost.y) gdy=this.ghost.speed;
-            if(this.player.y < this.ghost.y) gdy=-this.ghost.speed;
-            this.ghost.x += gdx;
-            this.ghost.y += gdy;
-        }else{
-            // 定点巡逻
-            const target = this.ghost.patrolPoints[this.ghost.targetPatrol];
-            const gDist = Math.hypot(target.x-this.ghost.x, target.y-this.ghost.y);
-            if(gDist < 20){
-                this.ghost.targetPatrol = (this.ghost.targetPatrol+1) % this.ghost.patrolPoints.length;
-            }else{
-                let gdx=0, gdy=0;
-                if(target.x > this.ghost.x) gdx=this.ghost.speed*0.7;
-                if(target.x < this.ghost.x) gdx=-this.ghost.speed*0.7;
-                if(target.y > this.ghost.y) gdy=this.ghost.speed*0.7;
-                if(target.y < this.ghost.y) gdy=-this.ghost.speed*0.7;
-                this.ghost.x += gdx;
-                this.ghost.y += gdy;
-            }
-        }
-        // 怨灵墙体碰撞
-        for(let wall of room.walls){
-            if(this.checkCollision(this.ghost,wall)){
-                this.ghost.x -= this.ghost.speed;
-                this.ghost.y -= this.ghost.speed;
-            }
-        }
-        // 怨灵边界限制
-        this.ghost.x = Math.max(0, Math.min(this.ghost.x, this.canvas.width-this.ghost.w));
-        this.ghost.y = Math.max(0, Math.min(this.ghost.y, this.canvas.height-this.ghost.h));
-    },
-    // 交互系统：拾取道具、开门、通关判定
-    interact(room){
-        const p = this.player;
-        // 拾取道具
-        for(let item of room.items){
-            if(item.picked) continue;
-            const itemBox = {x:item.x,y:item.y,w:24,h:24};
-            if(this.checkCollision(p,itemBox)){
-                item.picked = true;
-                p.items.push(item.type);
-                return;
-            }
-        }
-        // 门交互（钥匙解锁+房间传送）
-        for(let door of room.doors){
-            const doorBox = {x:door.x,y:door.y,w:door.w,h:door.h};
-            if(!this.checkCollision(p,doorBox)) continue;
-            if(door.locked){
-                if(p.items.includes(door.needKey)){
-                    door.locked = false;
-                    alert("门已解锁！");
-                }else{
-                    alert("门锁死了，需要对应钥匙");
-                }
-                return;
-            }else{
-                // 切换房间，重置怨灵位置防卡死Bug
-                this.currentRoom = door.target;
-                this.player.x = 460; this.player.y = 100;
-                this.resetGhostPos();
-                return;
-            }
-        }
-        // 通关判定（后门胜利区域）
-        if(room.winZone){
-            if(this.checkCollision(p,room.winZone)){
-                this.winGame();
-            }
-        }
-    },
-    // 矩形碰撞检测（通用函数，无浮点计算Bug）
-    checkCollision(a,b){
-        return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
-    },
-    // 重置怨灵位置（切换房间防止怨灵卡玩家）
-    resetGhostPos(){
-        this.ghost.x = 600; this.ghost.y = 260;
-        this.ghost.chasePlayer = false;
-    },
-    // 更新界面文字
-    updateUI(){
-        const itemDom = document.getElementById("itemList");
-        const roomDom = document.getElementById("roomName");
-        const room = this.rooms[this.currentRoom];
-        roomDom.innerText = room.name;
-        if(this.player.items.length===0){
-            itemDom.innerText = "无";
-        }else{
-            const nameMap = {silverKey:"银钥匙",goldKey:"金钥匙",exitKey:"后门钥匙"};
-            itemDom.innerText = this.player.items.map(i=>nameMap[i]).join("、");
-        }
-    },
-    // 渲染画面分层：背景→墙体→门→道具→怨灵→玩家→灯光遮罩
-    render(){
-        const ctx = this.ctx;
-        const room = this.rooms[this.currentRoom];
-        // 清空画布
-        ctx.fillStyle = room.dark ? "#08080c" : "#111116";
-        ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-        // 绘制墙体
-        ctx.fillStyle = "#222";
-        for(let wall of room.walls){
-            ctx.fillRect(wall.x,wall.y,wall.w,wall.h);
-        }
-        // 绘制门
-        for(let door of room.doors){
-            ctx.fillStyle = door.locked ? "#702020" : "#206030";
-            ctx.fillRect(door.x,door.y,door.w,door.h);
-            ctx.fillStyle = "#fff";
-            ctx.font = "12px Microsoft YaHei";
-            ctx.fillText(door.locked?"锁":"通",door.x+8,door.y+45);
-        }
-        // 绘制可拾取道具
-        for(let item of room.items){
-            if(item.picked) continue;
-            const colorMap = {silverKey:"#c8c8c8",goldKey:"#ffd700",exitKey:"#48a0ff"};
-            ctx.fillStyle = colorMap[item.type];
-            ctx.fillRect(item.x,item.y,24,24);
-        }
-        // 绘制胜利出口区域
-        if(room.winZone){
-            ctx.fillStyle = "#183818";
-            ctx.fillRect(room.winZone.x,room.winZone.y,room.winZone.w,room.winZone.h);
-            ctx.fillStyle="#fff";
-            ctx.fillText("逃生出口",room.winZone.x+25,room.winZone.y+35);
-        }
-        // 绘制怨灵（红色恐怖轮廓，追逐时闪烁）
-        ctx.fillStyle = this.ghost.chasePlayer ? "#ff2222" : "#900000";
-        ctx.fillRect(this.ghost.x,this.ghost.y,this.ghost.w,this.ghost.h);
-        // 绘制玩家（白色）
-        ctx.fillStyle = "#f0f0f0";
-        ctx.fillRect(this.player.x,this.player.y,this.player.w,this.player.h);
-        // 黑暗房间灯光闪烁遮罩
-        if(room.dark && this.flickerState){
-            ctx.fillStyle = "rgba(0,0,0,0.75)";
-            ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-        }
-    },
-    // 绑定键盘监听
-    bindKeyEvent(){
-        window.addEventListener("keydown",(e)=>{
-            const k = e.key.toLowerCase();
-            if(k==="w")this.keys.w=true;
-            if(k==="a")this.keys.a=true;
-            if(k==="s")this.keys.s=true;
-            if(k==="d")this.keys.d=true;
-            if(k==="e")this.keys.e=true;
-            if(k==="escape") this.paused = !this.paused;
-        })
-        window.addEventListener("keyup",(e)=>{
-            const k = e.key.toLowerCase();
-            if(k==="w")this.keys.w=false;
-            if(k==="a")this.keys.a=false;
-            if(k==="s")this.keys.s=false;
-            if(k==="d")this.keys.d=false;
-        })
-    },
-    // 游戏失败
-    gameOver(){
-        this.running = false;
-        document.getElementById("gameOver").classList.remove("hide");
-    },
-    // 游戏通关
-    winGame(){
-        this.running = false;
-        document.getElementById("winScreen").classList.remove("hide");
-    },
-    // 重新开始，重置全部数据（清空道具、房间、怨灵）
-    restart(){
-        // 重置玩家
-        this.player.x=80;this.player.y=260;this.player.items=[];
-        this.player.isTouchGhost=false;
-        this.currentRoom = "hall";
-        this.resetGhostPos();
-        // 重置所有道具拾取状态
-        Object.values(this.rooms).forEach(room=>{
-            room.items.forEach(item=>item.picked=false);
-            room.doors.forEach(door=>{
-                if(door.needKey) door.locked=true;
-            })
-        })
-        // 隐藏弹窗，恢复运行
-        document.getElementById("gameOver").classList.add("hide");
-        document.getElementById("winScreen").classList.add("hide");
-        this.running = true;
-        this.loop();
-    },
-    // 本地存档（localStorage，完整房间/道具/玩家状态）
-    saveGame(){
-        const saveData = {
-            player:this.player,
-            ghost:this.ghost,
-            currentRoom:this.currentRoom,
-            rooms:this.rooms
-        }
-        localStorage.setItem("schoolEscapeSave",JSON.stringify(saveData));
-        alert("存档成功！");
-    },
-    // 读档容错（无存档时弹窗提示，不报错崩溃）
-    loadGame(){
-        const saveStr = localStorage.getItem("schoolEscapeSave");
-        if(!saveStr){
-            alert("暂无存档");
-            return;
-        }
-        try{
-            const data = JSON.parse(saveStr);
-            this.player = data.player;
-            this.ghost = data.ghost;
-            this.currentRoom = data.currentRoom;
-            this.rooms = data.rooms;
-            alert("读档完成");
-        }catch(err){
-            alert("存档损坏，无法读取");
-        }
+    win: {
+        text: "铁丝完美勾开密码锁！大门打开，你成功逃出学校！",
+        options: [],
+        end: "win"
     }
 }
-// 初始化游戏
-game.init();
+
+// 刷新页面内容
+function render(){
+    const s = scenes[game.scene]
+    document.getElementById("story").innerText = s.text
+    // 渲染道具
+    let itemHtml = ""
+    if(game.items.length === 0) itemHtml = "<span>空</span>"
+    game.items.forEach(i=>itemHtml += `<span class="item">${i}</span>`)
+    document.getElementById("itemList").innerHTML = itemHtml
+    // 渲染按钮
+    let btnHtml = ""
+    s.options.forEach(opt=>{
+        btnHtml += `<button onclick="${opt.action}()">${opt.text}</button>`
+    })
+    document.getElementById("btns").innerHTML = btnHtml
+    // 结局文字
+    const resBox = document.getElementById("result")
+    if(s.end === "win"){
+        resBox.style.color="#2ecc71"
+        resBox.innerText="🎉 逃离成功！游戏通关"
+    }else if(s.end === "lose"){
+        resBox.style.color="#e74c3c"
+        resBox.innerText="💀 游戏失败，重新打开页面再来一次"
+    }else{
+        resBox.innerText=""
+    }
+}
+
+// 操作函数
+function getKnife(){
+    if(!game.items.includes("美工刀")) game.items.push("美工刀")
+    render()
+}
+function getWire(){
+    if(!game.items.includes("铁丝")) game.items.push("铁丝")
+    render()
+}
+function goClassroom(){game.scene="classroom";render()}
+function goHall(){game.scene="hall";render()}
+function goGate(){game.scene="gate";render()}
+function tryKnife(){game.scene="lose";render()}
+function tryWire(){
+    if(game.items.includes("铁丝")){
+        game.scene="win"
+    }else{
+        document.getElementById("story").innerText="你没有铁丝，无法开锁，先去走廊寻找道具！"
+    }
+    render()
+}
+
+// 启动游戏
+render()
 </script>
 </body>
 </html>
