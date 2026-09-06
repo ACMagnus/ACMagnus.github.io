@@ -851,7 +851,7 @@ function showDamageNumber(x,y,damage,isCrit=false,isHeal=false){
  el.style.left=(x-camera.x+rand(-8,8))+'px';
  el.style.top=(y-camera.y-10)+'px';
  document.getElementById('damageNumbers').appendChild(el);
- setTimeout(()=>el.remove(),900);
+ setTimeout(()=>el.remove(),800);
 }
 function addCombo(){
  const now=performance.now();
@@ -1084,7 +1084,7 @@ class Player{
   const thorns=getArmorEnchantBonus('thorns');
   if(thorns>0&&enemies){for(const e of enemies){if(!e.dead&&dist(this.x+this.w/2,this.y+this.h/2,e.x+e.w/2,e.y+e.h/2)<80){e.takeDamage(amount*thorns,this.x+this.w/2);}}}
   showDamageNumber(this.x+this.w/2,this.y,amount,false,false);
-  spawnParticles(this.x+this.w/2,this.y+this.h/2,8,'#8b1a1a');
+  spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#8b1a1a');
   spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#ff4040');
   // 受伤血滴飞溅
   for(let i=0;i<6;i++){
@@ -1098,10 +1098,10 @@ class Player{
     triggerTotem();
     return;
    }
-   this.hp=0;this.dead=true;addScreenShake(15,500);addSlowMo(0.3,600);if(typeof sfxPlayerDeath==='function')sfxPlayerDeath();setTimeout(()=>gameOver(),700);
+   this.hp=0;this.dead=true;addScreenShake(20,700);addSlowMo(0.3,600);if(typeof sfxPlayerDeath==='function')sfxPlayerDeath();setTimeout(()=>gameOver(),700);
   }
  }
- heal(a){this.hp=Math.min(CONFIG.player.maxHp,this.hp+a);spawnParticles(this.x+this.w/2,this.y+this.h/2,8,'#30a030');showDamageNumber(this.x+this.w/2,this.y,a,false,true);}
+ heal(a){this.hp=Math.min(CONFIG.player.maxHp,this.hp+a);spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#30a030');showDamageNumber(this.x+this.w/2,this.y,a,false,true);}
  addItem(t){const e=this.inventory.find(i=>i.type===t);if(e)e.count++;else this.inventory.push({type:t,count:1});}
  hasItem(t){const i=this.inventory.find(i=>i.type===t);return i&&i.count>0;}
  removeItem(t){const i=this.inventory.find(i=>i.type===t);if(i&&i.count>0){i.count--;if(i.count<=0)this.inventory=this.inventory.filter(x=>x.type!==t);return true;}return false;}
@@ -1207,19 +1207,26 @@ class Player{
   const w=this.getWeapon();
   if(w.id!=='fist'&&w.type!=='melee'){ctx.fillStyle=w.color;const wx=this.facing>0?sx+this.w-2:sx-13;ctx.fillRect(wx,by+bh/2-3,15,6);}
   if(w.type==='melee'&&w.id!=='fist'){ctx.fillStyle=w.color;const wx=this.facing>0?sx+this.w:sx-22;ctx.fillRect(wx,by+bh/2-2,22,5);}
-if(this.attackAnim>0&&w.type==='melee'){const ap=1-this.attackAnim/200;
+if(this.attackAnim>0&&w.type==='melee'){const ap=Math.max(0,Math.min(1,1-this.attackAnim/280));
    const ax=this.facing>0?sx+this.w:sx,ay=by+bh/2;
    // 攻击时身体前倾
    const leanX=this.facing*ap*4;
-   // 武器挥动轨迹（多层）
+   // 武器挥动轨迹（多层增强）
    for(let layer=0;layer<3;layer++){
-    const layerOffset=layer*3;
-    const layerAlpha=(1-ap)*(0.4-layer*0.1);
-    ctx.strokeStyle=`rgba(255,255,255,${layerAlpha})`;
-    ctx.lineWidth=6-layer*1.5;
+    const layerOffset=layer*4;
+    const layerAlpha=(1-ap)*(0.5-layer*0.08);
+    ctx.strokeStyle=layer===0?`rgba(255,255,255,${layerAlpha})`:`rgba(${w.color==='#c0c0d0'?'220,220,240':'255,230,180'},${layerAlpha})`;
+    ctx.lineWidth=8-layer*1.2;
     ctx.beginPath();
     ctx.arc(ax+leanX,ay,w.range*ap-layerOffset,this.facing>0?-Math.PI/3:Math.PI-Math.PI/3,this.facing>0?Math.PI/3:Math.PI+Math.PI/3);
     ctx.stroke();
+   }
+   // 额外剑气粒子（仅在游戏运行时创建）
+   if(gameState==='playing'&&ap>0.3&&ap<0.7){
+    for(let si=0;si<3;si++){
+     const sa=this.facing>0?rand(-0.5,0.5):Math.PI+rand(-0.5,0.5);
+     particles.push({x:ax+leanX+Math.cos(sa)*w.range*0.5,y:ay+Math.sin(sa)*30,vx:Math.cos(sa)*rand(3,7),vy:Math.sin(sa)*rand(-2,2),life:rand(150,250),maxLife:250,size:rand(2,4),color:'#ffffff'});
+    }
    }
    // 主斩击线（武器颜色）
    ctx.strokeStyle=`rgba(${w.color==='#c0c0d0'?'200,200,220':'255,220,150'},${1-ap})`;
@@ -1305,7 +1312,7 @@ class Enemy{
   if(this.hasShield&&this.shieldHp>0&&fromX!==undefined){
    const afr=fromX>this.x+this.w/2;
    const fa=(this.facing>0&&afr)||(this.facing<0&&!afr);
-   if(fa){this.shieldHp-=amount;amount*=0.25;spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#8090b0');if(typeof sfxShieldBlock==='function')sfxShieldBlock();if(this.shieldHp<=0){this.hasShield=false;spawnParticles(this.x+this.w/2,this.y+this.h/2,8,'#6070a0');addScreenShake(3,100);}}}
+   if(fa){this.shieldHp-=amount;amount*=0.25;spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#8090b0');if(typeof sfxShieldBlock==='function')sfxShieldBlock();if(this.shieldHp<=0){this.hasShield=false;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#6070a0');addScreenShake(3,100);}}}
   // 暴击判定
   const crit=isCritical();let finalDmg=amount;
   if(crit){finalDmg=amount*getCritMultiplier();addHitStop(60);addScreenShake(4,120);sfxCrit();}
@@ -1322,7 +1329,7 @@ class Enemy{
    // 击杀爆炸效果
    spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#4a0a0a');
    spawnParticles(this.x+this.w/2,this.y+this.h/2,10,'#8b1a1a');
-   spawnParticles(this.x+this.w/2,this.y+this.h/2,8,'#ff4040');
+   spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#ff4040');
    // 击杀冲击波
    for(let i=0;i<12;i++){
     const angle=(i/12)*Math.PI*2;
@@ -1331,7 +1338,7 @@ class Enemy{
    // 击杀闪光
    particles.push({x:this.x+this.w/2,y:this.y+this.h/2,vx:0,vy:0,life:150,maxLife:150,size:30,color:'#ffffff'});
    addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,2);
-   addScreenShake(4,150);addHitStop(80);
+   addScreenShake(7,200);addHitStop(80);
    // 空中击杀成就
    if(!player.onGround&&!achievements.airKill)unlockAchievement('airKill');
    showKillFeed(`击杀 ${this.type==='elite'?'精英怪':this.type==='shield'?'持盾怪':this.type==='sword'?'剑兵':'小怪'} +${this.type==='elite'?120:this.type==='normal'?40:65}`);
@@ -1488,7 +1495,7 @@ function playerAttack(){
  if(!player||player.dead)return;const now=performance.now();const w=player.getWeapon();
  const actualCooldown=w.cooldown*(1-getEnchantBonus(w,'swiftness'));if(now-player.lastAttack<actualCooldown)return;
  if(w.ammo!==Infinity&&w.ammo<=0){player.switchWeapon(0);return;}
- player.lastAttack=now;player.attackAnim=200;
+ player.lastAttack=now;player.attackAnim=280;
  const wmx=mouse.x+camera.x,wmy=mouse.y+camera.y;
  const dx=wmx-(player.x+player.w/2),dy=wmy-(player.y+player.h/2);
  const angle=Math.atan2(dy,dx);player.facing=dx>0?1:-1;
@@ -1514,10 +1521,10 @@ function playerAttack(){
    boss.takeDamage(dmg,player.x+player.w/2,w.id);
    const ls=getEnchantBonus(w,'lifesteal');
    if(ls>0)player.heal(dmg*ls);
-   hitAny=true;addScreenShake(3,100);
+   hitAny=true;addScreenShake(7,180);
   }
   if(hitAny){
-   addHitStop(50);addScreenShake(3,100);sfxHit();
+   addHitStop(80);addScreenShake(5,120);sfxHit();
    if(typeof sfxSwordSwing==='function')sfxSwordSwing();
    // 攻击命中光效
    const hitX=player.facing>0?player.x+player.w+w.range*0.5:player.x-w.range*0.5;
@@ -1527,10 +1534,17 @@ function playerAttack(){
    // 冲击波效果
    for(let i=0;i<8;i++){
     const angle=player.facing>0?rand(-0.5,0.5):Math.PI+rand(-0.5,0.5);
-    particles.push({x:hitX,y:hitY,vx:Math.cos(angle)*rand(3,8),vy:Math.sin(angle)*rand(-3,3),life:rand(200,400),maxLife:400,size:rand(2,5),color:w.color});
+    particles.push({x:hitX,y:hitY,vx:Math.cos(angle)*rand(3,7),vy:Math.sin(angle)*rand(-3,3),life:rand(200,400),maxLife:400,size:rand(2,5),color:w.color});
    }
   }
-  spawnParticles(ab.x+(player.facing>0?0:w.range),player.y+player.h/2,hitAny?6:3,w.color);
+  // 剑气/刀光效果
+  const slashX=player.facing>0?player.x+player.w:player.x-w.range;
+  const slashY=player.y+player.h/2;
+  for(let si=0;si<3;si++){
+   const sa=player.facing>0?rand(-0.6,0.6):Math.PI+rand(-0.6,0.6);
+   particles.push({x:slashX,y:slashY,vx:Math.cos(sa)*rand(4,8),vy:Math.sin(sa)*rand(-3,3),life:rand(120,250),maxLife:250,size:rand(2,3),color:hitAny?'#ffffff':w.color});
+  }
+  spawnParticles(ab.x+(player.facing>0?0:w.range),player.y+player.h/2,hitAny?4:2,w.color);
  }else if(w.type==='ranged'){
   let dmg=w.damage*(1+getEnchantBonus(w,'power'));
   const pierce=getEnchantBonus(w,'piercing');
@@ -1577,7 +1591,7 @@ function spawnArmorPickup(x,y){const ids=['cloth','leather','chain','plate'];con
 function spawnItem(x,y,t){items.push({x,y:y-18,type:t,collected:false,bob:rand(0,6.28)});}
 
 class HongHuangBoss{
- constructor(x,y){const c={width:110,height:150,maxHp:3800,speed:1.0,damage:16,laserDmg:14,laserCD:4200,laserCharge:1500,laserDur:600,tentacleDmg:12,tentacleCD:5200,tentacleN:3,tentacleR:200,teleportCD:7000,tpMin:180,tpMax:320};
+ constructor(x,y){const c={width:110,height:150,maxHp:2800,speed:0.9,damage:12,laserDmg:10,laserCD:5000,laserCharge:1500,laserDur:600,tentacleDmg:9,tentacleCD:6000,tentacleN:3,tentacleR:200,teleportCD:8000,tpMin:180,tpMax:320};
   Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLaser=0;this.lastTentacle=0;this.lastTeleport=0;this.laserState='idle';this.laserTimer=0;this.laserAngle=0;this.tpEffect=0;this.arenaLeft=x-380;this.arenaRight=x+380;this.name='洪 荒 战 神';this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
   // 初始坐标验证
   if(isNaN(this.x)||isNaN(this.y)){this.x=900;this.y=CONFIG.world.groundY-this.h;}
@@ -1607,19 +1621,19 @@ class HongHuangBoss{
   const now=performance.now();
   if(this.hp<this.maxHp*0.5&&this.phase===1){this.phase=2;this.teleport();spawnParticles(this.x+this.w/2,this.y+this.h/2,25,'#c040ff');}
   const dx=player.x-this.x;this.facing=dx>0?1:-1;
-  if(Math.abs(dx)>140)this.vx=this.facing*this.speed*(this.phase===2?1.4:1);else this.vx*=0.8;
+  if(Math.abs(dx)>140)this.vx=this.facing*this.speed*(this.phase===2?1.2:1);else this.vx*=0.8;
   this.vy+=0.6;if(this.vy>18)this.vy=18;this.x+=this.vx;this.y+=this.vy;
   if(this.y+this.h>CONFIG.world.groundY){this.y=CONFIG.world.groundY-this.h;this.vy=0;}
   this.x=clamp(this.x,this.arenaLeft,this.arenaRight-this.w);
   // 确保y坐标在地面上
   if(this.y+this.h>CONFIG.world.groundY+5){this.y=CONFIG.world.groundY-this.h;this.vy=0;}
   if(rectCollide(this,player)){player.takeDamage(this.damage);player.vx=(player.x<this.x?-1:1)*7;player.vy=-5;}
-  const lcd=this.phase===2?this.laserCD*0.6:this.laserCD;
+  const lcd=this.phase===2?this.laserCD*0.75:this.laserCD;
   if(this.laserState==='idle'&&now-this.lastLaser>lcd)this.startLaser();
   this.updateLaser(dt);
-  const tcd=this.phase===2?this.tentacleCD*0.7:this.tentacleCD;
+  const tcd=this.phase===2?this.tentacleCD*0.8:this.tentacleCD;
   if(now-this.lastTentacle>tcd){this.spawnTentacles();this.lastTentacle=now;}
-  const tpcd=this.phase===2?this.teleportCD*0.6:this.teleportCD;
+  const tpcd=this.phase===2?this.teleportCD*0.75:this.teleportCD;
   if(now-this.lastTeleport>tpcd){this.teleport();this.lastTeleport=now;}
   this.animTimer+=dt;if(this.animTimer>160){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;if(this.tpEffect>0)this.tpEffect-=dt;
@@ -1632,7 +1646,7 @@ class HongHuangBoss{
  pInLaser(px,py){if(!laserBeam)return false;const dx=px-laserBeam.x,dy=py-laserBeam.y;const proj=dx*Math.cos(laserBeam.angle)+dy*Math.sin(laserBeam.angle);const perp=-dx*Math.sin(laserBeam.angle)+dy*Math.cos(laserBeam.angle);return proj>0&&proj<900&&Math.abs(perp)<laserBeam.width/2+14;}
  spawnTentacles(){const n=this.phase===2?this.tentacleN+2:this.tentacleN;for(let i=0;i<n;i++){const tx=player.x+rand(-this.tentacleR,this.tentacleR);tentacles.push({x:tx,y:CONFIG.world.groundY,targetY:CONFIG.world.groundY-90,currentY:CONFIG.world.groundY,state:'rising',timer:0,damage:this.tentacleDmg,hit:false,width:22});}}
  teleport(){spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');const a=rand(0,6.28),d=rand(this.tpMin,this.tpMax);let nx=player.x+Math.cos(a)*d;nx=clamp(nx,this.arenaLeft,this.arenaRight-this.w);this.x=nx;this.y=CONFIG.world.groundY-this.h;this.tpEffect=350;spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');}
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=90;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ff6060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1100);}}
+ takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1100);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -1708,7 +1722,7 @@ class HongHuangBoss{
 }
 
 class TianZunBoss{
- constructor(x,y){const c={width:130,height:170,maxHp:5800,speed:0.85,damage:20,lightningDmg:16,lightningCD:3500,lightningN:3,fireDmg:15,fireCD:2800,fireN:4,blockCD:7500,blockDur:2000,healThresh:0.25,healRate:8,hammerDmg:32,hammerCD:3800,hammerR:120};
+ constructor(x,y){const c={width:130,height:170,maxHp:4500,speed:0.75,damage:16,lightningDmg:13,lightningCD:4200,lightningN:3,fireDmg:12,fireCD:3500,fireN:4,blockCD:8500,blockDur:1800,healThresh:0.2,healRate:6,hammerDmg:25,hammerCD:4500,hammerR:120};
   Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLightning=0;this.lastFire=0;this.lastBlock=0;this.lastHammer=0;this.blocking=false;this.blockTimer=0;this.healing=false;this.hammerMode=false;this.hammerSwing=0;this.arenaLeft=x-420;this.arenaRight=x+420;this.name='万 物 天 尊';this.summonEff=50;this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;}
  update(dt){
   // 坐标保护：防止NaN或跑出区域
@@ -1755,7 +1769,7 @@ class TianZunBoss{
  castLightning(){for(let i=0;i<this.lightningN;i++){const lx=player.x+rand(-130,130);lightnings.push({x:lx,y:CONFIG.world.groundY-280,currentY:CONFIG.world.groundY-280,state:'warning',timer:480,damage:this.lightningDmg,width:28});}}
  castFire(){for(let i=0;i<this.fireN;i++){const angle=Math.atan2(player.y-(this.y+this.h/3),player.x-(this.x+this.w/2))+rand(-0.25,0.25);fireballs.push({x:this.x+this.w/2,y:this.y+this.h/3,vx:Math.cos(angle)*5.5,vy:Math.sin(angle)*5.5-2,damage:this.fireDmg,size:13,life:2800,gravity:0.14});}}
  castHammer(){this.hammerSwing=380;setTimeout(()=>{if(this.dead)return;const hx=this.x+this.w/2+this.facing*75;spawnParticles(hx,CONFIG.world.groundY,25,'#ffd040');if(dist(player.x+player.w/2,player.y+player.h/2,hx,CONFIG.world.groundY-35)<this.hammerR){player.takeDamage(this.hammerDmg);player.vy=-9;}for(let i=0;i<7;i++)particles.push({x:hx,y:CONFIG.world.groundY-8,vx:rand(-7,7),vy:rand(-5,-1),life:450,maxLife:450,size:rand(3,7),color:'#ffd040'});},180);}
- takeDamage(a){if(this.dead)return;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#80c0ff');}this.hp-=a;this.hitFlash=90;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1300);}}
+ takeDamage(a){if(this.dead)return;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1300);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -1793,8 +1807,8 @@ class TianZunBoss{
 class HammerGuard{
  constructor(x,y,level=1){
   this.x=x;this.y=y;this.w=60;this.h=85;
-  this.hp=level===2?550:380;this.maxHp=this.hp;
-  this.damage=level===2?26:22;this.speed=0.8;
+  this.hp=level===2?480:320;this.maxHp=this.hp;
+  this.damage=level===2?22:18;this.speed=0.7;
   this.vx=0;this.vy=0;this.onGround=false;this.facing=-1;
   this.lastAttack=0;this.lastSlam=0;this.animFrame=0;this.animTimer=0;
   this.hitFlash=0;this.dead=false;this.isBoss=true;this.isGuard=true;
@@ -1857,7 +1871,7 @@ class HammerGuard{
   this.animTimer+=dt;if(this.animTimer>180){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=100;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
+ takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
    if(Math.random()<0.3)spawnItem(this.x+this.w/2+25,this.y,'gold_apple');if(!achievements.beatGuard)unlockAchievement('beatGuard');updateBossBar();}}
  draw(){
   if(this.deathState==='removed')return;
@@ -1900,8 +1914,8 @@ class StarDeathBoss{
   const ph=CONFIG.player.height;
   this.x=x;this.y=y;
   this.w=70;this.h=ph*5; // 5个玩家高
-  this.hp=8000;this.maxHp=8000;
-  this.speed=0.6;this.damage=26;
+  this.hp=6500;this.maxHp=6500;
+  this.speed=0.55;this.damage=22;
   this.vx=0;this.vy=0;this.facing=-1;this.dead=false;
   this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.lastSlash=0;this.lastVertSlash=0;this.lastSnake=0;
@@ -1973,7 +1987,7 @@ class StarDeathBoss{
   this.animTimer+=dt;if(this.animTimer>200){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=80;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(2,60);updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');victory();},1500);}}
+ takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');victory();},1500);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -2173,10 +2187,12 @@ function nextLevel(){
  }
 }
 function spawnParticles(x,y,c,color){
- const maxParticles=300;
- for(let i=0;i<c;i++){
+ const maxParticles=200;
+ // 帧率低时减少粒子
+ const quality=gameSettings.particles?1:0.3;
+ const actualCount=Math.ceil(c*quality);
+ for(let i=0;i<actualCount;i++){
   if(particles.length>=maxParticles){
-   // 复用最老的粒子
    const p=particles.shift();
    p.x=x;p.y=y;p.vx=rand(-2.5,2.5);p.vy=rand(-4,1);
    p.life=rand(250,600);p.maxLife=600;p.size=rand(2,4);p.color=color;
@@ -3303,8 +3319,8 @@ function closeTrader(){
 class WitchBoss{
  constructor(x,y){
   this.x=x;this.y=y;this.w=50;this.h=75;
-  this.hp=1200;this.maxHp=1200;
-  this.speed=1.5;this.damage=18;
+  this.hp=1000;this.maxHp=1000;
+  this.speed=1.2;this.damage=15;
   this.vx=0;this.vy=0;this.facing=-1;
   this.dead=false;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.lastPotion=0;this.lastSummon=0;this.lastHeal=0;
@@ -3394,9 +3410,9 @@ class WitchBoss{
  }
  takeDamage(a){
   if(this.dead)return;
-  this.hp-=a;this.hitFlash=100;
+  this.hp-=a;this.hitFlash=130;
   showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);
-  addScreenShake(2,60);
+  addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#8040a0');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');
   if(this.hp<=0){
    this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1500;
    addScreenShake(12,400);addSlowMo(0.3,500);
@@ -3453,14 +3469,14 @@ class WitchBoss{
 class WitherStormBoss{
  constructor(x,y){
   this.x=x;this.y=y;this.w=140;this.h=180;
-  this.hp=15000;this.maxHp=15000;
-  this.speed=0.8;this.damage=30;
+  this.hp=12000;this.maxHp=12000;
+  this.speed=0.7;this.damage=24;
   this.vx=0;this.vy=0;this.facing=-1;
   this.dead=false;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.phase=1;
   // 洪荒战神技能
-  this.lastLaser=0;this.laserCD=4000;this.laserState='idle';this.laserTimer=0;this.laserAngle=0;
-  this.lastTentacle=0;this.tentacleCD=5000;
+  this.lastLaser=0;this.laserCD=5000;this.laserState='idle';this.laserTimer=0;this.laserAngle=0;
+  this.lastTentacle=0;this.tentacleCD=6000;
   this.lastTeleport=0;this.teleportCD=7000;
   // 万物天尊技能
   this.lastLightning=0;this.lightningCD=3500;
@@ -3619,7 +3635,7 @@ class WitherStormBoss{
  }
  takeDamage(a,fromX,weaponId){
   if(this.dead)return;
-  if(this.blocking){a*=0.15;spawnParticles(this.x+this.w/2,this.y+this.h/2,4,'#80c0ff');}
+  if(this.blocking){a*=0.15;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}
   // 银制武器弱点
   if(weaponId&&CONFIG.weapons.find(w=>w.id===weaponId)&&CONFIG.weapons.find(w=>w.id===weaponId).silver){
    a*=this.silverWeakness;
