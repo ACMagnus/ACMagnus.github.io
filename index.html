@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<link rel="icon" href="favicon.png">
 <title>万物起源1无尽吞噬 - Endless Devour</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -43,6 +42,24 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 @keyframes achSlide{from{transform:translateX(300px);opacity:0}to{transform:translateX(0);opacity:1}}
 #guideBox{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);max-width:500px;background:rgba(10,10,25,0.9);border:1px solid #5a5a8a;border-radius:5px;padding:10px 18px;font-size:12px;color:#b0b0d0;text-align:center;display:none;pointer-events:none;z-index:15;line-height:1.6}
 #guideBox .guide-key{display:inline-block;padding:1px 6px;background:#2a2a4a;border:1px solid #5a5a7a;border-radius:2px;margin:0 3px;font-size:11px;color:#d0d0e8}
+/* ===== 增强HUD视觉反馈 ===== */
+.hud{transition:box-shadow 0.3s,border-color 0.3s;backdrop-filter:blur(6px);}
+.hud:hover{box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 12px rgba(120,140,255,0.15);}
+.hp-fill{position:relative;}
+.hp-fill::after{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.25),transparent);}
+.stamina-fill::after,.armor-fill::after{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.2),transparent);}
+.boss-hp-fill{position:relative;}
+.boss-hp-fill::after{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,180,180,0.3),transparent);}
+#topLeft,#topRight{animation:hudFadeIn 0.6s ease-out;}
+@keyframes hudFadeIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.weapon-slot{transition:all 0.15s ease;}
+.weapon-slot:hover{transform:translateY(-2px);border-color:#8a8aaa;}
+#levelBanner{animation:bannerFade 3s ease-out forwards;}
+@keyframes bannerFade{0%{opacity:0;transform:translate(-50%,-50%) scale(0.8);}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}25%{transform:translate(-50%,-50%) scale(1);}80%{opacity:1;}100%{opacity:0;}}
+#bottomHint{transition:opacity 0.5s;}
+/* 低血量呼吸警告 */
+@keyframes lowHpPulse{0%,100%{box-shadow:0 4px 15px rgba(0,0,0,0.4);}50%{box-shadow:0 0 20px rgba(220,40,40,0.6);}}
+#topLeft.lowHp{animation:lowHpPulse 1s ease-in-out infinite;border-color:#8a2020;}
 /* ===== 我的世界风格背包 ===== */
 .mc-inventory{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:620px;background:#c6c6c6;border:3px solid #555;border-radius:0;padding:0;z-index:100;display:none;box-shadow:inset 2px 2px 0 #fff,inset -2px -2px 0 #555,4px 4px 0 rgba(0,0,0,0.4);font-family:'Courier New',monospace;pointer-events:auto}
 .mc-inv-header{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#8b8b8b;border-bottom:2px solid #555}
@@ -772,6 +789,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div>分数: <span id="score">0</span></div>
 <div>钥匙: <span id="keyCount">0</span></div>
 </div>
+<div id="fpsDisplay" style="display:none;position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#0f0;font-size:14px;font-family:monospace;text-shadow:0 0 5px #0f0;z-index:100;">FPS: 0</div>
 <div id="bossBar"><div id="bossName">BOSS</div><div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHpFill" style="width:100%"></div><div class="boss-hp-text" id="bossHpText"></div></div></div>
 <div id="weaponBar"></div>
 <div class="hud" id="bottomHint">WASD移动 | 空格跳 | 左键攻击 | 右键交互 | E背包 | 1-6武器 | Q拾取 | H召唤 | R读档</div>
@@ -871,7 +889,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 </div>
 </div>
 <div class="menu-buttons">
-<button class="btn-ultimate btn-primary" onclick="startGame();"><span class="btn-icon">⚔</span><span class="btn-text">开始冒险</span><span class="btn-shine"></span></button>
+<button class="btn-ultimate btn-primary" onclick="showLoadingScreen();"><span class="btn-icon">⚔</span><span class="btn-text">开始冒险</span><span class="btn-shine"></span></button>
 <button class="btn-ultimate btn-secondary" onclick="showGuidePage()"><span class="btn-icon">📖</span><span class="btn-text">游戏介绍</span><span class="btn-shine"></span></button>
 </div>
 <div class="menu-footer">
@@ -879,7 +897,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div class="footer-copyright">© 2024 All Rights Reserved</div>
 </div>
 </div>
-</div>/div>
+</div>
 <div class="overlay" id="gameOver">
 <h1 style="color:#8a2a2a">你 陨 落 了</h1>
 <div class="subtitle">YOU FELL</div>
@@ -893,6 +911,37 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div class="guide-content" id="guideContent"></div>
 <button class="guide-close" onclick="closeGuidePage()">返 回</button>
 </div>
+<div id="loadingScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;">
+  <!-- 背景粒子 -->
+  <canvas id="loadingCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.3;"></canvas>
+  <!-- 游戏标题 -->
+  <div style="position:relative;z-index:2;text-align:center;margin-bottom:60px;">
+    <div style="font-size:48px;font-weight:bold;color:#e8e8e8;letter-spacing:8px;text-shadow:0 0 30px rgba(100,200,100,0.5);margin-bottom:8px;">万物起源1</div>
+    <div style="font-size:20px;color:#888;letter-spacing:12px;">无 尽 吞 噬</div>
+    <div style="margin-top:16px;font-size:13px;color:#555;letter-spacing:3px;">ENDLESS DEVOUR</div>
+  </div>
+  <!-- 加载提示文字 -->
+  <div id="loadingTip" style="position:relative;z-index:2;color:#666;font-size:14px;margin-bottom:16px;letter-spacing:2px;min-height:20px;">正在初始化游戏引擎...</div>
+  <!-- 进度条容器 -->
+  <div style="position:relative;z-index:2;width:400px;max-width:80%;">
+    <div style="background:#1a1a1a;border:1px solid #333;border-radius:4px;height:24px;overflow:hidden;position:relative;">
+      <div id="loadingBar" style="height:100%;width:0%;background:linear-gradient(90deg,#2d5a3d,#4a9c6d,#6bc98a);border-radius:3px;transition:width 0.1s ease;box-shadow:0 0 10px rgba(74,156,109,0.5);"></div>
+      <!-- 进度条光泽效果 -->
+      <div style="position:absolute;top:0;left:0;width:100%;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent);pointer-events:none;"></div>
+    </div>
+    <!-- 百分比 -->
+    <div id="loadingPercent" style="text-align:center;color:#888;font-size:13px;margin-top:8px;letter-spacing:2px;">0%</div>
+  </div>
+  <!-- 游戏小知识 -->
+  <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);z-index:2;text-align:center;max-width:80%;">
+    <div style="color:#555;font-size:11px;letter-spacing:3px;margin-bottom:6px;">— 游戏小知识 —</div>
+    <div id="loadingTipKnowledge" style="color:#777;font-size:13px;letter-spacing:1px;line-height:1.6;">提示：按 E 键打开背包，查看和管理你的装备与物品</div>
+  </div>
+  <!-- 版本信息 -->
+  <div style="position:absolute;bottom:20px;left:24px;z-index:2;color:#444;font-size:12px;letter-spacing:1px;">v2.0 ULTIMATE</div>
+  <div style="position:absolute;bottom:20px;right:24px;z-index:2;color:#444;font-size:12px;letter-spacing:1px;">春秋科技 × BCM炎黄春秋工作室</div>
+</div>
+
 <div id="storyDialog">
 <div class="story-box">
 <div class="story-chapter" id="storyChapter"></div>
@@ -989,7 +1038,12 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <span class="setting-label">📱 手机版</span>
 <div class="setting-control">
 <div class="setting-toggle" id="mobileToggle" onclick="toggleMobileMode()"></div>
-<span class="setting-value" id="mobileValue">关闭<
+<span class="setting-value" id="mobileValue">关闭</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script>// 游戏配置中心
 // 模块化系统管理器
 const SystemManager={
@@ -1123,6 +1177,8 @@ const CONFIG={
  ruleset_id:'origin_v1',
  player:{width:26,height:42,speed:4.2,sprintSpeed:6.5,jumpForce:13.5,gravity:0.58,maxHp:120,maxStamina:110,staminaRegen:0.6,sprintCost:0.7,invulnTime:1000,maxHunger:100,hungerDecay:0.01,starveDamage:0.02},
  world:{groundY:0},
+ // 通用敌人默认配置（供 Enemy 构造器 fallback 与刷怪间隔使用）
+ enemy:{width:32,height:46,speed:2.4,damage:12,hp:40,attackRange:38,attackCooldown:1200,chaseRange:450,spawnInterval:3200,maxConcurrent:5},
  lighting:{playerLightRadius:350,flickerIntensity:0.12},
  items:{
   key:{name:'古钥匙',desc:'打开锁住的门',icon:'🗝️'},
@@ -1232,6 +1288,10 @@ let lastTime=0,gameTime=0,score=0,distance=0,maxDistance=0;
 let player=null,enemies=[],boss=null,platforms=[],obstacles=[],items=[],weaponPickups=[],armorPickups=[],doors=[],portal=null,altar=null,checkpoints=[];
 let particles=[],bullets=[],tentacles=[],laserBeam=null,lightnings=[],fireballs=[];
 let lastEnemySpawn=0,lastPlatformX=0;
+let portalTriggered=false,arenaClearTriggered=false;
+// DOM元素缓存（避免每帧getElementById）
+let _domCache=null;
+function dc(id){if(!_domCache)_domCache={};if(!_domCache[id])_domCache[id]=document.getElementById(id);return _domCache[id];}
 let achievements={},currentCheckpoint=null,guideShown={};
 // 打击感系统
 let screenShake={x:0,y:0,intensity:0,duration:0};
@@ -1752,35 +1812,6 @@ let perfConfig={
  avgFrameTime:16,
  frameTimeHistory:[],
 };
-function updatePerfConfig(){
- if(gameSettings.performanceMode||qualitySettings.currentQuality==='low'){
-  perfConfig.enableShadowBlur=false;
-  perfConfig.enableGradients=false;
-  perfConfig.enablePostEffects=false;
-  perfConfig.maxParticles=100;
- }else if(qualitySettings.currentQuality==='medium'){
-  perfConfig.enableShadowBlur=false;
-  perfConfig.enableGradients=true;
-  perfConfig.enablePostEffects=true;
-  perfConfig.maxParticles=200;
- }else{
-  perfConfig.enableShadowBlur=true;
-  perfConfig.enableGradients=true;
-  perfConfig.enablePostEffects=true;
-  perfConfig.maxParticles=300;
- }
-}
-function smartShadowBlur(blur,color){
- if(!perfConfig.enableShadowBlur)return;
- ctx.shadowBlur=blur;
- if(color)ctx.shadowColor=color;
-}
-function smartCreateRadialGradient(x,y,r,colorStops){
- if(!perfConfig.enableGradients){
-  return colorStops[colorStops.length-1][1];
- }
- return getRadialGradient(x,y,r,colorStops);
-}
 function recordFrameTime(dt){
  perfConfig.frameTimeHistory.push(dt);
  if(perfConfig.frameTimeHistory.length>60)perfConfig.frameTimeHistory.shift();
@@ -1804,24 +1835,6 @@ function getRadialGradient(x,y,r,colorStops){
   grad.addColorStop(offset,color);
  }
  // 限制缓存大小
- if(Object.keys(gradientCache).length>200){
-  const keys=Object.keys(gradientCache);
-  for(let i=0;i<50;i++)delete gradientCache[keys[i]];
- }
- gradientCache[key]=grad;
- return grad;
-}
-function getLinearGradient(x1,y1,x2,y2,colorStops){
- const key=`lin_${Math.round(x1)}_${Math.round(y1)}_${Math.round(x2)}_${Math.round(y2)}_${colorStops.map(cs=>cs[0]+cs[1]).join('')}`;
- if(gradientCache[key]){
-  gradientCacheHits++;
-  return gradientCache[key];
- }
- gradientCacheMisses++;
- const grad=ctx.createLinearGradient(x1,y1,x2,y2);
- for(const [offset,color] of colorStops){
-  grad.addColorStop(offset,color);
- }
  if(Object.keys(gradientCache).length>200){
   const keys=Object.keys(gradientCache);
   for(let i=0;i<50;i++)delete gradientCache[keys[i]];
@@ -1855,14 +1868,6 @@ function getGlowSprite(size,color,intensity){
  }
  glowCanvasCache[key]=cv;
  return cv;
-}
-function drawGlow(x,y,size,color,intensity){
- const sprite=getGlowSprite(size,color,intensity);
- ctx.save();
- ctx.globalAlpha=intensity;
- ctx.globalCompositeOperation='screen';
- ctx.drawImage(sprite,x-size,y-size);
- ctx.restore();
 }
 
 // ===== 性能优化：离屏背景缓存（旧版已移除，使用新版）=====
@@ -1916,12 +1921,6 @@ function rebuildBackgroundCache(){
  // 绘制地面
  bgCacheCtx.fillStyle='#2a2a2a';
  bgCacheCtx.fillRect(0,canvas.height-100,canvas.width,100);
-}
-function drawCachedBackground(){
- if(!bgCacheCanvas||shouldRebuildBackgroundCache()){
-  rebuildBackgroundCache();
- }
- ctx.drawImage(bgCacheCanvas,0,0);
 }
 
 // ===== 性能优化：渲染统计 =====
@@ -2261,77 +2260,12 @@ function applyQualitySettings(){
   ambientOcclusion.enabled=qualitySettings.ambientOcclusion;
  }
 }
-function setQualityManual(quality){
- qualitySettings.currentQuality=quality;
- qualitySettings.autoAdjust=false;
- applyQualitySettings();
-}
 
 // 优化的粒子更新（批量处理）
-function updateParticlesOptimized(dt){
- if(!particles||particles.length===0)return;
- const limit=qualitySettings.particleLimit;
- // 反向遍历，移除过期粒子
- for(let i=particles.length-1;i>=0;i--){
-  const p=particles[i];
-  p.life-=dt;
-  if(p.life<=0){
-   particles.splice(i,1);
-   continue;
-  }
-  // 批量更新位置
-  p.x+=p.vx*(dt/16);
-  p.y+=p.vy*(dt/16);
-  if(p.gravity)p.vy+=p.gravity*(dt/16);
-  if(p.friction){p.vx*=p.friction;p.vy*=p.friction;}
- }
- // 限制粒子数量
- if(particles.length>limit){
-  particles.splice(0,particles.length-limit);
- }
-}
 
 // 优化的粒子渲染（批量相同颜色）
-function drawParticlesOptimized(){
- if(!particles||particles.length===0)return;
- ctx.save();
- // 按颜色分组批量渲染
- const colorGroups={};
- for(const p of particles){
-  const key=p.color||'#ffffff';
-  if(!colorGroups[key])colorGroups[key]=[];
-  colorGroups[key].push(p);
- }
- for(const color in colorGroups){
-  ctx.fillStyle=color;
-  const group=colorGroups[color];
-  for(const p of group){
-   const alpha=Math.min(1,p.life/p.maxLife);
-   ctx.globalAlpha=alpha;
-   const size=p.size||3;
-   if(p.shape==='circle'){
-    ctx.beginPath();
-    ctx.arc(p.x-camera.x,p.y-camera.y,size,0,Math.PI*2);
-    ctx.fill();
-   }else{
-    ctx.fillRect(p.x-camera.x-size/2,p.y-camera.y-size/2,size,size);
-   }
-  }
- }
- ctx.globalAlpha=1;
- ctx.restore();
-}
 
 // 优化的shadowBlur包装（可全局禁用）
-function setShadowBlur(blur,color){
- if(!qualitySettings.shadowBlurEnabled)return;
- ctx.shadowBlur=blur;
- if(color)ctx.shadowColor=color;
-}
-function clearShadowBlur(){
- ctx.shadowBlur=0;
- ctx.shadowColor='transparent';
-}
 
 // 性能监控显示
 function drawPerformanceMonitor(){
@@ -2740,67 +2674,8 @@ let feedbackSystem={
 };
 
 // 增强打击感函数
-function enhanceHitFeedback(x,y,damage,isCrit,isPerfect){
- if(!gameSettings.particles)return;
- // 基础粒子
- const particleCount=isCrit?20:isPerfect?15:10;
- spawnParticlesFast(x,y,Math.floor(particleCount*feedbackSystem.particleIntensity),
-   isCrit?'#ff4444':isPerfect?'#44ffff':'#ffffff',
-   {speed:isCrit?6:4,life:400,size:isCrit?5:3,gravity:0.1});
- // 命中停顿
- const hitStopDuration=isCrit?150:isPerfect?120:60;
- addHitStop(Math.floor(hitStopDuration*feedbackSystem.hitStopIntensity));
- // 屏幕震动
- const shakeIntensity=isCrit?12:isPerfect?8:4;
- addScreenShake(Math.floor(shakeIntensity*feedbackSystem.screenShakeIntensity),150);
- // 冲击波
- addShockwave(x,y,isCrit?60:isPerfect?40:20,isCrit?'#ff4444':isPerfect?'#44ffff':'#ffffff');
- // 慢动作（暴击/完美命中）
- if(isCrit||isPerfect){
-  addSlowMo(isCrit?0.3:0.4,isCrit?200:150);
- }
- // 镜头光晕
- if(isCrit||isPerfect){
-  addLensFlare(x,y,isCrit?50:35,isCrit?'rgb(255,68,68)':'rgb(68,255,255)',0.4,400);
- }
- // 浮动文字
- if(isCrit){
-  showFloatingText(x,y-30,'暴击!','#ff4444',24);
- }else if(isPerfect){
-  showFloatingText(x,y-30,'完美命中!','#44ffff',22);
- }
- // 伤害累计
- addDamageAccumulator(damage);
-}
 
 // 玩家操作反馈
-function playerActionFeedback(action){
- switch(action){
-  case 'jump':
-   spawnParticlesFast(player.x+player.w/2,player.y+player.h,5,'#cccccc',{speed:2,life:300,size:2,gravity:0.2});
-   break;
-  case 'dash':
-   spawnParticlesFast(player.x+player.w/2,player.y+player.h/2,8,'#88ccff',{speed:4,life:250,size:3});
-   addScreenShake(3,100);
-   break;
-  case 'attack':
-   spawnParticlesFast(player.x+player.w/2+player.facing*30,player.y+player.h/2,6,'#ffdd44',{speed:3,life:200,size:3});
-   break;
-  case 'roll':
-   spawnParticlesFast(player.x+player.w/2,player.y+player.h,10,'#aaaaaa',{speed:3,life:300,size:2,gravity:0.1});
-   break;
-  case 'pickup':
-   spawnParticlesFast(player.x+player.w/2,player.y,12,'#44ff44',{speed:3,life:400,size:3});
-   addLensFlare(player.x+player.w/2,player.y+player.h/2,40,'rgb(68,255,68)',0.3,300);
-   break;
-  case 'levelup':
-   spawnParticlesFast(player.x+player.w/2,player.y+player.h/2,30,'#ffdd44',{speed:5,life:600,size:4});
-   addLensFlare(player.x+player.w/2,player.y+player.h/2,80,'rgb(255,221,68)',0.6,600);
-   addScreenShake(10,300);
-   addSlowMo(0.3,300);
-   break;
- }
-}
 
 // 受伤反馈增强
 // 受伤屏幕边缘红光
@@ -2834,35 +2709,8 @@ function drawHurtOverlay(){
  }
  ctx.restore();
 }
-function playerHurtFeedback(damage){
- triggerHurtOverlay(0.6);
- triggerHitFeedback(player.facing*-1);
- spawnParticlesFast(player.x+player.w/2,player.y+player.h/2,15,'#ff4444',{speed:4,life:400,size:4});
- addScreenShake(8,200);
- addHitStop(100);
- // 低血量警告
- if(player.hp<player.maxHp*0.3){
-  triggerScreenFlash('rgba(255,0,0,0.2)',200);
- }
-}
 
 // 击杀反馈增强
-function enemyKillFeedback(enemy){
- addKillStreak();
- spawnParticlesFast(enemy.x+enemy.w/2,enemy.y+enemy.h/2,25,'#ff8844',{speed:5,life:500,size:4,gravity:0.1});
- spawnParticlesFast(enemy.x+enemy.w/2,enemy.y+enemy.h/2,15,'#ffdd44',{speed:4,life:400,size:3});
- addScreenShake(6,200);
- addHitStop(80);
- addShockwave(enemy.x+enemy.w/2,enemy.y+enemy.h/2,40,'#ff8844');
- // 连杀奖励
- if(killStreak.count>=5){
-  addLensFlare(enemy.x+enemy.w/2,enemy.y+enemy.h/2,60,'rgb(255,170,0)',0.5,500);
-  addSlowMo(0.4,200);
- }
- if(killStreak.count>=10){
-  triggerScreenFlash('rgba(255,170,0,0.2)',300);
- }
-}
 
 // Boss击杀反馈
 function bossKillFeedback(boss){
@@ -3569,13 +3417,6 @@ function drawLensDistortion(){
 }
 
 // 综合后处理
-function drawPostProcessing(){
- applyColorGrading();
- drawAdvancedVignette();
- drawFilmGrain();
- drawChromaticAberration();
- drawLensDistortion();
-}
 
 // UI美化系统
 let uiEnhancements={
@@ -3587,52 +3428,6 @@ let uiEnhancements={
 };
 
 // 绘制美化按钮
-function drawEnhancedButton(x,y,w,h,text,color='#4a7c59',hoverColor='#5a9c69'){
- ctx.save();
- // 按钮阴影
- if(uiEnhancements.shadows){
-  ctx.shadowColor='rgba(0,0,0,0.5)';
-  ctx.shadowBlur=10;
-  ctx.shadowOffsetY=4;
- }
- // 按钮渐变
- if(uiEnhancements.gradients){
-  const grad=ctx.createLinearGradient(x,y,x,y+h);
-  grad.addColorStop(0,color);
-  grad.addColorStop(1,shadeColor(color,-20));
-  ctx.fillStyle=grad;
- }else{
-  ctx.fillStyle=color;
- }
- // 圆角矩形
- if(uiEnhancements.roundedCorners){
-  roundRect(ctx,x,y,w,h,8);
-  ctx.fill();
- }else{
-  ctx.fillRect(x,y,w,h);
- }
- // 按钮发光
- if(uiEnhancements.glowEffects){
-  ctx.shadowColor=color;
-  ctx.shadowBlur=15;
-  ctx.strokeStyle='rgba(255,255,255,0.3)';
-  ctx.lineWidth=2;
-  if(uiEnhancements.roundedCorners){
-   roundRect(ctx,x,y,w,h,8);
-   ctx.stroke();
-  }else{
-   ctx.strokeRect(x,y,w,h);
-  }
- }
- // 文字
- ctx.shadowBlur=0;
- ctx.fillStyle='#ffffff';
- ctx.font='bold 16px Arial';
- ctx.textAlign='center';
- ctx.textBaseline='middle';
- ctx.fillText(text,x+w/2,y+h/2);
- ctx.restore();
-}
 
 // 辅助函数：颜色加深/变浅
 function shadeColor(color,percent){
@@ -3660,102 +3455,8 @@ function roundRect(ctx,x,y,w,h,r){
 }
 
 // 绘制美化面板
-function drawEnhancedPanel(x,y,w,h,title,content){
- ctx.save();
- // 面板背景
- ctx.fillStyle='rgba(20,20,30,0.9)';
- if(uiEnhancements.roundedCorners){
-  roundRect(ctx,x,y,w,h,12);
-  ctx.fill();
- }else{
-  ctx.fillRect(x,y,w,h);
- }
- // 面板边框
- ctx.strokeStyle='rgba(255,220,100,0.5)';
- ctx.lineWidth=2;
- if(uiEnhancements.roundedCorners){
-  roundRect(ctx,x,y,w,h,12);
-  ctx.stroke();
- }else{
-  ctx.strokeRect(x,y,w,h);
- }
- // 面板发光
- if(uiEnhancements.glowEffects){
-  ctx.shadowColor='rgba(255,220,100,0.3)';
-  ctx.shadowBlur=20;
-  ctx.stroke();
-  ctx.shadowBlur=0;
- }
- // 标题
- if(title){
-  ctx.fillStyle='#ffdd44';
-  ctx.font='bold 18px Arial';
-  ctx.textAlign='left';
-  ctx.fillText(title,x+15,y+30);
-  // 标题下划线
-  ctx.fillStyle='rgba(255,220,100,0.3)';
-  ctx.fillRect(x+15,y+38,w-30,2);
- }
- // 内容
- if(content){
-  ctx.fillStyle='#ffffff';
-  ctx.font='14px Arial';
-  ctx.textAlign='left';
-  const lines=content.split('\n');
-  lines.forEach((line,i)=>{
-   ctx.fillText(line,x+15,y+60+i*22);
-  });
- }
- ctx.restore();
-}
 
 // 绘制美化血条
-function drawEnhancedHealthBar(x,y,w,h,current,max,color='#ff4444',bgColor='rgba(0,0,0,0.5)'){
- ctx.save();
- // 背景
- ctx.fillStyle=bgColor;
- if(uiEnhancements.roundedCorners){
-  roundRect(ctx,x,y,w,h,h/2);
-  ctx.fill();
- }else{
-  ctx.fillRect(x,y,w,h);
- }
- // 血量
- const percent=Math.max(0,Math.min(1,current/max));
- if(percent>0){
-  if(uiEnhancements.gradients){
-   const grad=ctx.createLinearGradient(x,y,x,y+h);
-   grad.addColorStop(0,shadeColor(color,20));
-   grad.addColorStop(1,color);
-   ctx.fillStyle=grad;
-  }else{
-   ctx.fillStyle=color;
-  }
-  if(uiEnhancements.roundedCorners){
-   roundRect(ctx,x,y,w*percent,h,h/2);
-   ctx.fill();
-  }else{
-   ctx.fillRect(x,y,w*percent,h);
-  }
-  // 发光
-  if(uiEnhancements.glowEffects){
-   ctx.shadowColor=color;
-   ctx.shadowBlur=10;
-   ctx.fill();
-   ctx.shadowBlur=0;
-  }
- }
- // 边框
- ctx.strokeStyle='rgba(255,255,255,0.3)';
- ctx.lineWidth=1;
- if(uiEnhancements.roundedCorners){
-  roundRect(ctx,x,y,w,h,h/2);
-  ctx.stroke();
- }else{
-  ctx.strokeRect(x,y,w,h);
- }
- ctx.restore();
-}
 
 
 // ===== UI极致优化系统 =====
@@ -4459,32 +4160,6 @@ function updateNotifications(dt){
 }
 
 // 绘制工具提示
-function drawTooltip(){
- if(!uiState.tooltip.visible||!uiState.tooltip.text)return;
- ctx.save();
- const text=uiState.tooltip.text;
- ctx.font='12px "Microsoft YaHei", Arial';
- const textW=ctx.measureText(text).width;
- const w=textW+20,h=28;
- let x=uiState.tooltip.x+15;
- let y=uiState.tooltip.y+15;
- if(x+w>canvas.width)x=uiState.tooltip.x-w-15;
- if(y+h>canvas.height)y=uiState.tooltip.y-h-15;
- 
- ctx.fillStyle='rgba(10,10,20,0.95)';
- roundRect(ctx,x,y,w,h,6);
- ctx.fill();
- ctx.strokeStyle=uiTheme.colors.borderGold;
- ctx.lineWidth=1;
- roundRect(ctx,x,y,w,h,6);
- ctx.stroke();
- 
- ctx.fillStyle='#ffffff';
- ctx.textAlign='center';
- ctx.textBaseline='middle';
- ctx.fillText(text,x+w/2,y+h/2);
- ctx.restore();
-}
 
 // 绘制标题（带发光）
 function drawGlowingTitle(text,x,y,size=32,color='#ffdd44'){
@@ -5950,6 +5625,8 @@ function updateSlowMo(dt){
  }
 }
 function showDamageNumber(x,y,damage,isCrit=false,isHeal=false,color=null,scale=1){
+ const _dc=document.getElementById('damageNumbers');
+ if(_dc&&_dc.children.length>20){_dc.removeChild(_dc.firstChild);}
  const el=document.createElement('div');
  el.className='dmg-num '+(isHeal?'dmg-heal':isCrit?'dmg-crit':'dmg-normal');
  el.textContent=isHeal?('+'+Math.floor(damage)):Math.floor(damage);
@@ -6179,7 +5856,7 @@ class Player{
   if(this.attackAnim>0)this.attackAnim-=dt;
   if(this.x>maxDistance){const g=Math.floor((this.x-maxDistance)/10);distance+=g;score+=g;maxDistance=this.x;}
   const lvl=CONFIG.levels[currentLevel-1];
-  if(lvl.type==='runner'&&portal&&rectCollide(this,portal))nextLevel();
+  if(lvl.type==='runner'&&portal&&rectCollide(this,portal)&&!portalTriggered){portalTriggered=true;nextLevel();}
   // 存档点检测
   for(const cp of checkpoints){if(!cp.activated&&Math.abs(this.x-cp.x)<40){cp.activated=true;if(typeof sfxCheckpoint==='function')sfxCheckpoint();currentCheckpoint={level:currentLevel,x:cp.x,y:cp.y,hp:this.hp,weapons:JSON.parse(JSON.stringify(this.weapons)),armor:this.equippedArmor,armorDur:this.armorDurability,inventory:JSON.parse(JSON.stringify(this.inventory)),foodSlots:JSON.parse(JSON.stringify(foodSlots)),score:score,distance:distance,maxDistance:maxDistance,bossHp:boss?boss.hp:null,witchBossHp:witchBoss?witchBoss.hp:null,witherStormHp:witherStorm?witherStorm.hp:null};showGuide('💾 <span class="guide-key">存档点</span> 已激活！死亡后按 R 从这里复活',3500);spawnParticles(cp.x,cp.y-30,12,'#c8a040');}}
   if(this.y>canvas.height+200)this.takeDamage(999);
@@ -6370,7 +6047,7 @@ if(this.attackAnim>0&&w.type==='melee'){const ap=Math.max(0,Math.min(1,1-this.at
     ctx.strokeStyle=layer===0?`rgba(255,255,255,${layerAlpha})`:`rgba(${w.color==='#c0c0d0'?'220,220,240':'255,230,180'},${layerAlpha})`;
     ctx.lineWidth=8-layer*1.2;
     ctx.beginPath();
-    ctx.arc(ax+leanX,ay,w.range*ap-layerOffset,this.facing>0?-Math.PI/3:Math.PI-Math.PI/3,this.facing>0?Math.PI/3:Math.PI+Math.PI/3);
+    const swingR=w.range*ap-layerOffset;if(swingR<=0.5)continue;ctx.arc(ax+leanX,ay,swingR,this.facing>0?-Math.PI/3:Math.PI-Math.PI/3,this.facing>0?Math.PI/3:Math.PI+Math.PI/3);
     ctx.stroke();
    }
    // 额外剑气粒子（仅在游戏运行时创建）
@@ -7113,7 +6790,7 @@ class Enemy{
    // 剑（攻击挥动动画）
    if(this.hasSword){
     if(this.attackAnim>0){
-     const ap=1-this.attackAnim/300;
+     const ap=Math.max(0,Math.min(1,1-this.attackAnim/300));
      const swx=this.facing>0?drawX+this.w:drawX-28;
      // 剑挥动轨迹
      ctx.strokeStyle='rgba(200,200,220,0.5)';
@@ -7169,9 +6846,15 @@ function playerAttack(){
  const actualCooldown=w.cooldown*(1-getEnchantBonus(w,'swiftness'));if(now-player.lastAttack<actualCooldown)return;
  if(w.ammo!==Infinity&&w.ammo<=0){player.switchWeapon(0);return;}
  player.lastAttack=now;player.attackAnim=280;
- const wmx=mouse.x+camera.x,wmy=mouse.y+camera.y;
- const dx=wmx-(player.x+player.w/2),dy=wmy-(player.y+player.h/2);
- const angle=Math.atan2(dy,dx);player.facing=dx>0?1:-1;
+ let angle,dx,dy;
+ if(gameSettings.mobileMode){
+  // 移动端：攻击方向基于玩家朝向（移动方向），不依赖mouse
+  angle=player.facing>=0?0:Math.PI;player.facing=player.facing>=0?1:-1;
+ }else{
+  const wmx=mouse.x+camera.x,wmy=mouse.y+camera.y;
+  dx=wmx-(player.x+player.w/2);dy=wmy-(player.y+player.h/2);
+  angle=Math.atan2(dy,dx);player.facing=dx>0?1:-1;
+ }
  if(w.type==='melee'){
   const ab={x:player.facing>0?player.x+player.w:player.x-w.range,y:player.y,w:w.range,h:player.h};
   let hitAny=false;
@@ -7334,7 +7017,7 @@ class HongHuangBoss{
  pInLaser(px,py){if(!laserBeam)return false;const dx=px-laserBeam.x,dy=py-laserBeam.y;const proj=dx*Math.cos(laserBeam.angle)+dy*Math.sin(laserBeam.angle);const perp=-dx*Math.sin(laserBeam.angle)+dy*Math.cos(laserBeam.angle);return proj>0&&proj<900&&Math.abs(perp)<laserBeam.width/2+14;}
  spawnTentacles(){const n=this.phase===2?this.tentacleN+2:this.tentacleN;for(let i=0;i<n;i++){const tx=player.x+rand(-this.tentacleR,this.tentacleR);tentacles.push({x:tx,y:CONFIG.world.groundY,targetY:CONFIG.world.groundY-90,currentY:CONFIG.world.groundY,state:'rising',timer:0,damage:this.tentacleDmg,hit:false,width:22});}}
  teleport(){spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');const a=rand(0,6.28),d=rand(this.tpMin,this.tpMax);let nx=player.x+Math.cos(a)*d;nx=clamp(nx,this.arenaLeft,this.arenaRight-this.w);this.x=nx;this.y=CONFIG.world.groundY-this.h;this.tpEffect=350;spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');}
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1100);}}
+ takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1100);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7457,7 +7140,7 @@ class TianZunBoss{
  castLightning(){for(let i=0;i<this.lightningN;i++){const lx=player.x+rand(-130,130);lightnings.push({x:lx,y:CONFIG.world.groundY-280,currentY:CONFIG.world.groundY-280,state:'warning',timer:480,damage:this.lightningDmg,width:28});}}
  castFire(){for(let i=0;i<this.fireN;i++){const angle=Math.atan2(player.y-(this.y+this.h/3),player.x-(this.x+this.w/2))+rand(-0.25,0.25);fireballs.push({x:this.x+this.w/2,y:this.y+this.h/3,vx:Math.cos(angle)*5.5,vy:Math.sin(angle)*5.5-2,damage:this.fireDmg,size:13,life:2800,gravity:0.14});}}
  castHammer(){this.hammerSwing=380;setTimeout(()=>{if(this.dead)return;const hx=this.x+this.w/2+this.facing*75;spawnParticles(hx,CONFIG.world.groundY,25,'#ffd040');if(dist(player.x+player.w/2,player.y+player.h/2,hx,CONFIG.world.groundY-35)<this.hammerR){player.takeDamage(this.hammerDmg);player.vy=-9;}for(let i=0;i<7;i++)particles.push({x:hx,y:CONFIG.world.groundY-8,vx:rand(-7,7),vy:rand(-5,-1),life:450,maxLife:450,size:rand(3,7),color:'#ffd040'});},180);}
- takeDamage(a){if(this.dead)return;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1300);}}
+ takeDamage(a){if(this.dead)return;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1300);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7675,7 +7358,7 @@ class StarDeathBoss{
   this.animTimer+=dt;if(this.animTimer>200){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');victory();},1500);}}
+ takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1500);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7769,6 +7452,7 @@ function trySummon(){
  spawnParticles(altar.x+altar.w/2,altar.y+altar.h/2,35,'#c080ff');
  if(!achievements.summonTianzun)unlockAchievement('summonTianzun');
  setTimeout(()=>{
+  if(gameState!=='playing')return;
   boss=new TianZunBoss(altar.x+altar.w/2-65,CONFIG.world.groundY-160);
   boss.arenaLeft=altar.x-480;boss.arenaRight=altar.x+480;
   document.getElementById('bossName').textContent='万 物 天 尊';
@@ -7778,7 +7462,7 @@ function trySummon(){
 }
 
 function generateLevel(n){
- platforms=[];obstacles=[];items=[];weaponPickups=[];armorPickups=[];doors=[];enemies=[];particles=[];bullets=[];tentacles=[];laserBeam=null;lightnings=[];fireballs=[];boss=null;portal=null;altar=null;checkpoints=[];lastPlatformX=400;
+ platforms=[];obstacles=[];items=[];weaponPickups=[];armorPickups=[];doors=[];enemies=[];particles=[];bullets=[];tentacles=[];laserBeam=null;lightnings=[];fireballs=[];boss=null;witchBoss=null;witherStorm=null;trader=null;portal=null;altar=null;checkpoints=[];lastPlatformX=400;portalTriggered=false;arenaClearTriggered=false;
  // 巨大优化：根据关卡设置天气
  const levelWeather={1:'fog',2:'none',3:'rain',4:'none',5:'none',6:'none',7:'none',8:'snow',9:'fog',10:'storm'};
  setWeather(levelWeather[n]||'none',0.6);
@@ -7818,6 +7502,7 @@ function generateLevel(n){
   document.getElementById('bossBar').style.display='block';updateBossBar();
  }else if(lvl.type==='summon'){
   const center=900;
+  setQuest('召唤并击败万物天尊',0,1);
   altar={x:center-45,y:CONFIG.world.groundY-90,w:90,h:90,activated:false};
   platforms.push({x:center-380,y:CONFIG.world.groundY-110,w:90,h:16});
   platforms.push({x:center+290,y:CONFIG.world.groundY-110,w:90,h:16});
@@ -7830,6 +7515,7 @@ function generateLevel(n){
   checkpoints.push({x:center-280,y:CONFIG.world.groundY-CONFIG.player.height,activated:true});
  }else if(lvl.type==='arena'){
   const center=900;
+  setQuest('击败所有守卫',0,lvl.guards);
   // 平地，2个重锤守卫
   for(let i=0;i<lvl.guards;i++){
    const gx=center+(i===0?-200:200);
@@ -7861,8 +7547,6 @@ function genChunk(lvl){
 }
 function spawnEnemy(){
  const lvl=CONFIG.levels[currentLevel-1];
- // 所有24种普通敌人类型
- const allTypes=['normal','shield','sword','elite','skeleton','zombie','ghost','demon','goblin','orc','troll','vampire','werewolf','dragon','golem','assassin','mage','archer','brute','runner','tank','ninja','witch','reaper'];
  // 根据关卡难度选择敌人类型
  let types=lvl.enemyTypes||['normal'];
  // 高关卡解锁更多怪物类型
@@ -7946,7 +7630,7 @@ function nextLevel(){
  }
 }
 function spawnParticles(x,y,c,color){
- const maxParticles=200;
+ const maxParticles=(typeof qualitySettings!=='undefined'&&qualitySettings.particleLimit)||200;
  // 帧率低时减少粒子
  const quality=gameSettings.particles?1:0.3;
  const actualCount=Math.ceil(c*quality);
@@ -9192,7 +8876,7 @@ function drawMinimap(){
 // ===== 大大大大大优化：任务追踪系统 =====
 let questTracker={enabled:true,currentQuest:'',questProgress:0,questTotal:0,showTimer:true};
 function setQuest(text,progress,total){
- questTracker.currentQuest=text;
+ questTracker.currentQuest=text||'';
  questTracker.questProgress=progress||0;
  questTracker.questTotal=total||0;
 }
@@ -9545,13 +9229,16 @@ function drawLighting(){
 }
 
 function updateUI(){
- document.getElementById('hpFill').style.width=(player.hp/CONFIG.player.maxHp*100)+'%';
- document.getElementById('staminaFill').style.width=(player.stamina/CONFIG.player.maxStamina*100)+'%';
+ const _hpRatio=player.hp/CONFIG.player.maxHp;
+ dc('hpFill').style.width=(_hpRatio*100)+'%';
+ const _tl=dc('topLeft');
+ if(_tl){if(_hpRatio<0.3)_tl.classList.add('lowHp');else _tl.classList.remove('lowHp');}
+ dc('staminaFill').style.width=(player.stamina/CONFIG.player.maxStamina*100)+'%';
  const amax=player.equippedArmor?(CONFIG.armors.find(a=>a.id===player.equippedArmor)||{maxDurability:100}).maxDurability:1;
- document.getElementById('armorFill').style.width=player.equippedArmor?(player.armorDurability/amax*100)+'%':'0%';
- document.getElementById('distance').textContent=Math.floor(distance);
- document.getElementById('score').textContent=score;
- const ki=player.inventory.find(i=>i.type==='key');document.getElementById('keyCount').textContent=ki?ki.count:0;
+ dc('armorFill').style.width=player.equippedArmor?(player.armorDurability/amax*100)+'%':'0%';
+ dc('distance').textContent=Math.floor(distance);
+ dc('score').textContent=score;
+ const ki=player.inventory.find(i=>i.type==='key');dc('keyCount').textContent=ki?ki.count:0;
 }
 function updateBossBar(){
  // 凋零风暴Boss
@@ -9571,21 +9258,20 @@ function updateBossBar(){
   return;
  }
  if(!boss||boss.dead){
-  // 检查守卫
   const guard=enemies.find(e=>e.isGuard&&!e.dead);
   if(guard){
-   document.getElementById('bossName').textContent=guard.name;
-   document.getElementById('bossHpFill').style.width=(guard.hp/guard.maxHp*100)+'%';
-   document.getElementById('bossHpText').textContent=`${Math.ceil(guard.hp)} / ${guard.maxHp}`;
-   document.getElementById('bossBar').style.display='block';
+   dc('bossName').textContent=guard.name;
+   dc('bossHpFill').style.width=(guard.hp/guard.maxHp*100)+'%';
+   dc('bossHpText').textContent=`${Math.ceil(guard.hp)} / ${guard.maxHp}`;
+   dc('bossBar').style.display='block';
   }else{
-   document.getElementById('bossBar').style.display='none';
+   dc('bossBar').style.display='none';
   }
   return;
  }
- document.getElementById('bossName').textContent=boss.name;
- document.getElementById('bossHpFill').style.width=(boss.hp/boss.maxHp*100)+'%';
- document.getElementById('bossHpText').textContent=`${Math.ceil(boss.hp)} / ${boss.maxHp}`;
+ dc('bossName').textContent=boss.name;
+ dc('bossHpFill').style.width=(boss.hp/boss.maxHp*100)+'%';
+ dc('bossHpText').textContent=`${Math.ceil(boss.hp)} / ${boss.maxHp}`;
 }
 function updateWeaponBar(){
  const bar=document.getElementById('weaponBar');bar.innerHTML='';
@@ -10131,17 +9817,8 @@ function gameLoop(ts){
   // 性能监控
   recordFrameTime(dt);
   if(gameSettings.showFPS){const instFPS=1000/dt;updateFPS(Math.min(120,instFPS));}
-  // 新增功能更新
-  updateHurtOverlay(dt);
-  updateLevelTransition(dt);
-  updateNotifications(dt);
-  // 性能监控
-  recordFrameTime(dt);
-  if(gameSettings.showFPS){const instFPS=1000/dt;updateFPS(Math.min(120,instFPS));}
-  // 性能监控
-  if(gameSettings.showFPS){const instFPS=1000/dt;updateFPS(Math.min(120,instFPS));}
   const lvl=CONFIG.levels[currentLevel-1];
-  if(lvl.type==='runner'&&gameTime-lastEnemySpawn>((CONFIG.enemy&&CONFIG.enemy.spawnInterval)||3200)*(lvl.spawnMul||1)&&enemies.filter(e=>!e.dead).length<5){spawnEnemy();lastEnemySpawn=gameTime;}
+  if(lvl.type==='runner'&&gameTime-lastEnemySpawn>(CONFIG.enemy.spawnInterval||3200)*(lvl.spawnMul||1)){let aliveCount=0;for(let _i=0;_i<enemies.length;_i++){if(!enemies[_i].dead)aliveCount++;if(aliveCount>=(CONFIG.enemy.maxConcurrent||5))break;}if(aliveCount<(CONFIG.enemy.maxConcurrent||5)){spawnEnemy();lastEnemySpawn=gameTime;}}
   if(lvl.type==='runner'&&player.x>lastPlatformX-canvas.width)genChunk(lvl);
   // 智能相机系统
  const targetCamX=player.x-canvas.width*0.35+player.vx*15;
@@ -10203,15 +9880,16 @@ function gameLoop(ts){
   // 凋零风暴更新
   if(witherStorm&&!witherStorm.dead)witherStorm.update(dt);
   // 饥饿值UI
-  if(player)document.getElementById('hungerFill').style.width=(player.hunger/CONFIG.player.maxHunger*100)+'%';
-  // 竞技场关卡胜利条件
-  const lvl2=CONFIG.levels[currentLevel-1];
-  if(lvl2.type==='arena'){
-   const guardsAlive=enemies.filter(e=>e.isGuard&&!e.dead).length;
-   if(guardsAlive===0&&gameTime>2000){
+  if(player)dc('hungerFill').style.width=(player.hunger/CONFIG.player.maxHunger*100)+'%';
+  // 竞技场关卡胜利条件（复用上方 lvl，避免重复取 CONFIG）
+  if(lvl.type==='arena'&&gameTime>2000&&!arenaClearTriggered){
+   let guardsAlive=0;
+   for(let _i=0;_i<enemies.length;_i++){const e=enemies[_i];if(e.isGuard&&!e.dead)guardsAlive++;}
+   if(questTracker.currentQuest==='击败所有守卫')questTracker.questProgress=(lvl.guards||2)-guardsAlive;
+   if(guardsAlive===0){
+    arenaClearTriggered=true;
     addSlowMo(0.4,500);
-    setTimeout(()=>nextLevel(),800);
-    gameTime=-999999; // 防止重复触发
+    setTimeout(()=>{if(gameState==='playing')nextLevel();},800);
    }
   }
  }
@@ -10256,11 +9934,6 @@ function gameLoop(ts){
  drawLightning();
  // 渲染批处理刷新
  if(renderBatcher)renderBatcher.flushAll();
- drawPerformanceMonitor();
- // 新增视觉效果
- drawHurtOverlay();
- drawLevelTransition();
- drawPerformanceMonitor();
  drawMinimap();
  drawQuestTracker();
  drawVignette();
@@ -10474,8 +10147,173 @@ function safeGameLoop(ts){
   requestAnimationFrame(safeGameLoop);
  }
 }
+
+// ===== 游戏加载界面 =====
+const loadingTips=[
+ '正在初始化游戏引擎...',
+ '正在加载纹理资源...',
+ '正在生成世界地形...',
+ '正在编译着色器...',
+ '正在加载音频资源...',
+ '正在初始化物理系统...',
+ '正在连接万物之源...',
+ '正在唤醒沉睡的守护者...',
+ '正在校准时空坐标...',
+ '正在准备冒险旅程...',
+ '正在加载怪物图鉴...',
+ '正在初始化武器系统...',
+ '正在设置存档点...',
+ '正在召唤远古之力...'
+];
+
+// 游戏小知识（加载界面底部显示）
+const gameKnowledge=[
+ '按 E 键打开背包，查看和管理你的装备与物品',
+ '按 H 键使用召唤台，召唤强大的盟友助你战斗',
+ '按 R 键在存档点复活，死亡不会丢失进度',
+ '按 1-6 数字键快速切换武器，找到最适合你的战斗风格',
+ '按 Q 键拾取附近的物品，包括武器、盔甲和消耗品',
+ '按 Shift 键冲刺，可以快速躲避敌人攻击',
+ '武器可以附魔，锋利提升伤害、击退增加冲击力、火焰附加灼烧效果',
+ '每关都有2个存档点，到达中点旗帜即可保存进度',
+ '竞技场关卡需要击败所有守卫才能通关，注意躲避蓄力攻击',
+ '召唤之殿需要先激活祭坛，才能召唤万物天尊Boss',
+ '洪荒战神是第2关Boss，擅长激光和触手攻击，保持移动',
+ '凋零风暴是最终Boss，银剑对其有弱点加成伤害',
+ '食物可以恢复生命值，按 7/8/9 键快速切换食物槽',
+ '盔甲有耐久度，受到攻击会消耗，使用修理包可以恢复',
+ '击败敌人获得分数和升级点数，在升级界面强化武器属性',
+ '黑暗效果可以在设置中关闭，提升游戏可见度',
+ '手机模式在设置中开启，使用虚拟摇杆和按钮操作',
+ '连续攻击可以触发连击效果，打击感更加饱满',
+ '不同武器有不同的攻击范围和冷却时间，合理切换是关键',
+ '探索地图角落可能发现隐藏宝箱和稀有物品',
+ 'Boss战中注意观察攻击前摇，及时闪避可以避免大量伤害',
+ '完成成就可以获得额外奖励，在游戏中查看成就列表',
+ '使用附魔台可以为武器添加多种附魔，打造专属神器',
+ '游戏中共有30种怪物，每种都有独特的攻击方式和弱点',
+ '万物天尊可以被召唤，击败后获得稀有掉落和大量分数',
+ '重锤守卫攻击前有明显蓄力动作，侧移躲避后反击最有效',
+ '星辉之巅的StarDeath会召唤流星雨，注意地面预警区域'];
+let loadingProgress=0;
+let loadingInterval=null;
+let loadingTipIndex=0;
+let loadingCanvas=null;
+let loadingCtx=null;
+let loadingParticles=[];
+
+function initLoadingCanvas(){
+ loadingCanvas=document.getElementById('loadingCanvas');
+ if(!loadingCanvas)return;
+ loadingCanvas.width=window.innerWidth;
+ loadingCanvas.height=window.innerHeight;
+ loadingCtx=loadingCanvas.getContext('2d');
+ loadingAnimRunning=true;
+ // 创建背景粒子
+ loadingParticles=[];
+ for(let i=0;i<60;i++){
+  loadingParticles.push({
+   x:Math.random()*loadingCanvas.width,
+   y:Math.random()*loadingCanvas.height,
+   size:Math.random()*2+0.5,
+   speedX:(Math.random()-0.5)*0.3,
+   speedY:(Math.random()-0.5)*0.3,
+   alpha:Math.random()*0.5+0.2
+  });
+ }
+ animateLoadingParticles();
+}
+
+let loadingAnimRunning=false;
+function animateLoadingParticles(){
+ if(!loadingAnimRunning||!loadingCtx||!loadingCanvas)return;
+ loadingCtx.clearRect(0,0,loadingCanvas.width,loadingCanvas.height);
+ for(const p of loadingParticles){
+  p.x+=p.speedX;p.y+=p.speedY;
+  if(p.x<0)p.x=loadingCanvas.width;if(p.x>loadingCanvas.width)p.x=0;
+  if(p.y<0)p.y=loadingCanvas.height;if(p.y>loadingCanvas.height)p.y=0;
+  loadingCtx.beginPath();
+  loadingCtx.arc(p.x,p.y,p.size,0,Math.PI*2);
+  loadingCtx.fillStyle=`rgba(100,200,100,${p.alpha})`;
+  loadingCtx.fill();
+ }
+ requestAnimationFrame(animateLoadingParticles);
+}
+
+function showLoadingScreen(){
+ const screen=document.getElementById('loadingScreen');
+ if(!screen)return;
+ screen.style.display='flex';
+ loadingProgress=0;
+ loadingTipIndex=0;
+ // 随机显示游戏小知识
+ const knowledgeEl=document.getElementById('loadingTipKnowledge');
+ if(knowledgeEl){
+  knowledgeEl.textContent=gameKnowledge[Math.floor(Math.random()*gameKnowledge.length)];
+ }
+ // 初始化背景粒子
+ setTimeout(initLoadingCanvas,50);
+ // 更新提示文字
+ document.getElementById('loadingTip').textContent=loadingTips[0];
+ document.getElementById('loadingBar').style.width='0%';
+ document.getElementById('loadingPercent').textContent='0%';
+ // 开始加载进度
+ if(loadingInterval)clearInterval(loadingInterval);
+ loadingInterval=setInterval(()=>{
+  // 进度递增（模拟不同阶段速度不同）
+  let increment;
+  if(loadingProgress<30)increment=Math.random()*3+1;
+  else if(loadingProgress<60)increment=Math.random()*2+0.5;
+  else if(loadingProgress<90)increment=Math.random()*1.5+0.3;
+  else increment=Math.random()*1+0.2;
+  loadingProgress=Math.min(100,loadingProgress+increment);
+  // 更新进度条
+  document.getElementById('loadingBar').style.width=loadingProgress+'%';
+  document.getElementById('loadingPercent').textContent=Math.floor(loadingProgress)+'%';
+  // 每25%切换提示文字
+  const tipStage=Math.floor(loadingProgress/25);
+  if(tipStage!==loadingTipIndex&&tipStage<loadingTips.length){
+   loadingTipIndex=tipStage;
+   document.getElementById('loadingTip').textContent=loadingTips[tipStage];
+  }
+  // 加载完成
+  if(loadingProgress>=100){
+   clearInterval(loadingInterval);
+   loadingInterval=null;
+   document.getElementById('loadingTip').textContent='加载完成，正在进入游戏...';
+   document.getElementById('loadingPercent').textContent='100%';
+   // 短暂延迟后进入游戏
+   setTimeout(()=>{
+    loadingAnimRunning=false;
+    loadingCtx=null;
+    loadingCanvas=null;
+    screen.style.display='none';
+    startGame();
+   },600);
+  }
+ },80);
+}
+
+
 function startGame(){
+ // 安全包装ctx.ellipse，防止负数半径导致崩溃
+ if(ctx&&!ctx._ellipsePatched){
+  const _origEllipse=ctx.ellipse.bind(ctx);
+  ctx.ellipse=function(x,y,rX,rY,rot,sA,eA,ccw){
+   _origEllipse(x,y,Math.max(0.01,rX),Math.max(0.01,rY),rot||0,sA||0,eA||Math.PI*2,ccw||false);
+  };
+  ctx._ellipsePatched=true;
+  const _origArc=ctx.arc.bind(ctx);
+  ctx.arc=function(x,y,r,sA,eA,ccw){
+   _origArc(x,y,Math.max(0.01,r),sA,eA,ccw);
+  };
+  const _origRG=ctx.createRadialGradient.bind(ctx);
+  ctx.createRadialGradient=function(x0,y0,r0,x1,y1,r1){
+   return _origRG(x0,y0,Math.max(0,r0),x1,y1,Math.max(0.01,r1));
+  };
+ }
  try{
+ if(typeof storyTypeTimer!=='undefined'&&storyTypeTimer){clearInterval(storyTypeTimer);storyTypeTimer=null;}
  stopMenuParticles();
  if(!motionBlurBuffer)initMotionBlur();initBackgroundCache();clearGradientCache();
  if(gameSettings.mobileMode){document.getElementById('mobileControls').style.display='block';}
@@ -10486,7 +10324,7 @@ function startGame(){
  document.getElementById('bossBar').style.display='none';
  const introEl=document.getElementById('introScreen');
  if(introEl)introEl.style.display='none';
- gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;lastEnemySpawn=0;
+ gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
  achievements={};guideShown={};currentCheckpoint=null;
  document.getElementById('levelNum').textContent='1';
  generateLevel(1);
@@ -10519,7 +10357,7 @@ function respawnAtCheckpoint(){
  activeBuffs=[];
  if(typeof updateBuffBar==='function')updateBuffBar();
  // 重置游戏时间和怪物生成计时器
- gameTime=0;lastEnemySpawn=0;
+ gameTime=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
  // 重置打击感和特效系统
  screenShake={x:0,y:0,intensity:0,duration:0};hitStop=0;
  slowMo={active:false,timeScale:1,duration:0};combo={count:0,lastKill:0,display:0};
@@ -11813,9 +11651,9 @@ function toggleFPS(){
  const toggle=document.getElementById('fpsToggle');
  const value=document.getElementById('fpsValue');
  const fpsDisplay=document.getElementById('fpsDisplay');
- toggle.classList.toggle('active',gameSettings.showFPS);
- value.textContent=gameSettings.showFPS?'开启':'关闭';
- fpsDisplay.style.display=gameSettings.showFPS?'block':'none';
+ if(toggle)toggle.classList.toggle('active',gameSettings.showFPS);
+ if(value)value.textContent=gameSettings.showFPS?'开启':'关闭';
+ if(fpsDisplay)fpsDisplay.style.display=gameSettings.showFPS?'block':'none';
 }
 function toggleDark(){
  gameSettings.darkEffect=!gameSettings.darkEffect;
