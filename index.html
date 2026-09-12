@@ -284,8 +284,16 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 /* ===== 首页极致优化样式 ===== */
 .ultimate-menu{
  background:linear-gradient(135deg,#0a0a1e 0%,#1a1a3e 25%,#2d1b4e 50%,#1a2a4e 75%,#0a1a2e 100%) !important;
- overflow:hidden !important;
+ overflow-y:auto !important;
+ overflow-x:hidden !important;
+ -webkit-overflow-scrolling:touch;
+ scrollbar-width:thin;
+ scrollbar-color:rgba(255,200,80,0.5) transparent;
 }
+.ultimate-menu::-webkit-scrollbar{width:8px;}
+.ultimate-menu::-webkit-scrollbar-track{background:transparent;}
+.ultimate-menu::-webkit-scrollbar-thumb{background:rgba(255,200,80,0.4);border-radius:4px;}
+.ultimate-menu::-webkit-scrollbar-thumb:hover{background:rgba(255,200,80,0.7);}
 
 /* 粒子背景画布 */
 .menu-particles{
@@ -392,10 +400,12 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
  display:flex;
  flex-direction:column;
  align-items:center;
- justify-content:center;
+ justify-content:flex-start;
  width:100%;
  max-width:900px;
- padding:20px;
+ padding:40px 20px;
+ margin:auto;
+ min-height:100%;
  animation:contentFadeIn 1.5s ease-out;
 }
 
@@ -892,6 +902,18 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <button class="btn-ultimate btn-primary" onclick="showLoadingScreen();"><span class="btn-icon">⚔</span><span class="btn-text">开始冒险</span><span class="btn-shine"></span></button>
 <button class="btn-ultimate btn-secondary" onclick="showGuidePage()"><span class="btn-icon">📖</span><span class="btn-text">游戏介绍</span><span class="btn-shine"></span></button>
 </div>
+<div id="devModePanel" style="display:none;margin:15px auto;max-width:420px;text-align:center;">
+<div id="devPwdBox" style="background:rgba(255,255,255,0.95);border:2px solid #333;border-radius:10px;padding:15px;margin-bottom:10px;">
+<div style="color:#ff8800;font-weight:bold;margin-bottom:8px;">🔓 开发者模式 - 输入密码</div>
+<div id="devPwdDisplay" style="font-family:monospace;font-size:24px;letter-spacing:8px;color:#222;">________</div>
+<div style="color:#666;font-size:11px;margin-top:6px;">数字键输入 · 回车确认 · 退格删除 · ESC退出</div>
+</div>
+<div id="devCheatPanel" style="display:none;background:rgba(255,255,255,0.97);border:3px solid #00aa00;border-radius:12px;padding:15px;text-align:left;">
+<div style="color:#006600;font-weight:bold;font-size:15px;margin-bottom:10px;text-align:center;">🛠 开发者作弊面板</div>
+<div id="devCheatList" style="font-size:13px;line-height:1.9;color:#333;"></div>
+<div style="color:#0066cc;font-size:11px;margin-top:8px;text-align:center;">[1-6]切换选项 · [A]一键全开 · [ESC]关闭面板</div>
+</div>
+</div>
 <div class="menu-footer">
 <div class="footer-studio">春秋科技研发 × BCM炎黄春秋工作室</div>
 <div class="footer-copyright">© 2024 All Rights Reserved</div>
@@ -1284,6 +1306,31 @@ const CONFIG={
 };
 const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');
 let gameState='menu',currentLevel=1,camera={x:0,y:0},keys={},mouse={x:0,y:0,left:false,right:false};
+// 【开发者模式】首页连按10次H激活，密码77889911
+let devHCount=0,devMode=false,devPwd='',devAuthed=false,devPanelOpen=false;
+let devCheats={allWeapons:false,fullBuff:false,fullHP:false,infAmmo:false,oneHit:false,godMode:false};
+let devLastHTime=0;
+function updateDevModeUI(){
+  const panel=document.getElementById('devModePanel');
+  const startScreen=document.getElementById('startScreen');
+  if(!panel||!startScreen)return;
+  if(devMode){
+    panel.style.display='block';
+    startScreen.style.setProperty('background','linear-gradient(135deg,#87CEEB 0%,#E0F6FF 50%,#B0E0E6 100%)','important');
+    startScreen.style.setProperty('color','#222','important');
+    document.getElementById('devPwdBox').style.display=devAuthed?'none':'block';
+    document.getElementById('devCheatPanel').style.display=devAuthed&&devPanelOpen?'block':'none';
+    document.getElementById('devPwdDisplay').textContent=devPwd+'_'.repeat(8-devPwd.length);
+    if(devAuthed&&devPanelOpen){
+      const opts=[['1','武器全解锁',devCheats.allWeapons],['2','满Buff',devCheats.fullBuff],['3','满血量/饥饿',devCheats.fullHP],['4','无限弹药',devCheats.infAmmo],['5','一击必杀',devCheats.oneHit],['6','无敌模式',devCheats.godMode]];
+      document.getElementById('devCheatList').innerHTML=opts.map(o=>'<div style="color:'+(o[2]?'#00aa00':'#999')+'">['+o[0]+'] '+o[1]+': '+(o[2]?'✅ 开启':'⬜ 关闭')+'</div>').join('');
+    }
+  }else{
+    panel.style.display='none';
+    startScreen.style.background='';
+    startScreen.style.color='';
+  }
+}
 let lastTime=0,gameTime=0,score=0,distance=0,maxDistance=0,scoredX=0;
 let player=null,enemies=[],boss=null,platforms=[],obstacles=[],items=[],weaponPickups=[],armorPickups=[],doors=[],portal=null,altar=null,checkpoints=[];
 let particles=[],bullets=[],tentacles=[],laserBeam=null,lightnings=[],fireballs=[];
@@ -4205,7 +4252,8 @@ function drawUltimateMainMenu(){
  
  // 动态背景
  const time=Date.now()/1000;
- drawGradientBackground(0,0,canvas.width,canvas.height,'#1a1a3e','#2d1b4e');
+ // 【开发者模式】亮色调切换
+ if(devMode){drawGradientBackground(0,0,canvas.width,canvas.height,'#87CEEB','#E0F6FF');}else{drawGradientBackground(0,0,canvas.width,canvas.height,'#1a1a3e','#2d1b4e');}
  
  // 动态粒子背景
  for(let i=0;i<30;i++){
@@ -4301,7 +4349,35 @@ function drawUltimateMainMenu(){
  ctx.textAlign='center';
  ctx.textBaseline='middle';
  ctx.fillText('ULTIMATE',70,35);
- 
+
+ // ===== 【开发者模式UI】 =====
+ if(devMode){
+   ctx.textAlign='center';ctx.textBaseline='middle';
+   ctx.fillStyle=devAuthed?'#00aa00':'#ff8800';ctx.font='bold 14px Arial';
+   ctx.fillText(devAuthed?'⚙ 开发者模式已激活 [ESC关闭面板]':'🔓 开发者模式 - 输入密码 [ESC退出]',canvas.width/2,30);
+   if(!devAuthed){
+     const px=canvas.width/2-150,py=canvas.height*0.68,pw=300,ph=50;
+     ctx.fillStyle='rgba(255,255,255,0.95)';ctx.strokeStyle='#333';ctx.lineWidth=2;
+     ctx.beginPath();ctx.roundRect(px,py,pw,ph,8);ctx.fill();ctx.stroke();
+     ctx.fillStyle='#222';ctx.font='bold 22px monospace';ctx.textAlign='center';
+     ctx.fillText(devPwd+'_'.repeat(8-devPwd.length),canvas.width/2,py+25);
+     ctx.fillStyle='#666';ctx.font='12px Arial';
+     ctx.fillText('数字键输入密码，回车确认，退格删除',canvas.width/2,py+70);
+   }
+   if(devAuthed&&devPanelOpen){
+     const px=canvas.width/2-180,py=canvas.height*0.62,pw=360,ph=220;
+     ctx.fillStyle='rgba(255,255,255,0.97)';ctx.strokeStyle='#00aa00';ctx.lineWidth=3;
+     ctx.beginPath();ctx.roundRect(px,py,pw,ph,12);ctx.fill();ctx.stroke();
+     ctx.fillStyle='#006600';ctx.font='bold 16px Arial';ctx.textAlign='left';
+     ctx.fillText('🛠 开发者作弊面板',px+15,py+25);
+     ctx.font='13px Arial';
+     const opts=[['1','武器全解锁',devCheats.allWeapons],['2','满Buff',devCheats.fullBuff],['3','满血量/饥饿',devCheats.fullHP],['4','无限弹药',devCheats.infAmmo],['5','一击必杀',devCheats.oneHit],['6','无敌模式',devCheats.godMode]];
+     for(let i=0;i<opts.length;i++){const oy=py+50+i*25;ctx.fillStyle=opts[i][2]?'#00aa00':'#999';ctx.fillText('['+opts[i][0]+'] '+opts[i][1]+': '+(opts[i][2]?'✅ 开启':'⬜ 关闭'),px+20,oy);}
+     ctx.fillStyle='#0066cc';ctx.font='bold 12px Arial';
+     ctx.fillText('[A]一键全开 [ESC]关闭面板 开始游戏即生效',px+15,py+ph-15);
+   }
+ }
+
  ctx.restore();
 }
 
@@ -5546,6 +5622,31 @@ function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.inne
 window.addEventListener('resize',resizeCanvas);resizeCanvas();
 document.addEventListener('keydown',e=>{
  keys[e.code]=true;
+ // ===== 【开发者模式】首页连按10次H激活 =====
+ if(gameState==='menu'&&e.code==='KeyH'&&!e.repeat){
+   const now=Date.now();
+   if(now-devLastHTime<1500){devHCount++;}else{devHCount=1;}
+   devLastHTime=now;
+   if(devHCount>=10&&!devMode){devMode=true;devPwd='';devHCount=0;updateDevModeUI();}
+ }
+ if(gameState==='menu'&&devMode&&!devAuthed&&!e.repeat){
+   if(e.code.startsWith('Digit')||e.code.startsWith('Numpad')){const d=e.key.replace(/[^0-9]/g,'');if(d&&devPwd.length<8)devPwd+=d;}
+   if(e.code==='Backspace')devPwd=devPwd.slice(0,-1);
+   if(e.code==='Enter'&&devPwd.length===8){if(devPwd==='77889911'){devAuthed=true;devPanelOpen=true;}else devPwd='';}
+   if(e.code==='Escape'){devMode=false;devPwd='';devAuthed=false;devPanelOpen=false;}
+   updateDevModeUI();
+ }
+ if(gameState==='menu'&&devAuthed&&devPanelOpen&&!e.repeat){
+   if(e.code==='Digit1')devCheats.allWeapons=!devCheats.allWeapons;
+   if(e.code==='Digit2')devCheats.fullBuff=!devCheats.fullBuff;
+   if(e.code==='Digit3')devCheats.fullHP=!devCheats.fullHP;
+   if(e.code==='Digit4')devCheats.infAmmo=!devCheats.infAmmo;
+   if(e.code==='Digit5')devCheats.oneHit=!devCheats.oneHit;
+   if(e.code==='Digit6')devCheats.godMode=!devCheats.godMode;
+   if(e.code==='KeyA')devCheats.allWeapons=devCheats.fullBuff=devCheats.fullHP=devCheats.infAmmo=devCheats.oneHit=devCheats.godMode=true;
+   if(e.code==='Escape')devPanelOpen=false;
+   updateDevModeUI();
+ }
  if(e.code==='KeyE'&&!e.repeat&&(gameState==='playing'||gameState==='paused'))toggleInventory();
  // 【修复】剧情界面按空格/回车/ESC关闭
 if(gameState==='story'&&storyTextFullyShown&&(e.code==='Space'||e.code==='Enter'||e.code==='Escape')){
@@ -5891,6 +5992,8 @@ class Player{
   }
   takeDamage(amount){
   const now=performance.now();if(now-this.lastDamage<CONFIG.player.invulnTime)return;
+  // 【开发者无敌模式】
+  if(devAuthed&&devCheats.godMode){this.lastDamage=now;spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#00ffff');return;}
   // 无敌Buff
   if(this.hasBuff('invulnerable')){spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#ffd040');return;}
   // 抗性Buff
@@ -6924,7 +7027,7 @@ function playerAttack(){
   bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:dmg,range:w.range,traveled:0,color:w.color,size:4,type:w.type,weaponId:w.id,pierceLeft:pierce,hitEnemies:[]});
   // 附魔：无限 - 概率不消耗弹药
   const inf=getEnchantBonus(w,'infinity');
-  if(inf<=0||Math.random()>inf)w.ammo--;
+  if((inf<=0||Math.random()>inf)&&!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }
  else if(w.type==='shotgun'){for(let i=0;i<w.pellets;i++){const a=angle+rand(-w.spread/2,w.spread/2);bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(a)*w.bulletSpeed,vy:Math.sin(a)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power')),range:w.range,traveled:0,color:w.color,size:4,type:w.type,weaponId:w.id,pierceLeft:0,hitEnemies:[]});}w.ammo--;}
  else if(w.type==='laser'){
@@ -6932,9 +7035,9 @@ function playerAttack(){
   let hp={x:ex,y:ey};
   for(const e of enemies){if(!e.dead&&lineRect(sx,sy,ex,ey,e)){e.takeDamage(w.damage,player.x+player.w/2);hp={x:e.x+e.w/2,y:e.y+e.h/2};}}
   if(boss&&!boss.dead&&lineRect(sx,sy,ex,ey,boss)){boss.takeDamage(w.damage);hp={x:boss.x+boss.w/2,y:boss.y+boss.h/2};}
-  bullets.push({x:sx,y:sy,endX:hp.x,endY:hp.y,type:'laser',color:w.color,life:70,damage:0});w.ammo--;
+  bullets.push({x:sx,y:sy,endX:hp.x,endY:hp.y,type:'laser',color:w.color,life:70,damage:0});if(!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }else if(w.type==='rocket'){
-  const b={x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power')),range:w.range,traveled:0,color:w.color,size:7,type:w.type,isRocket:true,explosionRadius:w.explosionRadius,weaponId:w.id};bullets.push(b);w.ammo--;
+  const b={x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power')),range:w.range,traveled:0,color:w.color,size:7,type:w.type,isRocket:true,explosionRadius:w.explosionRadius,weaponId:w.id};bullets.push(b);if(!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }
  updateWeaponBar();
 }
@@ -7019,7 +7122,7 @@ class HongHuangBoss{
  pInLaser(px,py){if(!laserBeam)return false;const dx=px-laserBeam.x,dy=py-laserBeam.y;const proj=dx*Math.cos(laserBeam.angle)+dy*Math.sin(laserBeam.angle);const perp=-dx*Math.sin(laserBeam.angle)+dy*Math.cos(laserBeam.angle);return proj>0&&proj<900&&Math.abs(perp)<laserBeam.width/2+14;}
  spawnTentacles(){const n=this.phase===2?this.tentacleN+2:this.tentacleN;for(let i=0;i<n;i++){const tx=player.x+rand(-this.tentacleR,this.tentacleR);tentacles.push({x:tx,y:CONFIG.world.groundY,targetY:CONFIG.world.groundY-90,currentY:CONFIG.world.groundY,state:'rising',timer:0,damage:this.tentacleDmg,hit:false,width:22});}}
  teleport(){spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');const a=rand(0,6.28),d=rand(this.tpMin,this.tpMax);let nx=player.x+Math.cos(a)*d;nx=clamp(nx,this.arenaLeft,this.arenaRight-this.w);this.x=nx;this.y=CONFIG.world.groundY-this.h;this.tpEffect=350;spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');}
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1100);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1100);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7142,7 +7245,7 @@ class TianZunBoss{
  castLightning(){for(let i=0;i<this.lightningN;i++){const lx=player.x+rand(-130,130);lightnings.push({x:lx,y:CONFIG.world.groundY-280,currentY:CONFIG.world.groundY-280,state:'warning',timer:480,damage:this.lightningDmg,width:28});}}
  castFire(){for(let i=0;i<this.fireN;i++){const angle=Math.atan2(player.y-(this.y+this.h/3),player.x-(this.x+this.w/2))+rand(-0.25,0.25);fireballs.push({x:this.x+this.w/2,y:this.y+this.h/3,vx:Math.cos(angle)*5.5,vy:Math.sin(angle)*5.5-2,damage:this.fireDmg,size:13,life:2800,gravity:0.14});}}
  castHammer(){this.hammerSwing=380;setTimeout(()=>{if(this.dead)return;const hx=this.x+this.w/2+this.facing*75;spawnParticles(hx,CONFIG.world.groundY,25,'#ffd040');if(dist(player.x+player.w/2,player.y+player.h/2,hx,CONFIG.world.groundY-35)<this.hammerR){player.takeDamage(this.hammerDmg);player.vy=-9;}for(let i=0;i<7;i++)particles.push({x:hx,y:CONFIG.world.groundY-8,vx:rand(-7,7),vy:rand(-5,-1),life:450,maxLife:450,size:rand(3,7),color:'#ffd040'});},180);}
- takeDamage(a){if(this.dead)return;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1300);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1300);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7244,7 +7347,7 @@ class HammerGuard{
   this.animTimer+=dt;if(this.animTimer>180){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
    if(Math.random()<0.3)spawnItem(this.x+this.w/2+25,this.y,'gold_apple');if(!achievements.beatGuard)unlockAchievement('beatGuard');updateBossBar();}}
  draw(){
   if(this.deathState==='removed')return;
@@ -7360,7 +7463,7 @@ class StarDeathBoss{
   this.animTimer+=dt;if(this.animTimer>200){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1500);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1500);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -9002,14 +9105,16 @@ function updateBullets(dt){
     else{hit=true;break;}
    }
   }
-  if(!hit&&boss&&!boss.dead&&b.x>boss.x&&b.x<boss.x+boss.w&&b.y>boss.y&&b.y<boss.y+boss.h){boss.takeDamage(b.damage,b.x,b.weaponId);hit=true;addHitStop(30);addScreenShake(2,80);if(b.isRocket)explode(b);}
+  if(!hit&&boss&&!boss.dead&&b.x>boss.x&&b.x<boss.x+boss.w&&b.y>boss.y&&b.y<boss.y+boss.h){
+    boss.takeDamage(b.damage,b.x,b.weaponId);hit=true;addHitStop(30);addScreenShake(2,80);if(b.isRocket)explode(b);
     // Boss远程打击效果
     let bossBulletType='boss_hit';
     if(boss.constructor.name==='WitherStormBoss'&&b.type==='laser')bossBulletType='weak_hit';
     playEnhancedHitEffect(bossBulletType,boss.x+boss.w/2,boss.y+boss.h/2);
-  if(hit||b.traveled>b.range||b.y>CONFIG.world.groundY+40){if(b.isRocket&&!hit)explode(b);bullets.splice(i,1);}
+   }
+   if(hit||b.traveled>b.range||b.y>CONFIG.world.groundY+40){if(b.isRocket&&!hit)explode(b);bullets.splice(i,1);}
+  }
  }
-}
 function explode(b){spawnParticles(b.x,b.y,25,'#ff8040');sfxExplosion();spawnParticles(b.x,b.y,15,'#ffc040');spawnParticles(b.x,b.y,10,'#ff4020');addScreenShake(10,250);addHitStop(100);addSlowMo(0.5,200);addBloodSplat(b.x,CONFIG.world.groundY-3,1.5);for(const e of enemies){if(!e.dead&&dist(b.x,b.y,e.x+e.w/2,e.y+e.h/2)<b.explosionRadius){e.takeDamage(b.damage*0.6,b.x);if(e.hp<=0&&!achievements.rocketKill)unlockAchievement('rocketKill');}}if(boss&&!boss.dead&&dist(b.x,b.y,boss.x+boss.w/2,boss.y+boss.h/2)<b.explosionRadius)boss.takeDamage(b.damage*0.6,b.x,b.weaponId);if(dist(b.x,b.y,player.x+player.w/2,player.y+player.h/2)<b.explosionRadius*0.6)player.takeDamage(8);}
 function drawBullets(){
  for(const b of bullets){
@@ -9969,10 +10074,14 @@ function gameLoop(ts){
   console.error("gameLoop error:",e);
   // 在屏幕上显示错误
   try{
-   ctx.fillStyle='rgba(255,0,0,0.8)';ctx.fillRect(10,50,400,60);
-   ctx.fillStyle='#fff';ctx.font='12px Arial';
-   ctx.fillText('ERROR: '+e.message,15,70);
-   ctx.fillText('player='+(typeof player!=='undefined'?(player?'exists':'null'):'undefined')+' state='+gameState,15,90);
+   const _em=e.message+' | '+(e.stack||'').split('\n')[1].trim().substring(0,80);
+   ctx.fillStyle='rgba(180,0,0,0.95)';ctx.fillRect(canvas.width/2-380,canvas.height/2-70,760,140);
+   ctx.strokeStyle='#ff4444';ctx.lineWidth=3;ctx.strokeRect(canvas.width/2-380,canvas.height/2-70,760,140);
+   ctx.fillStyle='#fff';ctx.font='bold 18px Arial';ctx.textAlign='left';
+   ctx.fillText('GAME ERROR (攻击怪物触发):',canvas.width/2-370,canvas.height/2-40);
+   ctx.font='15px monospace';
+   ctx.fillText(_em.substring(0,100),canvas.width/2-370,canvas.height/2-10);
+   if(e.stack){const _st=e.stack.split('\n').slice(1,4);for(let _i=0;_i<_st.length;_i++)ctx.fillText(_st[_i].trim().substring(0,100),canvas.width/2-370,canvas.height/2+15+_i*22);}
   }catch(e2){}
   requestAnimationFrame(safeGameLoop);
  }
@@ -10352,6 +10461,15 @@ function startGame(){
  document.getElementById('levelNum').textContent='1';
  generateLevel(1);
  player=new Player(100,CONFIG.world.groundY-CONFIG.player.height);
+ // ===== 【开发者作弊应用】 =====
+ if(devAuthed){
+   if(devCheats.allWeapons)player.weapons.forEach(w=>w.unlocked=true);
+   if(devCheats.fullHP){player.hp=player.maxHp;if(player.hunger!==undefined)player.hunger=100;}
+   if(devCheats.infAmmo)player.weapons.forEach(w=>{if(w.ammo!==undefined)w.ammo=9999;});
+   if(devCheats.godMode)player.invincible=true;
+   if(devCheats.fullBuff&&typeof addBuff==='function'){try{['attack','speed','defense','regen'].forEach(b=>addBuff(b,9999));}catch(e){}}
+   updateWeaponBar();
+ }
  syncBirthCheckpoint(1);
  levelStartHp=player.hp;levelStartTime=performance.now();totalKills=0;foodsEaten={};activeBuffs=[];enchantingTable=null;
  camera.x=0;camera.y=0;
