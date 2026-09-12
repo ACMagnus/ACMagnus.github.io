@@ -911,7 +911,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div class="guide-content" id="guideContent"></div>
 <button class="guide-close" onclick="closeGuidePage()">返 回</button>
 </div>
-<div id="loadingScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;">
+<div id="loadingScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;">
   <!-- 背景粒子 -->
   <canvas id="loadingCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.3;"></canvas>
   <!-- 游戏标题 -->
@@ -1284,7 +1284,7 @@ const CONFIG={
 };
 const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');
 let gameState='menu',currentLevel=1,camera={x:0,y:0},keys={},mouse={x:0,y:0,left:false,right:false};
-let lastTime=0,gameTime=0,score=0,distance=0,maxDistance=0;
+let lastTime=0,gameTime=0,score=0,distance=0,maxDistance=0,scoredX=0;
 let player=null,enemies=[],boss=null,platforms=[],obstacles=[],items=[],weaponPickups=[],armorPickups=[],doors=[],portal=null,altar=null,checkpoints=[];
 let particles=[],bullets=[],tentacles=[],laserBeam=null,lightnings=[],fireballs=[];
 let lastEnemySpawn=0,lastPlatformX=0;
@@ -5854,7 +5854,7 @@ class Player{
   this.updateBuffs(dt);
   this.animTimer+=dt;if(this.animTimer>110){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
   if(this.attackAnim>0)this.attackAnim-=dt;
-  if(this.x>maxDistance){const g=Math.floor((this.x-maxDistance)/10);distance+=g;score+=g;maxDistance=this.x;}
+  if(this.x>maxDistance)maxDistance=this.x;while(maxDistance-scoredX>=10){scoredX+=10;distance++;score++;}
   const lvl=CONFIG.levels[currentLevel-1];
   if(lvl.type==='runner'&&portal&&rectCollide(this,portal)&&!portalTriggered){portalTriggered=true;nextLevel();}
   // 存档点检测
@@ -7461,6 +7461,20 @@ function trySummon(){
  },700);
 }
 
+function syncBirthCheckpoint(n){
+ // 建立出生点复活数据：同关复活时保留已有存档点，跨关/无存档时用出生点重建
+ if(!player)return;
+ if(currentCheckpoint&&currentCheckpoint.level===n)return;
+ const cp=checkpoints.find(c=>c.activated);
+ if(!cp)return;
+ currentCheckpoint={level:n,x:cp.x,y:cp.y,hp:player.hp,
+  weapons:JSON.parse(JSON.stringify(player.weapons)),
+  armor:player.equippedArmor,armorDur:player.armorDurability,
+  inventory:JSON.parse(JSON.stringify(player.inventory)),
+  foodSlots:JSON.parse(JSON.stringify(foodSlots)),
+  score:score,distance:distance,maxDistance:maxDistance,
+  bossHp:boss?boss.hp:null,witchBossHp:witchBoss?witchBoss.hp:null,witherStormHp:witherStorm?witherStorm.hp:null};
+}
 function generateLevel(n){
  platforms=[];obstacles=[];items=[];weaponPickups=[];armorPickups=[];doors=[];enemies=[];particles=[];bullets=[];tentacles=[];laserBeam=null;lightnings=[];fireballs=[];boss=null;witchBoss=null;witherStorm=null;trader=null;portal=null;altar=null;checkpoints=[];lastPlatformX=400;portalTriggered=false;arenaClearTriggered=false;
  // 巨大优化：根据关卡设置天气
@@ -7536,10 +7550,11 @@ function generateLevel(n){
   document.getElementById('bossName').textContent='重 锤 守 卫';
   document.getElementById('bossBar').style.display='block';updateBossBar();
  }
+ syncBirthCheckpoint(n);
 }
 function genChunk(lvl){
  const bx=lastPlatformX,gap=rand(150,260),x=bx+gap;
- if(Math.random()<0.55){const py=CONFIG.world.groundY-rand(60,150),pw=rand(100,200);platforms.push({x,y:py,w:pw,h:16});if(Math.random()<0.35){const ts=['medkit','battery','key','note'];items.push({x:x+pw/2,y:py-18,type:ts[randInt(0,ts.length-1)],collected:false,bob:rand(0,6.28)});}}
+ if(Math.random()<0.55){const py=CONFIG.world.groundY-rand(60,150),pw=rand(100,200);platforms.push({x,y:py,w:pw,h:16});if(Math.random()<0.35){const ts=['medkit','battery','key'];items.push({x:x+pw/2,y:py-18,type:ts[randInt(0,ts.length-1)],collected:false,bob:rand(0,6.28)});}}
  if(Math.random()<0.15){const ox=x+rand(0,80),oh=rand(20,40);obstacles.push({x:ox,y:CONFIG.world.groundY-oh,w:rand(18,35),h:oh,passable:false,type:'spike'});}
  if(Math.random()<0.15&&x>500){const dh=80;doors.push({x:x+rand(40,130),y:CONFIG.world.groundY-dh,w:45,h:dh,open:false,locked:Math.random()<0.3});}
  if(Math.random()<0.22){const ts=['medkit','battery','key'];items.push({x:x+rand(0,180),y:CONFIG.world.groundY-18,type:ts[randInt(0,ts.length-1)],collected:false,bob:rand(0,6.28)});}
@@ -9163,7 +9178,7 @@ function drawObstacles(){
 function drawDoors(){for(const d of doors){const sx=d.x-camera.x,sy=d.y-camera.y;if(sx+d.w<-40||sx>canvas.width+40)continue;if(d.open){ctx.strokeStyle='#33334d';ctx.lineWidth=3;ctx.strokeRect(sx,sy,d.w,d.h);}else{ctx.fillStyle=d.locked?'#352515':'#252535';ctx.fillRect(sx,sy,d.w,d.h);ctx.strokeStyle=d.locked?'#553520':'#353545';ctx.lineWidth=2;ctx.strokeRect(sx+3,sy+3,d.w-6,d.h-6);if(d.locked){ctx.fillStyle='#b89030';ctx.fillRect(sx+d.w/2-5,sy+d.h/2-7,10,12);ctx.fillStyle='#151515';ctx.fillRect(sx+d.w/2-1.5,sy+d.h/2-2,3,5);}else{ctx.fillStyle='#7a7a90';ctx.beginPath();ctx.arc(sx+d.w-8,sy+d.h/2,2.5,0,Math.PI*2);ctx.fill();}}}}
 function drawItems(){
  const t=performance.now()/480;
- for(const item of items){if(item.collected)continue;const sx=item.x-camera.x,sy=item.y-camera.y+Math.sin(t+item.bob)*4;if(sx<-40||sx>canvas.width+40)continue;const def=CONFIG.items[item.type]||{};if(!def)continue;ctx.shadowColor=item.type==='medkit'?'#30a030':item.type==='key'?'#e0c020':item.type==='skull'?'#c0c0c0':'#6080c0';ctx.shadowBlur=12;ctx.font='20px serif';ctx.textAlign='center';ctx.fillText(def.icon,sx,sy);ctx.shadowBlur=0;}
+ for(const item of items){if(item.collected)continue;const sx=item.x-camera.x,sy=item.y-camera.y+Math.sin(t+item.bob)*4;if(sx<-40||sx>canvas.width+40)continue;const def=CONFIG.items[item.type];if(!def||!def.icon)continue;ctx.shadowColor=item.type==='medkit'?'#30a030':item.type==='key'?'#e0c020':item.type==='skull'?'#c0c0c0':'#6080c0';ctx.shadowBlur=12;ctx.font='20px serif';ctx.textAlign='center';ctx.fillText(def.icon,sx,sy);ctx.shadowBlur=0;}
 }
 function drawWeaponPickups(){
  const t=performance.now()/380;
@@ -9765,7 +9780,7 @@ function checkInteractPrompts(){
  const hint=document.getElementById('interactHint');if(hint.style.display==='block'&&hint._timer)return;
  const ir=80;let found=false;
  for(const d of doors){if(!d.open&&dist(player.x+player.w/2,player.y+player.h/2,d.x+d.w/2,d.y+d.h/2)<ir){hint.innerHTML=`<span class="key">右键</span>${d.locked?'开锁（需钥匙）':'开门'}`;hint.style.left=(d.x+d.w/2-camera.x-45)+'px';hint.style.top=(d.y-camera.y-28)+'px';hint.style.display='block';found=true;break;}}
- if(!found){for(const item of items){if(!item.collected&&dist(player.x+player.w/2,player.y+player.h/2,item.x,item.y)<ir){const def=CONFIG.items[item.type]||{};hint.innerHTML=`<span class="key">右键</span>拾取 ${def.name}`;hint.style.left=(item.x-camera.x-45)+'px';hint.style.top=(item.y-camera.y-32)+'px';hint.style.display='block';found=true;break;}}}
+ if(!found){for(const item of items){if(!item.collected&&dist(player.x+player.w/2,player.y+player.h/2,item.x,item.y)<ir){const def=CONFIG.items[item.type]||{name:'物品'};if(!def.name)continue;hint.innerHTML=`<span class="key">右键</span>拾取 ${def.name}`;hint.style.left=(item.x-camera.x-45)+'px';hint.style.top=(item.y-camera.y-32)+'px';hint.style.display='block';found=true;break;}}}
  if(!found)hint.style.display='none';
 }
 function showLevelBanner(title,subtitle){
@@ -10324,11 +10339,12 @@ function startGame(){
  document.getElementById('bossBar').style.display='none';
  const introEl=document.getElementById('introScreen');
  if(introEl)introEl.style.display='none';
- gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
+ gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;scoredX=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
  achievements={};guideShown={};currentCheckpoint=null;
  document.getElementById('levelNum').textContent='1';
  generateLevel(1);
  player=new Player(100,CONFIG.world.groundY-CONFIG.player.height);
+ syncBirthCheckpoint(1);
  levelStartHp=player.hp;levelStartTime=performance.now();totalKills=0;foodsEaten={};activeBuffs=[];enchantingTable=null;
  camera.x=0;camera.y=0;
  initAmbientParticles();
@@ -10384,7 +10400,7 @@ function respawnAtCheckpoint(){
  player.dead=false;player.deathState='alive';player.deathTimer=0;player.deathAlpha=1;
  score=currentCheckpoint.score||0;
  distance=currentCheckpoint.distance||0;
- maxDistance=currentCheckpoint.maxDistance||0;
+ maxDistance=currentCheckpoint.maxDistance||0;scoredX=distance*10;
  document.getElementById('levelNum').textContent=currentLevel;
  generateLevel(currentLevel);
  // 恢复boss血量（generateLevel后boss已重新创建）
@@ -11471,7 +11487,7 @@ function enterNextLevel(){
  if(currentLevel>10){if(!achievements.allClear)unlockAchievement('allClear');victory();return;}
  document.getElementById('levelNum').textContent=currentLevel;
  document.getElementById('bossBar').style.display='none';
- maxDistance=0;distance=0;
+ maxDistance=0;distance=0;scoredX=0;
  const lvl=CONFIG.levels[currentLevel-1];
  generateLevel(currentLevel);
  levelStartHp=player?player.hp:100;levelStartTime=performance.now();
