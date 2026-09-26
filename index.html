@@ -803,7 +803,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div id="fpsDisplay" style="display:none;position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#0f0;font-size:14px;font-family:monospace;text-shadow:0 0 5px #0f0;z-index:100;">FPS: 0</div>
 <div id="bossBar"><div id="bossName">BOSS</div><div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHpFill" style="width:100%"></div><div class="boss-hp-text" id="bossHpText"></div></div></div>
 <div id="weaponBar"></div>
-<div class="hud" id="bottomHint">WASD移动 | 空格跳 | 左键攻击 | 右键交互 | E背包 | 1-8武器 | Q拾取 | H召唤 | R读档</div>
+<div class="hud" id="bottomHint" style="display:none;">WASD移动 | 空格跳 | 左键攻击 | 右键交互 | E背包 | 1-8武器 | Q拾取 | H召唤 | R读档</div>
 <div id="interactHint"></div>
 <div id="damageFlash"></div>
 <div id="levelBanner"><div id="levelTitle"></div><div id="levelSubtitle"></div></div>
@@ -4501,22 +4501,54 @@ function drawUltimateHUD(){
  drawGlassPanel(weaponBarX-10,weaponBarY-10,weaponBarW+20,weaponSize+20,12);
  
  // 武器格子
- const weaponNames=['拳头','银剑','手枪','霰弹','激光','火箭','长枪','创世'];
- const weaponIcons=['fist','sword','pistol','shotgun','laser','rocket','spear','creation'];
+ const weaponNames=['拳套','银剑','火铳','散弹','雷光','轰天','长枪','创世'];
  for(let i=0;i<totalWeapons;i++){
   const wx=weaponBarX+i*(weaponSize+weaponGap);
   const isSelected=player.currentWeapon===i;
-  const hasWeapon=player.weapons[i];
+  const hasWeapon=player.weapons[i]&&player.weapons[i].unlocked;
   
-  drawItemSlot(wx,weaponBarY,weaponSize,hasWeapon?{icon:weaponIcons[i],color:hasWeapon?'#ffffff':'#666666',rarity:hasWeapon?'rare':'common'}:null,{
-   selected:isSelected,
-   disabled:!hasWeapon,
-  });
+  // 格子背景和边框
+  ctx.fillStyle=isSelected?'rgba(255,220,100,0.2)':'rgba(0,0,0,0.5)';
+  ctx.fillRect(wx,weaponBarY,weaponSize,weaponSize);
+  ctx.strokeStyle=isSelected?'#ffdd44':'rgba(255,255,255,0.3)';
+  ctx.lineWidth=isSelected?3:1;
+  if(isSelected){ctx.shadowColor='#ffdd44';ctx.shadowBlur=10;}
+  ctx.strokeRect(wx+1,weaponBarY+1,weaponSize-2,weaponSize-2);
+  ctx.shadowBlur=0;
+  
+  // 武器图标（emoji）
+  if(hasWeapon){
+   ctx.fillStyle='#ffffff';
+   ctx.font=`${weaponSize*0.65}px Arial`;
+   ctx.textAlign='center';
+   ctx.textBaseline='middle';
+   ctx.shadowColor=player.weapons[i].color||'#ffffff';
+   ctx.shadowBlur=isSelected?8:4;
+   ctx.fillText(player.weapons[i].icon,wx+weaponSize/2,weaponBarY+weaponSize/2);
+   ctx.shadowBlur=0;
+   // 弹药显示
+   if(player.weapons[i].ammo!==Infinity){
+    ctx.font=`bold ${weaponSize*0.22}px Arial`;
+    ctx.fillStyle='#ffffff';
+    ctx.textAlign='right';
+    ctx.textBaseline='bottom';
+    const ammo=player.weapons[i].id==='creation'&&player.weapons[i].creationMode==='ranged'?player.weapons[i].rangedAmmo:player.weapons[i].ammo;
+    ctx.fillText(ammo,wx+weaponSize-3,weaponBarY+weaponSize-2);
+   }
+  }else{
+   // 未解锁：显示锁图标
+   ctx.font=`${weaponSize*0.4}px Arial`;
+   ctx.fillStyle='rgba(255,255,255,0.3)';
+   ctx.textAlign='center';
+   ctx.textBaseline='middle';
+   ctx.fillText('🔒',wx+weaponSize/2,weaponBarY+weaponSize/2);
+  }
   
   // 快捷键数字
   ctx.fillStyle=isSelected?'#ffdd44':'rgba(255,255,255,0.5)';
   ctx.font='bold 10px Arial';
   ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
   ctx.fillText(i+1,wx+weaponSize/2,weaponBarY+weaponSize+12);
  }
  
@@ -4548,10 +4580,10 @@ function drawUltimateHUD(){
  }
  
  // 连击显示
- if(comboSystem&&comboSystem.count>1){
+ if(combo&&combo.count>1){
   const comboX=canvas.width/2;
   const comboY=canvas.height*0.3;
-  const comboScale=1+Math.min(comboSystem.count*0.02,0.5);
+  const comboScale=1+Math.min(combo.count*0.02,0.5);
   
   ctx.save();
   ctx.translate(comboX,comboY);
@@ -4563,7 +4595,7 @@ function drawUltimateHUD(){
   ctx.textAlign='center';
   ctx.shadowColor='#ffdd44';
   ctx.shadowBlur=20;
-  ctx.fillText(comboSystem.count,0,0);
+  ctx.fillText(combo.count,0,0);
   
   // COMBO文字
   ctx.fillStyle='#ffffff';
@@ -4571,11 +4603,11 @@ function drawUltimateHUD(){
   ctx.fillText('COMBO',0,30);
   
   // 评级
-  if(comboSystem.rating){
+  if(combo.rating){
    const ratingColors={S:'#ff4444',A:'#ff8844',B:'#ffdd44',C:'#44cc66',D:'#888888'};
-   ctx.fillStyle=ratingColors[comboSystem.rating]||'#ffffff';
+   ctx.fillStyle=ratingColors[combo.rating]||'#ffffff';
    ctx.font='bold 24px Arial';
-   ctx.fillText(comboSystem.rating,0,-35);
+   ctx.fillText(combo.rating,0,-35);
   }
   
   ctx.restore();
@@ -5827,7 +5859,7 @@ function checkAchievements(){
  // 全武器收集
  if(!achievements.allWeapons&&player.weapons.filter(w=>w.unlocked).length>=6)unlockAchievement('allWeapons');
  // 收藏家（背包10件物品）
- if(!achievements.collector){let total=0;for(const i of player.inventory)total+=i.count;if(total>=10)unlockAchievement('collector');}
+ if(!achievements.collector){let total=0;for(const i of player.inventory){if(i&&i.count)total+=i.count;}if(total>=10)unlockAchievement('collector');}
  // 富甲一方（5000分）
  if(!achievements.rich&&score>=5000)unlockAchievement('rich');
 }
@@ -10413,8 +10445,6 @@ function gameLoop(ts){
  if(gameState==='bossIntro'){updateBossIntro(dt);}
  if(gameState==='playing'||gameState==='bossIntro'){
   gameTime+=dt;
-  // 游戏开始60秒后自动隐藏操作提示（F1可切换）
-  if(gameTime>60000){const _bh=document.getElementById('bottomHint');if(_bh&&_bh.style.display!=='none')_bh.style.display='none';}
   player.update(dt);
   for(const e of enemies)e.update(dt);
   enemies=enemies.filter(e=>e.deathState!=='removed');
@@ -10575,6 +10605,7 @@ function gameLoop(ts){
  drawWeather();
  drawComboRating();
  drawBulletTimeUI();
+ if(gameState==='playing'||gameState==='paused'||gameState==='bossIntro')drawUltimateHUD();
  drawSkillCooldownUI();
  requestAnimationFrame(safeGameLoop);
  }catch(e){
