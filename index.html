@@ -14,14 +14,15 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 .hud{position:absolute;padding:10px 16px;background:linear-gradient(135deg,rgba(15,15,30,0.85),rgba(20,20,40,0.75));border:1px solid #4a4a6a;border-radius:8px;color:#d8d8f0;font-size:13px;letter-spacing:1px;box-shadow:0 4px 15px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05)}
 #topLeft{top:16px;left:16px}
 #topRight{top:16px;right:16px;text-align:right}
-#bottomHint{bottom:14px;left:50%;transform:translateX(-50%);font-size:11px;color:#7a7a9a;text-align:center;line-height:1.7;background:linear-gradient(135deg,rgba(15,15,30,0.7),rgba(20,20,40,0.6));padding:6px 18px;border-radius:16px;border:1px solid #3a3a5a;box-shadow:0 2px 10px rgba(0,0,0,0.3)}
+#bottomHint{bottom:90px;left:50%;transform:translateX(-50%);font-size:11px;color:#7a7a9a;text-align:center;line-height:1.7;background:linear-gradient(135deg,rgba(15,15,30,0.7),rgba(20,20,40,0.6));padding:6px 18px;border-radius:16px;border:1px solid #3a3a5a;box-shadow:0 2px 10px rgba(0,0,0,0.3);white-space:nowrap;}
+@media(max-width:768px){#bottomHint{bottom:180px;font-size:10px;padding:4px 12px;}}
 .hp-bar{width:160px;height:14px;background:linear-gradient(180deg,#0a0a14,#14141e);border:1px solid #5a2a2a;margin-top:6px;position:relative;border-radius:4px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.5)}
 .hp-fill{height:100%;background:linear-gradient(180deg,#d04040,#8a1a1a);transition:width 0.2s;box-shadow:0 0 8px rgba(200,50,50,0.4)}
 .stamina-bar{width:160px;height:7px;background:linear-gradient(180deg,#0a0a14,#14141e);border:1px solid #2a5a2a;margin-top:4px;border-radius:4px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,0.5)}
 .stamina-fill{height:100%;background:linear-gradient(180deg,#40c040,#1a6a1a);transition:width 0.1s;box-shadow:0 0 6px rgba(50,180,50,0.3)}
 .armor-bar{width:160px;height:7px;background:linear-gradient(180deg,#0a0a14,#14141e);border:1px solid #2a4a6a;margin-top:4px;border-radius:4px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,0.5)}
 .armor-fill{height:100%;background:linear-gradient(180deg,#5090d0,#2a5a8a);transition:width 0.1s;box-shadow:0 0 6px rgba(80,140,220,0.3)}
-#weaponBar{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:none;z-index:20}
+#weaponBar{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);display:none;gap:6px;pointer-events:none;z-index:20}
 .weapon-slot{width:48px;height:48px;background:linear-gradient(135deg,rgba(20,20,35,0.9),rgba(15,15,28,0.85));border:2px solid #3a3a55;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;position:relative;transition:all 0.15s;box-shadow:0 3px 10px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05)}
 .weapon-slot.active{border-color:#e8c060;background:linear-gradient(135deg,rgba(60,45,20,0.9),rgba(40,30,12,0.85));box-shadow:0 0 15px rgba(232,192,96,0.5),inset 0 1px 0 rgba(255,220,150,0.15);transform:translateY(-3px)}
 .weapon-slot.locked{opacity:0.35;filter:grayscale(1)}
@@ -79,7 +80,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 .mc-craft-result{width:32px;height:32px;font-size:16px}
 .mc-inv-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-bottom:4px}
 .mc-hotbar-label{color:#3f3f3f;font-size:10px;margin-bottom:2px;text-shadow:1px 1px 0 #fff}
-.mc-hotbar{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;padding:3px;background:#8b8b8b;border:2px solid #555;box-shadow:inset 1px 1px 0 #555,inset -1px -1px 0 #fff}
+.mc-hotbar{display:grid;grid-template-columns:repeat(11,1fr);gap:3px;padding:3px;background:#8b8b8b;border:2px solid #555;box-shadow:inset 1px 1px 0 #555,inset -1px -1px 0 #fff}
 .mc-slot{aspect-ratio:1;background:#8b8b8b;border:2px solid #373737;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;box-shadow:inset 2px 2px 0 #555,inset -2px -2px 0 #fff;font-size:20px;user-select:none;box-sizing:border-box}
 .mc-slot:hover{background:#9b9b9b}
 .mc-slot.has-item{background:#7b7b7b}
@@ -802,7 +803,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div id="fpsDisplay" style="display:none;position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#0f0;font-size:14px;font-family:monospace;text-shadow:0 0 5px #0f0;z-index:100;">FPS: 0</div>
 <div id="bossBar"><div id="bossName">BOSS</div><div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHpFill" style="width:100%"></div><div class="boss-hp-text" id="bossHpText"></div></div></div>
 <div id="weaponBar"></div>
-<div class="hud" id="bottomHint">WASD移动 | 空格跳 | 左键攻击 | 右键交互 | E背包 | 1-6武器 | Q拾取 | H召唤 | R读档</div>
+<div class="hud" id="bottomHint">WASD移动 | 空格跳 | 左键攻击 | 右键交互 | E背包 | 1-8武器 | Q拾取 | H召唤 | R读档</div>
 <div id="interactHint"></div>
 <div id="damageFlash"></div>
 <div id="levelBanner"><div id="levelTitle"></div><div id="levelSubtitle"></div></div>
@@ -880,7 +881,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div class="control-item"><span class="key-ultimate">Shift</span><span class="control-desc">冲刺</span></div>
 <div class="control-item"><span class="key-ultimate">左键</span><span class="control-desc">攻击</span></div>
 <div class="control-item"><span class="key-ultimate">右键</span><span class="control-desc">交互</span></div>
-<div class="control-item"><span class="key-ultimate">1-6</span><span class="control-desc">切换武器</span></div>
+<div class="control-item"><span class="key-ultimate">1-7</span><span class="control-desc">切换武器</span></div>
 <div class="control-item"><span class="key-ultimate">Q</span><span class="control-desc">拾取</span></div>
 <div class="control-item"><span class="key-ultimate">E</span><span class="control-desc">背包</span></div>
 <div class="control-item"><span class="key-ultimate">H</span><span class="control-desc">召唤</span></div>
@@ -911,7 +912,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div id="devCheatPanel" style="display:none;background:rgba(255,255,255,0.97);border:3px solid #00aa00;border-radius:12px;padding:15px;text-align:left;">
 <div style="color:#006600;font-weight:bold;font-size:15px;margin-bottom:10px;text-align:center;">🛠 开发者作弊面板</div>
 <div id="devCheatList" style="font-size:13px;line-height:1.9;color:#333;"></div>
-<div style="color:#0066cc;font-size:11px;margin-top:8px;text-align:center;">[1-6]切换选项 · [A]一键全开 · [ESC]关闭面板</div>
+<div style="color:#0066cc;font-size:11px;margin-top:8px;text-align:center;">[1-7]切换选项 · [A]一键全开 · [ESC]关闭面板</div>
 </div>
 </div>
 <div class="menu-footer">
@@ -978,8 +979,9 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div class="enchant-sub">"将青金石注入装备，获得神秘力量"</div>
 <div class="enchant-tabs"><button class="enchant-tab active" id="enchantTabWeapon" onclick="switchEnchantTab('weapon')">⚔️ 武器附魔</button><button class="enchant-tab" id="enchantTabArmor" onclick="switchEnchantTab('armor')">🛡️ 盔甲附魔</button></div>
 <div class="enchant-weapon" id="enchantWeaponDisplay"></div>
-<div class="enchant-lapis">🔵 青金石: <span id="enchantLapisCount">0</span></div>
+<div class="enchant-lapis">🔵 青金石: <span id="enchantLapisCount">0</span> | <span id="enchantMaxLevelDisplay">附魔上限: 3级</span></div>
 <button class="enchant-btn" id="enchantBtn" onclick="doEnchant()">消 耗 青 金 石 附 魔</button>
+<button class="enchant-btn" id="voidUpgradeBtn" onclick="upgradeEnchantMax()" style="background:linear-gradient(135deg,#4a1a6a,#6a2a8a);margin-top:8px;display:none">💜 消耗虚空碎片提升附魔上限</button>
 <div class="enchant-result" id="enchantResult"></div>
 <button class="guide-close" style="width:100%;margin-top:10px" onclick="closeEnchant()">离 开</button>
 </div>
@@ -1000,6 +1002,7 @@ canvas{display:block;background:#0a0a14;image-rendering:pixelated}
 <div id="pauseMenu">
 <h2>游 戏 暂 停</h2>
 <button class="pause-btn" onclick="resumeGame()">继 续 游 戏</button>
+<button class="pause-btn" onclick="toggleFullscreen()">全 屏 模 式 (G)</button>
 <button class="pause-btn" onclick="openSettings()">游 戏 设 置</button>
 <button class="pause-btn" onclick="respawnAtCheckpoint()">从存档点复活</button>
 <button class="pause-btn" onclick="quitToMenu()">返 回 主 菜 单</button>
@@ -1143,14 +1146,14 @@ const GameConfig={
  },
  // 玩家配置
  player:{
-  maxHp:120,
+  maxHp:150,
   maxEnergy:100,
   width:26,
   height:42,
-  speed:4,
-  sprintSpeed:6.5,
+  speed:4.5,
+  sprintSpeed:7,
   sprintCost:0.3,
-  jumpForce:13.5,
+  jumpForce:14,
   dashSpeed:6.5,
   dashDuration:200,
   dashCooldown:800,
@@ -1197,7 +1200,7 @@ const GameConfig={
 };
 const CONFIG={
  ruleset_id:'origin_v1',
- player:{width:26,height:42,speed:4.2,sprintSpeed:6.5,jumpForce:13.5,gravity:0.58,maxHp:120,maxStamina:110,staminaRegen:0.6,sprintCost:0.7,invulnTime:1000,maxHunger:100,hungerDecay:0.01,starveDamage:0.02},
+ player:{width:26,height:42,speed:4.8,sprintSpeed:7,jumpForce:14,gravity:0.58,maxHp:150,maxStamina:110,staminaRegen:0.6,sprintCost:0.7,invulnTime:1500,maxHunger:100,hungerDecay:0.008,starveDamage:0.02},
  world:{groundY:0},
  // 通用敌人默认配置（供 Enemy 构造器 fallback 与刷怪间隔使用）
  enemy:{width:32,height:46,speed:2.4,damage:12,hp:40,attackRange:38,attackCooldown:1200,chaseRange:450,spawnInterval:3200,maxConcurrent:5},
@@ -1218,6 +1221,14 @@ const CONFIG={
   enchanted_gold_apple:{name:'附魔金苹果',desc:'恢复60饥饿值+80生命，全部Buff',icon:'🌟',hunger:60,hp:80,buff:'all'},
   totem:{name:'不死图腾',desc:'死亡时触发，短暂无敌+全部Buff',icon:'🗿'},
   lapis_lazuli:{name:'青金石',desc:'用于附魔台附魔，越多附魔越好',icon:'🔵'},
+  ender_pearl:{name:'末影珍珠',desc:'向朝向方向传送200像素',icon:'🟣',hunger:0},
+  void_fragment:{name:'虚空碎片',desc:'虚空行者掉落，用于提升附魔上限',icon:'💜'},
+  creation_weapon:{name:'创世神兵·原初',desc:'由万物起源核心锻造，按V切换近/远程模式',icon:'🌟'},
+  void_armor:{name:'虚空护甲',desc:'融入虚空之力，致命伤30%概率回溯',icon:'🌀'},
+  rune_power:{name:'力量符文',desc:'伤害×2，持续10秒',icon:'🔴'},
+  rune_shield:{name:'护盾符文',desc:'免疫一次伤害，持续15秒',icon:'🔵'},
+  rune_heal:{name:'治愈符文',desc:'回复50%生命',icon:'🟢'},
+  rune_speed:{name:'速度符文',desc:'移速×2，持续8秒',icon:'🟡'},
  },
  enchantments:{
   sharpness:{name:'锋利',icon:'⚔️',desc:'+近战伤害',maxLevel:3,values:[0.15,0.35,0.60],appliesTo:['melee']},
@@ -1241,6 +1252,8 @@ const CONFIG={
   {id:'shotgun',name:'散弹',icon:'💥',type:'shotgun',damage:20,range:300,cooldown:620,ammo:16,bulletSpeed:12,pellets:5,spread:0.4,color:'#e08040'},
   {id:'laser',name:'雷光',icon:'⚡',type:'laser',damage:8,range:600,cooldown:65,ammo:200,color:'#40e0ff'},
   {id:'rocket',name:'轰天',icon:'🚀',type:'rocket',damage:120,range:700,cooldown:1200,ammo:5,bulletSpeed:9,explosionRadius:90,color:'#ff6040'},
+  {id:'spear',name:'长枪',icon:'🔱',type:'melee',damage:55,range:110,cooldown:480,ammo:Infinity,color:'#80c0e0'},
+  {id:'creation',name:'创世神兵',icon:'🌟',type:'melee',damage:80,range:90,cooldown:400,ammo:Infinity,color:'#e080ff',creation:true,rangedDamage:60,rangedRange:600,rangedCooldown:700,rangedAmmo:50,rangedAmmoMax:50},
  ],
  armors:[
   {id:'cloth',name:'布甲',icon:'👕',defense:5,maxDurability:100,color:'#8a7a5a'},
@@ -1248,6 +1261,7 @@ const CONFIG={
   {id:'chain',name:'锁甲',icon:'🛡️',defense:18,maxDurability:220,color:'#7a8a9a'},
   {id:'plate',name:'板甲',icon:'⚔️',defense:28,maxDurability:320,color:'#9aaaba'},
   {id:'star',name:'星辉甲',icon:'✨',defense:42,maxDurability:500,color:'#c0d0ff'},
+  {id:'void',name:'虚空护甲',icon:'🌀',defense:55,maxDurability:600,color:'#a060ff',voidRewind:true},
  ],
  levels:[
   {num:1,title:'第一关',subtitle:'黑暗森林',type:'runner',distance:2400,enemyTypes:['normal'],enemySpeedMul:0.5,spawnMul:2.0,miniboss:false},
@@ -1260,6 +1274,7 @@ const CONFIG={
   {num:8,title:'第八关',subtitle:'星辉之巅',type:'boss',boss:'stardeath'},
   {num:9,title:'第九关',subtitle:'诅咒沼泽',type:'runner',distance:3000,enemyTypes:['shield','sword','elite'],enemySpeedMul:0.9,spawnMul:1.2,miniboss:false,wizardBoss:true},
   {num:10,title:'第十关',subtitle:'凋零深渊',type:'boss',boss:'witherstorm'},
+  {num:11,title:'第十一关',subtitle:'虚空尽头',type:'void',distance:3600,enemyTypes:['void_walker'],enemySpeedMul:1.0,spawnMul:1.5},
  ],
  buffs:{
   regeneration:{name:'生命恢复',icon:'💚',color:'#40ff60',duration:10000,effect:'hpRegen',value:2},
@@ -1272,6 +1287,9 @@ const CONFIG={
   poison:{name:'中毒',icon:'☠️',color:'#80ff40',duration:10000,effect:'damage',value:3,negative:true},
   slowness:{name:'缓慢',icon:'🐌',color:'#8080a0',duration:8000,effect:'speed',value:0.5,negative:true},
   wither:{name:'凋零',icon:'💀',color:'#400040',duration:15000,effect:'damage',value:5,negative:true},
+  rune_power:{name:'力量符文',icon:'🔴',color:'#ff4040',duration:10000,effect:'damage',value:2},
+  rune_shield:{name:'护盾符文',icon:'🔵',color:'#4080ff',duration:15000,effect:'invuln',value:1},
+  rune_speed:{name:'速度符文',icon:'🟡',color:'#ffd040',duration:8000,effect:'speed',value:2},
  },
  achievements:{
   firstKill:{name:'初露锋芒',icon:'⚔️',desc:'第一次击杀敌人'},
@@ -1302,6 +1320,8 @@ const CONFIG={
   totemUser:{name:'超越生死',icon:'🗿',desc:'触发不死图腾'},
   notHungry:{name:'温饱之士',icon:'🍞',desc:'保持饥饿值满状态通过一关'},
   allClear:{name:'万物终结者',icon:'👑',desc:'通关全部10关'},
+  beatVoidCreator:{name:'超越起源',icon:'🌌',desc:'击败虚空创世神·原初'},
+  trueEnding:{name:'真结局',icon:'✨',desc:'见证万物起源的真相'},
  },
 };
 const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');
@@ -1336,12 +1356,15 @@ let player=null,enemies=[],boss=null,platforms=[],obstacles=[],items=[],weaponPi
 let particles=[],bullets=[],tentacles=[],laserBeam=null,lightnings=[],fireballs=[];
 let lastEnemySpawn=0,lastPlatformX=0;
 let portalTriggered=false,arenaClearTriggered=false;
+let gravityZones=[]; // 重力异常区 {x,y,w,h,scale}
+let hiddenPortal=null; // 第10关隐藏传送门
+let enchantMaxLevel=3; // 附魔上限（虚空碎片可提升到4）
 // DOM元素缓存（避免每帧getElementById）
 let _domCache=null;
 function dc(id){if(!_domCache)_domCache={};if(!_domCache[id])_domCache[id]=document.getElementById(id);return _domCache[id];}
 let achievements={},currentCheckpoint=null,guideShown={};
 // 打击感系统
-let screenShake={x:0,y:0,intensity:0,duration:0};
+let screenShake={x:0,y:0,intensity:0,duration:0,initialDuration:0};
 // 屏幕震动增强
 // 粒子效果增强系统
 // 增强粒子效果系统（30种预设）
@@ -3879,6 +3902,20 @@ function drawIcon(x,y,size,iconType,color='#ffffff'){
    ctx.fill();
    ctx.fillRect(cx-s*0.5,cy+s*0.5,s,size*0.08);
    break;
+  case 'spear':
+   ctx.strokeStyle=ctx.fillStyle;
+   ctx.lineWidth=size*0.06;
+   ctx.beginPath();
+   ctx.moveTo(cx-s*0.8,cy+s*0.8);
+   ctx.lineTo(cx+s*0.6,cy-s*0.6);
+   ctx.stroke();
+   ctx.beginPath();
+   ctx.moveTo(cx+s*0.6,cy-s*0.6);
+   ctx.lineTo(cx+s*0.2,cy-s*0.3);
+   ctx.moveTo(cx+s*0.6,cy-s*0.6);
+   ctx.lineTo(cx+s*0.4,cy-s*0.9);
+   ctx.stroke();
+   break;
   case 'shield':
    ctx.beginPath();
    ctx.moveTo(cx,cy-s);
@@ -3972,6 +4009,21 @@ function drawIcon(x,y,size,iconType,color='#ffffff'){
    ctx.fillRect(cx-s*0.5,cy-s*0.6,s,s*0.15);
    ctx.fillRect(cx-s*0.5,cy-s*0.3,s,s*0.15);
    ctx.fillRect(cx-s*0.5,cy,s*0.7,s*0.15);
+   break;
+  case 'creation':
+   // 创世神兵：星形能量核心
+   ctx.shadowColor=color;ctx.shadowBlur=8;
+   ctx.beginPath();
+   for(let i=0;i<8;i++){
+    const angle=i*Math.PI/4;
+    const r=i%2===0?s:s*0.4;
+    const px=cx+Math.cos(angle)*r,py=cy+Math.sin(angle)*r;
+    if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+   }
+   ctx.closePath();ctx.fill();
+   ctx.shadowBlur=0;
+   ctx.fillStyle='rgba(255,255,255,0.8)';
+   ctx.beginPath();ctx.arc(cx,cy,s*0.25,0,Math.PI*2);ctx.fill();
    break;
   default:
    ctx.fillRect(cx-s,cy-s,s*2,s*2);
@@ -4438,10 +4490,10 @@ function drawUltimateHUD(){
  ctx.fillText(`分数：${score}`,canvas.width-25,78);
  
  // 底部武器栏
- const weaponBarY=canvas.height-70;
- const weaponSize=50;
- const weaponGap=8;
- const totalWeapons=6;
+ const weaponBarY=canvas.height-(gameSettings.mobileMode?160:70);
+ const weaponSize=gameSettings.mobileMode?Math.min(50,(canvas.width-60)/7):50;
+ const weaponGap=gameSettings.mobileMode?Math.min(8,(canvas.width-60)/14):8;
+ const totalWeapons=8;
  const weaponBarW=totalWeapons*weaponSize+(totalWeapons-1)*weaponGap;
  const weaponBarX=canvas.width/2-weaponBarW/2;
  
@@ -4449,8 +4501,8 @@ function drawUltimateHUD(){
  drawGlassPanel(weaponBarX-10,weaponBarY-10,weaponBarW+20,weaponSize+20,12);
  
  // 武器格子
- const weaponNames=['拳头','银剑','手枪','霰弹','激光','火箭'];
- const weaponIcons=['fist','sword','pistol','shotgun','laser','rocket'];
+ const weaponNames=['拳头','银剑','手枪','霰弹','激光','火箭','长枪','创世'];
+ const weaponIcons=['fist','sword','pistol','shotgun','laser','rocket','spear','creation'];
  for(let i=0;i<totalWeapons;i++){
   const wx=weaponBarX+i*(weaponSize+weaponGap);
   const isSelected=player.currentWeapon===i;
@@ -4814,6 +4866,7 @@ function drawUltimatePause(){
  // 按钮
  const buttons=[
   {text:'继续游戏',color:'#4a7c59',icon:'▶'},
+  {text:'全屏模式 (G)',color:'#3a6a8a',icon:'⛶'},
   {text:'设置',color:'#6a4a99',icon:'⚙'},
   {text:'游戏介绍',color:'#2a5a99',icon:'📖'},
   {text:'返回主菜单',color:'#994444',icon:'🏠'},
@@ -5330,12 +5383,14 @@ let newWeapons={
  getWeaponsByRarity(rarity){return this.getAllWeapons().filter(w=>w.rarity===rarity);},
 };
 let weaponSkills={
- fists:{name:'爆裂拳',cooldown:5000,current:0,damage:50,range:120},
- silver_sword:{name:'银月斩',cooldown:6000,current:0,damage:80,range:200},
+ fist:{name:'爆裂拳',cooldown:5000,current:0,damage:50,range:120},
+ sword:{name:'银月斩',cooldown:6000,current:0,damage:80,range:200},
  pistol:{name:'连射模式',cooldown:8000,current:0,damage:15,shots:8},
  shotgun:{name:'龙息弹',cooldown:10000,current:0,damage:120,range:300},
- laser_gun:{name:'超载激光',cooldown:12000,current:0,damage:200,range:800},
- rocket_launcher:{name:'核弹',cooldown:15000,current:0,damage:500,range:500}
+ laser:{name:'超载激光',cooldown:12000,current:0,damage:200,range:800},
+ rocket:{name:'核弹',cooldown:15000,current:0,damage:500,range:500},
+ spear:{name:'龙牙突刺',cooldown:7000,current:0,damage:120,range:250},
+ creation:{name:'创世裁决',cooldown:20000,current:0,damage:300,range:400}
 };
 let currentWeaponSkill=null;
 // 粒子系统升级
@@ -5656,10 +5711,13 @@ if(gameState==='story'&&storyTextFullyShown&&(e.code==='Space'||e.code==='Enter'
 }
 if(e.code==='Escape'){
    if(gameState==='playing'){pauseGame();}
-   else if(gameState==='paused'){toggleInventory();}
+   else if(gameState==='paused'){
+     if(isPaused){resumeGame();}
+     else{toggleInventory();}
+   }
    else if(isPaused){resumeGame();}
   }
- if(gameState==='playing'&&player){const n=parseInt(e.key);if(n>=1&&n<=6)player.switchWeapon(n-1);}
+ if(gameState==='playing'&&player){const n=parseInt(e.key);if(n>=1&&n<=8)player.switchWeapon(n-1);}
 if(e.code==='KeyQ'&&gameState==='playing')pickupNearby();
  if(e.code==='KeyH'&&gameState==='playing')trySummon();
  if(e.code==='KeyR'&&gameState==='gameover')respawnAtCheckpoint();
@@ -5669,7 +5727,11 @@ if(e.code==='KeyQ'&&gameState==='playing')pickupNearby();
   if(e.code==='KeyR'&&gameState==='playing'&&!eatState.active){useWeaponSkill();}
   if(e.code==='Tab'){e.preventDefault();battleStatsPanel.visible=!battleStatsPanel.visible;}
   if(e.code==='KeyM'){minimap.enabled=!minimap.enabled;}
+  if(e.code==='F1'){e.preventDefault();const bh=document.getElementById('bottomHint');bh.style.display=bh.style.display==='none'?'block':'none';}
   if(e.code==='KeyN'){questTracker.enabled=!questTracker.enabled;}
+  if(e.code==='KeyG'){toggleFullscreen();}
+  // 创世神兵模式切换（V键）
+  if(e.code==='KeyV'&&gameState==='playing'&&player){const w=player.weapons[player.currentWeapon];if(w&&w.id==='creation'){w.creationMode=w.creationMode==='ranged'?'melee':'ranged';showGuide(w.creationMode==='ranged'?'🌟 创世神兵：远程模式':'🌟 创世神兵：近战模式',1500);sfxWeaponSwitch();}}
   // 巨大大大优化：F键子弹时间
   if(e.code==='KeyF'&&gameState==='playing'){activateBulletTime();}
 
@@ -5683,7 +5745,7 @@ canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();m
 canvas.addEventListener('mousedown',e=>{if(e.button===0){mouse.left=true;if(gameState==='playing')playerAttack();}if(e.button===2){mouse.right=true;if(gameState==='playing')playerInteract();}});
 canvas.addEventListener('mouseup',e=>{if(e.button===0)mouse.left=false;if(e.button===2)mouse.right=false;});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
-canvas.addEventListener('wheel',e=>{if(gameState!=='playing'||!player)return;e.preventDefault();const d=e.deltaY>0?1:-1;let idx=player.currentWeapon;for(let i=0;i<6;i++){idx=(idx+d+6)%6;if(player.weapons[idx].unlocked){player.switchWeapon(idx);break;}}},{passive:false});
+canvas.addEventListener('wheel',e=>{if(gameState!=='playing'||!player)return;e.preventDefault();const d=e.deltaY>0?1:-1;let idx=player.currentWeapon;const n=player.weapons.length;for(let i=0;i<n;i++){idx=(idx+d+n)%n;if(player.weapons[idx]&&player.weapons[idx].unlocked){player.switchWeapon(idx);break;}}},{passive:false});
 
 function unlockAchievement(id){
  if(achievements[id])return;
@@ -5704,19 +5766,23 @@ function showGuide(html,duration=4000){
 function addScreenShake(intensity,duration){
  screenShake.intensity=Math.max(screenShake.intensity,intensity);
  screenShake.duration=Math.max(screenShake.duration,duration);
+ screenShake.initialDuration=screenShake.duration;
 }
 function updateScreenShake(dt){
  if(screenShake.duration>0){
   screenShake.duration-=dt;
-  const f=screenShake.duration>0?screenShake.intensity*(screenShake.duration/200):0;
+  const total=screenShake.initialDuration||200;
+  const f=screenShake.intensity*Math.max(0,screenShake.duration/total);
   screenShake.x=rand(-f,f);
   screenShake.y=rand(-f,f);
-  if(screenShake.duration<=0){screenShake.x=0;screenShake.y=0;screenShake.intensity=0;}
+  if(screenShake.duration<=0){screenShake.x=0;screenShake.y=0;screenShake.intensity=0;screenShake.initialDuration=0;}
  }
 }
 function addHitStop(ms){hitStop=Math.max(hitStop,ms);}
 function addSlowMo(timeScale,duration){
- slowMo.active=true;slowMo.timeScale=timeScale;slowMo.duration=duration;
+ slowMo.timeScale=Math.min(slowMo.timeScale,timeScale);
+ slowMo.duration=Math.max(slowMo.duration,duration);
+ slowMo.active=true;
  document.getElementById('slowMoOverlay').style.opacity='1';
 }
 function updateSlowMo(dt){
@@ -5727,7 +5793,8 @@ function updateSlowMo(dt){
 }
 function showDamageNumber(x,y,damage,isCrit=false,isHeal=false,color=null,scale=1){
  const _dc=document.getElementById('damageNumbers');
- if(_dc&&_dc.children.length>20){_dc.removeChild(_dc.firstChild);}
+ if(!_dc)return;
+ if(_dc.children.length>20){_dc.removeChild(_dc.firstChild);}
  const el=document.createElement('div');
  el.className='dmg-num '+(isHeal?'dmg-heal':isCrit?'dmg-crit':'dmg-normal');
  el.textContent=isHeal?('+'+Math.floor(damage)):Math.floor(damage);
@@ -5735,7 +5802,7 @@ function showDamageNumber(x,y,damage,isCrit=false,isHeal=false,color=null,scale=
  el.style.top=(y-camera.y-10)+'px';
  if(color)el.style.color=color;
  if(scale&&scale!==1)el.style.transform='scale('+scale+')';
- document.getElementById('damageNumbers').appendChild(el);
+ _dc.appendChild(el);
  setTimeout(()=>el.remove(),600);
 }
 function addCombo(){
@@ -5846,24 +5913,28 @@ class Player{
   this.lastAttack=0;this.lastDamage=0;
   this.inventory=[{type:'bread',count:3}];this.lightRadius=CONFIG.lighting.playerLightRadius;
   // 初始食物放在食物槽位
-  if(typeof foodSlots!=='undefined'){foodSlots[0]={type:'bread',count:3};}
-  this.crouching=false;this.animFrame=0;this.animTimer=0;this.attackAnim=0;this.dead=false;
+  if(typeof foodSlots!=='undefined'){foodSlots[0]={type:'bread',count:5};}
+  this.crouching=false;this.animFrame=0;this.animTimer=0;this.attackAnim=0;this.dead=false;this.invincible=false;this.walkPhase=0;
+  this.hasElytra=false;this.gliding=false;this.elytraDurability=0;this.elytraMaxDurability=100;
+  this.voidRewindUsed=false;this.posHistory=[];
   this.currentWeapon=0;this.weapons=CONFIG.weapons.map((w,i)=>({...w,unlocked:i===0,ammo:w.ammo}));
   this.equippedArmor=null;this.armorDurability=0;
   this.dashCooldown=0;this.isDashing=false;this.dashTimer=0;
   this.rollCooldown=0;this.isRolling=false;this.rollTimer=0;
   this.hurtShake=0;
+  this.stunned=0;
   this.hunger=CONFIG.player.maxHunger;
   this.eatCooldown=0;this.deathState="alive";this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;this.starveTimer=0;
  }
  switchWeapon(i){if(i<0||i>=this.weapons.length)return;if(!this.weapons[i].unlocked)return;this.currentWeapon=i;updateWeaponBar();}
  getWeapon(){return this.weapons[this.currentWeapon];}
  getArmorDef(){if(!this.equippedArmor)return 0;const _a=CONFIG.armors.find(a=>a.id===this.equippedArmor);return _a?_a.defense:0;}
-  addBuff(type){
+  addBuff(type,duration){
    const cfg=CONFIG.buffs[type];if(!cfg)return;
    const existing=activeBuffs.find(b=>b.type===type);
-   if(existing){existing.duration=cfg.duration;return;}
-   activeBuffs.push({type,...cfg,duration:cfg.duration,maxDuration:cfg.duration});
+   const dur=duration||cfg.duration;
+   if(existing){existing.duration=dur;return;}
+   activeBuffs.push({type,...cfg,duration:dur,maxDuration:dur});
    if(typeof updateBuffBar==='function')updateBuffBar();
   }
   hasBuff(type){return activeBuffs.some(b=>b.type===type);}
@@ -5877,10 +5948,26 @@ class Player{
    }
    if(typeof updateBuffBar==='function')updateBuffBar();
   }
+  getSpeedMul(){
+   let mul=1;
+   for(const b of activeBuffs){if(b.effect==='speed')mul*=b.value;}
+   return mul;
+  }
+  getDamageMul(){
+   let mul=1;
+   for(const b of activeBuffs){if(b.effect==='damage'&&!b.negative)mul*=b.value;}
+   return mul;
+  }
+  getResistMul(){
+   let mul=1;
+   for(const b of activeBuffs){if(b.effect==='defense')mul*=(1-b.value);}
+   return mul;
+  }
  update(dt){
   if(isNaN(this.x)||isNaN(this.y)||this.y>CONFIG.world.groundY+200||this.y<-500){if(this.arenaLeft!==undefined&&this.arenaRight!==undefined){this.x=clamp(this.x,this.arenaLeft,this.arenaRight-this.w);}else{this.x=Math.max(0,this.x);}this.y=CONFIG.world.groundY-this.h;this.vx=0;this.vy=0;}
   if(gameState==='bossIntro'){this.vx*=0.8;return;}
   if(gameState!=='playing'&&gameState!=='bossIntro')return;
+  if(this.stunned>0){this.stunned-=dt;this.vx*=0.85;if(this.stunned<=0)this.stunned=0;}
   if(this.deathState!=='alive'){
    this.deathTimer+=dt;
    if(this.deathState==='falling'){
@@ -5914,18 +6001,50 @@ class Player{
   if(this.isRolling){this.rollTimer-=dt;if(this.rollTimer<=0)this.isRolling=false;}
   if(this.rollCooldown>0)this.rollCooldown-=dt;
   if(this.hurtShake>0)this.hurtShake-=dt;
-  // 盔甲迅捷附魔
+  // 盔甲迅捷附魔 + 减速场效果
   const armorSpeed=1+getArmorEnchantBonus('swiftness');
-  this.vx=mx*speed*armorSpeed;if(mx!==0)this.facing=mx;
-  if((keys['Space']||keys['KeyW']||keys['ArrowUp'])&&this.onGround&&!this.crouching){this.vy=-CONFIG.player.jumpForce;this.onGround=false;sfxJump();}
-  this.vy+=CONFIG.player.gravity;if(this.vy>18)this.vy=18;
+  let slowMul=1;
+  if(boss&&boss.slowField&&boss.slowField.life>0){
+   if(dist(this.x+this.w/2,this.y+this.h/2,boss.slowField.x,boss.slowField.y)<boss.slowField.r)slowMul=0.3;
+  }
+  if(!this.isRolling&&this.stunned<=0)this.vx=mx*speed*armorSpeed*this.getSpeedMul()*slowMul;if(mx!==0&&this.stunned<=0)this.facing=mx;
+  if((keys['Space']||keys['KeyW']||keys['ArrowUp'])&&this.onGround&&!this.crouching&&this.stunned<=0){this.vy=-CONFIG.player.jumpForce;this.onGround=false;sfxJump();}
+  // 鞘翅滑翔：空中按空格展开，缓慢下落+水平加速
+  if(this.hasElytra&&!this.onGround&&(keys['Space']||keys['KeyW']||keys['ArrowUp'])&&!this.gliding){
+   this.gliding=true;sfxJump();
+  }
+  if(this.gliding&&this.onGround){this.gliding=false;}
+  if(this.gliding&&!this.onGround){
+   this.vy=Math.min(this.vy,1.5); // 缓慢下落
+   // 滑翔时可左右转向
+   if(mx!==0){this.vx=mx*6;this.facing=mx;}
+   else{this.vx=this.facing*6;}
+   // 消耗耐久
+   this.elytraDurability-=dt/500;
+   if(this.elytraDurability<=0){this.elytraDurability=0;this.gliding=false;this.hasElytra=false;showGuide('⚠️ 鞘翅损坏了！',2500);}
+   if(Math.random()<0.3)spawnParticles(this.x+this.w/2,this.y+this.h,1,'rgba(200,220,255,0.5)');
+  }else{
+   // 重力异常区：检查玩家是否在重力区内
+   let gravMul=1;
+   for(const gz of gravityZones){
+    if(this.x+this.w/2>gz.x&&this.x+this.w/2<gz.x+gz.w&&this.y+this.h/2>gz.y&&this.y+this.h/2<gz.y+gz.h){
+     gravMul=gz.scale;break;
+    }
+   }
+   this.vy+=CONFIG.player.gravity*gravMul;if(this.vy>18)this.vy=18;
+  }
+  const _wasFalling=!this.onGround&&this.vy>4;
   this.x+=this.vx;this.hCollide();this.y+=this.vy;this.onGround=false;this.vCollide();
+  // 记录位置历史（用于虚空回溯）
+  this.posHistory.push({x:this.x,y:this.y,hp:this.hp,t:performance.now()});
+  if(this.posHistory.length>180)this.posHistory.shift();
   if(this.y+this.h>CONFIG.world.groundY){this.y=CONFIG.world.groundY-this.h;this.vy=0;this.onGround=true;}
+  if(_wasFalling&&this.onGround){spawnParticles(this.x+this.w/2,CONFIG.world.groundY,6,'#8a8a7a');}
   if(boss&&!boss.dead&&boss.arenaLeft!==undefined)this.x=clamp(this.x,boss.arenaLeft,boss.arenaRight-this.w);
   // 竞技场关卡边界
   const lvlNow=CONFIG.levels[currentLevel-1];
   if(lvlNow&&lvlNow.type==='arena'){
-   this.x=clamp(this.x,450,1350-this.w);
+   this.x=clamp(this.x,350,1550-this.w);
   }
   // 饥饿值（缓慢掉血，非立刻）
   this.hunger=Math.max(0,this.hunger-CONFIG.player.hungerDecay*(dt/16));
@@ -5954,12 +6073,15 @@ class Player{
   // Buff更新
   this.updateBuffs(dt);
   this.animTimer+=dt;if(this.animTimer>110){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase+=dt*0.02*Math.abs(this.vx)*(Math.abs(this.vx)>0.5?1:0);
   if(this.attackAnim>0)this.attackAnim-=dt;
   if(this.x>maxDistance)maxDistance=this.x;while(maxDistance-scoredX>=10){scoredX+=10;distance++;score++;}
   const lvl=CONFIG.levels[currentLevel-1];
   if(lvl.type==='runner'&&portal&&rectCollide(this,portal)&&!portalTriggered){portalTriggered=true;nextLevel();}
+  // 隐藏传送门（第10关凋零风暴后）
+  if(hiddenPortal&&rectCollide(this,hiddenPortal)&&!portalTriggered){portalTriggered=true;nextLevel();}
   // 存档点检测
-  for(const cp of checkpoints){if(!cp.activated&&Math.abs(this.x-cp.x)<40){cp.activated=true;if(typeof sfxCheckpoint==='function')sfxCheckpoint();currentCheckpoint={level:currentLevel,x:cp.x,y:cp.y,hp:this.hp,weapons:JSON.parse(JSON.stringify(this.weapons)),armor:this.equippedArmor,armorDur:this.armorDurability,inventory:JSON.parse(JSON.stringify(this.inventory)),foodSlots:JSON.parse(JSON.stringify(foodSlots)),score:score,distance:distance,maxDistance:maxDistance,bossHp:boss?boss.hp:null,witchBossHp:witchBoss?witchBoss.hp:null,witherStormHp:witherStorm?witherStorm.hp:null};showGuide('💾 <span class="guide-key">存档点</span> 已激活！死亡后按 R 从这里复活',3500);spawnParticles(cp.x,cp.y-30,12,'#c8a040');}}
+  for(const cp of checkpoints){if(!cp.activated&&Math.abs(this.x-cp.x)<40){cp.activated=true;if(typeof sfxCheckpoint==='function')sfxCheckpoint();currentCheckpoint={level:currentLevel,x:cp.x,y:cp.y,hp:this.hp,weapons:JSON.parse(JSON.stringify(this.weapons)),currentWeapon:this.currentWeapon,armor:this.equippedArmor,armorDur:this.armorDurability,inventory:JSON.parse(JSON.stringify(this.inventory)),foodSlots:JSON.parse(JSON.stringify(foodSlots)),hasElytra:this.hasElytra,elytraDur:this.elytraDurability,score:score,distance:distance,maxDistance:maxDistance,bossHp:boss?boss.hp:null,witchBossHp:witchBoss?witchBoss.hp:null,witherStormHp:witherStorm?witherStorm.hp:null};showGuide('💾 <span class="guide-key">存档点</span> 已激活！死亡后按 R 从这里复活',3500);spawnParticles(cp.x,cp.y-30,12,'#c8a040');}}
   if(this.y>canvas.height+200)this.takeDamage(999);
  }
  hCollide(){
@@ -5978,6 +6100,7 @@ class Player{
  }
  vCollide(){
    for(const p of platforms){
+    if(p.unstable&&!p.visible)continue; // 不可见的不稳定平台无碰撞
     if(rectCollide(this,p)){
       if(this.vy>0&&this.y+this.h-this.vy<=p.y+15){this.y=p.y-this.h;this.vy=0;this.onGround=true;}
       else if(this.vy<0&&this.y-this.vy>=p.y+p.h-10){this.y=p.y+p.h;this.vy=0;}
@@ -5992,12 +6115,18 @@ class Player{
   }
   takeDamage(amount){
   const now=performance.now();if(now-this.lastDamage<CONFIG.player.invulnTime)return;
+  // 翻滚无敌帧
+  if(this.isRolling)return;
   // 【开发者无敌模式】
   if(devAuthed&&devCheats.godMode){this.lastDamage=now;spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#00ffff');return;}
-  // 无敌Buff
-  if(this.hasBuff('invulnerable')){spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#ffd040');return;}
+  if(this.invincible){return;}
+  // 无敌Buff（包括护盾符文）
+  if(this.hasBuff('invulnerable')||activeBuffs.some(b=>b.effect==='invuln')){spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#4080ff');return;}
   // 抗性Buff
   if(this.hasBuff('resistance'))amount*=0.5;
+  // 吸收Buff（金苹果）
+  const absBuff=activeBuffs.find(b=>b.effect==='absorption');
+  if(absBuff&&absBuff.value>0){const absorbed=Math.min(amount,absBuff.value*10);amount-=absorbed;absBuff.value-=absorbed/10;if(absBuff.value<=0){activeBuffs=activeBuffs.filter(b=>b!==absBuff);if(typeof updateBuffBar==='function')updateBuffBar();}spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#c0c0ff');}
   // 盔甲保护附魔
   amount*=(1-getArmorEnchantBonus('protection'));
   this.lastDamage=now;
@@ -6008,10 +6137,10 @@ class Player{
    const absorbed=amount*reduction;
    amount-=absorbed;
    this.armorDurability-=absorbed*0.5*(1-getArmorEnchantBonus('unbreaking'));
-   if(this.armorDurability<=0){this.armorDurability=0;const _brokenArmor=CONFIG.armors.find(a=>a.id===this.equippedArmor);const an=_brokenArmor?_brokenArmor.name:'盔甲';showGuide(`⚠️ ${an} 已损坏！`,2500);this.equippedArmor=null;}
+   if(this.armorDurability<=0){this.armorDurability=0;const _brokenArmor=CONFIG.armors.find(a=>a.id===this.equippedArmor);const an=_brokenArmor?_brokenArmor.name:'盔甲';showGuide(`⚠️ ${an} 已损坏！`,2500);this.equippedArmor=null;armorEnchants=[];}
   }
   this.hp-=amount;flashDamage();triggerHitFeedback(this.facing*-1);battleStats.damageTaken+=amount;
-  addScreenShake(6,180);this.hurtShake=200;sfxHurt();
+  addScreenShake(6,180);addHitStop(60);this.hurtShake=200;sfxHurt();
   // 荆棘反伤
   const thorns=getArmorEnchantBonus('thorns');
   if(thorns>0&&enemies){for(const e of enemies){if(!e.dead&&dist(this.x+this.w/2,this.y+this.h/2,e.x+e.w/2,e.y+e.h/2)<80){e.takeDamage(amount*thorns,this.x+this.w/2);}}}
@@ -6030,24 +6159,44 @@ class Player{
     triggerTotem();
     return;
    }
+   // 虚空护甲回溯：30%概率回到3秒前
+   const voidArmor=CONFIG.armors.find(a=>a.id===this.equippedArmor);
+   if(voidArmor&&voidArmor.voidRewind&&!this.voidRewindUsed&&Math.random()<0.3){
+    this.voidRewindUsed=true;
+    const oldPos=this.posHistory[0]||{x:this.x,y:this.y,hp:50};
+    this.x=oldPos.x;this.y=oldPos.y;this.hp=Math.max(30,oldPos.hp*0.5);
+    this.vx=0;this.vy=0;
+    spawnParticles(this.x+this.w/2,this.y+this.h/2,30,'#a040ff');
+    addScreenShake(10,500);
+    showGuide('🌀 虚空回溯！时间倒流，你回到了过去！',3000);
+    sfxTeleport();
+    return;
+   }
    this.hp=0;this.dead=true;addScreenShake(20,700);addSlowMo(0.3,600);if(typeof sfxPlayerDeath==='function')sfxPlayerDeath();setTimeout(()=>gameOver(),700);
   }
  }
  heal(a){this.hp=Math.min(CONFIG.player.maxHp,this.hp+a);spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#30a030');showDamageNumber(this.x+this.w/2,this.y,a,false,true);}
- addItem(t){const e=this.inventory.find(i=>i.type===t);if(e)e.count++;else this.inventory.push({type:t,count:1});}
- hasItem(t){const i=this.inventory.find(i=>i.type===t);return i&&i.count>0;}
- removeItem(t){const i=this.inventory.find(i=>i.type===t);if(i&&i.count>0){i.count--;if(i.count<=0)this.inventory=this.inventory.filter(x=>x.type!==t);return true;}return false;}
+ addItem(t){const e=this.inventory.find(i=>i&&i.type===t);if(e)e.count++;else this.inventory.push({type:t,count:1});}
+ hasItem(t){const i=this.inventory.find(i=>i&&i.type===t);return i&&i.count>0;}
+ removeItem(t){const i=this.inventory.find(i=>i&&i.type===t);if(i&&i.count>0){i.count--;if(i.count<=0)this.inventory=this.inventory.filter(x=>x&&x.type!==t);return true;}return false;}
  equipArmor(id){
-  // 如果已装备，先卸下
-  if(this.equippedArmor){this.addItem(this.equippedArmor+'_armor');}
+  // 如果已装备，先卸下旧盔甲（addItem后保存附魔）
+  if(this.equippedArmor){const _oldType=this.equippedArmor+'_armor';this.addItem(_oldType);const oldItem=this.inventory.find(i=>i&&i.type===_oldType);if(oldItem&&armorEnchants.length>0)oldItem.enchants=JSON.parse(JSON.stringify(armorEnchants));}
   this.equippedArmor=id;
   const _armor=CONFIG.armors.find(a=>a.id===id);if(_armor)this.armorDurability=_armor.maxDurability;
+  // 从物品加载附魔
+  const armorItem=this.inventory.find(i=>i&&i.type===id+'_armor');
+  armorEnchants=(armorItem&&armorItem.enchants)?JSON.parse(JSON.stringify(armorItem.enchants)):[];
   if(!achievements.firstArmor)unlockAchievement('firstArmor');
  }
  unequipArmor(){
   if(!this.equippedArmor)return;
-  this.addItem(this.equippedArmor+'_armor');
-  this.equippedArmor=null;this.armorDurability=0;
+  const _armorType=this.equippedArmor+'_armor';
+  this.addItem(_armorType);
+  // addItem后物品一定存在，保存附魔
+  const armorItem=this.inventory.find(i=>i&&i.type===_armorType);
+  if(armorItem&&armorEnchants.length>0)armorItem.enchants=JSON.parse(JSON.stringify(armorEnchants));
+  this.equippedArmor=null;this.armorDurability=0;armorEnchants=[];
  }
  draw(){
   const hurtIntensity=this.hurtShake>0?Math.min(this.hurtShake/50,1):0;const sx=this.x-camera.x+(this.hurtShake>0?rand(-3,3)*hurtIntensity:0),sy=this.y-camera.y+(this.hurtShake>0?rand(-2,2)*hurtIntensity:0),now=performance.now();
@@ -6055,7 +6204,7 @@ class Player{
   ctx.save();if(inv&&Math.floor(now/80)%2===0)ctx.globalAlpha=0.4;if(this.hurtShake>0){ctx.globalAlpha=0.3+hurtIntensity*0.3;ctx.fillStyle='rgba(255,50,50,0.3)';ctx.fillRect(sx-5,sy-5,this.w+10,this.h+10);ctx.globalAlpha=1;}
   // 翻滚时旋转
   if(this.isRolling){ctx.translate(sx+this.w/2,sy+this.h/2);ctx.rotate(this.facing*(1-this.rollTimer/280)*Math.PI*2);ctx.translate(-(sx+this.w/2),-(sy+this.h/2));}
-  const bh=this.crouching?this.h*0.6:this.h,by=this.crouching?sy+this.h-bh:sy;
+  const bh=this.crouching?this.h*0.6:this.h;const _walkBob=(this.onGround&&Math.abs(this.vx)>0.5)?Math.abs(Math.sin(this.walkPhase))*1.5:0;const by=this.crouching?sy+this.h-bh:sy-_walkBob;
    // 玩家光晕（黑暗中可见）
    const glowGrad=ctx.createRadialGradient(sx+this.w/2,sy+this.h/2,0,sx+this.w/2,sy+this.h/2,55);
    glowGrad.addColorStop(0,'rgba(120,180,255,0.18)');
@@ -6112,14 +6261,14 @@ class Player{
   const eyeY=by+5;
   if(this.facing>0){ctx.fillRect(sx+this.w-10,eyeY,3,3);}
   else{ctx.fillRect(sx+7,eyeY,3,3);}
-  const moveSpeed=Math.abs(this.vx);const lo=this.onGround&&moveSpeed>0.5?Math.sin(this.animFrame*Math.PI/2)*(4+moveSpeed*0.3):0;
+  const moveSpeed=Math.abs(this.vx);const walkSin=Math.sin(this.walkPhase);const lo=this.onGround&&moveSpeed>0.5?walkSin*(4+moveSpeed*0.3):0;
   // 腿（跳跃时收起）
   const jumpTuck=!this.onGround?(this.vy<0?4:-2):0;
   ctx.fillStyle='#1a1a2a';ctx.fillRect(sx+4,by+bh-14+lo-jumpTuck,8,14+jumpTuck);ctx.fillRect(sx+this.w-12,by+bh-14-lo-jumpTuck,8,14+jumpTuck);
   // 鞋子
   ctx.fillStyle='#0a0a14';ctx.fillRect(sx+3,by+bh-4+lo,10,4);ctx.fillRect(sx+this.w-13,by+bh-4-lo,10,4);
   // 手臂（盔甲护臂）
-  const armSwing=this.onGround&&moveSpeed>0.5?Math.sin(this.animFrame*Math.PI/2)*(4+moveSpeed*0.2):(!this.onGround?3:0);
+  const armSwing=this.onGround&&moveSpeed>0.5?walkSin*(4+moveSpeed*0.2):(!this.onGround?3:0);
   if(this.equippedArmor){
    const _ac=CONFIG.armors.find(a=>a.id===this.equippedArmor);const ac=_ac?_ac.color:'#3a3a5a';
    ctx.fillStyle=ac;ctx.fillRect(sx-2,by+13-armSwing,8,14);
@@ -6183,6 +6332,23 @@ if(this.attackAnim>0&&w.type==='melee'){const ap=Math.max(0,Math.min(1,1-this.at
    ctx.fillStyle=this.equippedArmor?(CONFIG.armors.find(a=>a.id===this.equippedArmor)||{}).color||'#2a2a3a':'#2a2a3a';
    const armX=this.facing>0?sx+this.w-2:sx-6;
    ctx.fillRect(armX+leanX,by+bh/2-4,8,8);
+  }
+  // 鞘翅滑翔翅膀
+  if(this.gliding){
+   const wingFlap=Math.sin(performance.now()*0.02)*3;
+   ctx.fillStyle='rgba(180,200,240,0.8)';
+   ctx.beginPath();
+   ctx.moveTo(sx+this.w/2,by+bh*0.3);
+   ctx.lineTo(sx-15,by+bh*0.15+wingFlap);
+   ctx.lineTo(sx-12,by+bh*0.35+wingFlap);
+   ctx.lineTo(sx+this.w/2,by+bh*0.4);
+   ctx.fill();
+   ctx.beginPath();
+   ctx.moveTo(sx+this.w/2,by+bh*0.3);
+   ctx.lineTo(sx+this.w+15,by+bh*0.15+wingFlap);
+   ctx.lineTo(sx+this.w+12,by+bh*0.35+wingFlap);
+   ctx.lineTo(sx+this.w/2,by+bh*0.4);
+   ctx.fill();
   }
   ctx.restore();
  }
@@ -6725,6 +6891,8 @@ class Enemy{
   else if(type==='ninja'){this.w=28;this.h=46;this.hp=35;this.damage=20;this.speed=3.5*speedMul;this.cloneAbility=true;this.critChance=0.2;}
   else if(type==='witch'){this.w=32;this.h=50;this.hp=32;this.damage=18;this.speed=1.8*speedMul;this.curse=true;this.attackRange=150;this.ranged=true;}
   else if(type==='reaper'){this.w=36;this.h=54;this.hp=70;this.damage=30;this.speed=2.5*speedMul;this.lifesteal=0.3;this.critChance=0.15;}
+  else if(type==='void_walker'){this.w=34;this.h=52;this.hp=120;this.damage=14;this.speed=2.8*speedMul;this.voidTeleport=true;this.knockbackImmune=true;this.lastTeleport=0;this.teleportCD=5000;this.chaseRange=600;}
+  else if(type==='mirror'){this.w=32;this.h=48;this.hp=90;this.damage=18;this.speed=3.2*speedMul;this.mirror=true;this.attackRange=80;this.chaseRange=500;}
   else{this.w=cfg.width;this.h=cfg.height;this.hp=cfg.hp;this.damage=cfg.damage;this.speed=cfg.speed*speedMul;}
   this.maxHp=this.hp;this.vx=0;this.vy=0;this.onGround=false;this.facing=-1;this.lastAttack=0;this.animFrame=0;this.animTimer=0;this.hitFlash=0;this.dead=false;this.attackAnim=0;
   this.attackRange=this.attackRange||cfg.attackRange;this.attackCooldown=cfg.attackCooldown;this.chaseRange=cfg.chaseRange;
@@ -6753,6 +6921,15 @@ class Enemy{
   }
   const now=performance.now();
   const dx=player.x-this.x,adx=Math.abs(dx);
+  // 虚空行者：每5秒瞬移到玩家附近
+  if(this.voidTeleport&&now-this.lastTeleport>this.teleportCD&&adx<this.chaseRange&&adx>80){
+   this.lastTeleport=now;
+   spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#a040ff');
+   const td=rand(60,150);
+   this.x=player.x+(dx>0?-td:td);
+   this.y=player.y;
+   spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#a040ff');
+  }
   if(adx<this.chaseRange){this.facing=dx>0?1:-1;this.vx=this.facing*this.speed;if(this.onGround&&this.shouldJump()){this.vy=-10;this.onGround=false;}}else this.vx*=0.85;
   this.vy+=0.6;if(this.vy>18)this.vy=18;
   this.x+=this.vx;
@@ -6760,7 +6937,7 @@ class Enemy{
    this.y+=this.vy;
   if(this.y+this.h>CONFIG.world.groundY){this.y=CONFIG.world.groundY-this.h;this.vy=0;this.onGround=true;}
   for(const p of platforms){if(rectCollide(this,p)&&this.vy>0&&this.y+this.h-this.vy<=p.y+5){this.y=p.y-this.h;this.vy=0;this.onGround=true;}}
-  if(adx<this.attackRange&&Math.abs(player.y-this.y)<55){if(now-this.lastAttack>this.attackCooldown){this.lastAttack=now;this.attackAnim=300;player.takeDamage(this.damage);this.attackAnim=200;}}
+  if(adx<this.attackRange&&Math.abs(player.y-this.y)<55){if(now-this.lastAttack>this.attackCooldown){this.lastAttack=now;this.attackAnim=200;const mirrorDmg=this.mirror&&player.weapons[player.currentWeapon]?player.weapons[player.currentWeapon].damage*0.8:this.damage;player.takeDamage(mirrorDmg);if(this.mirror)spawnParticles(this.x+this.w/2,this.y+this.h/2,8,player.weapons[player.currentWeapon]?.color||'#fff');}}
   // 燃烧效果
   if(this.burnTimer&&this.burnTimer>0){
    this.burnTimer-=dt;
@@ -6769,35 +6946,69 @@ class Enemy{
    if(this.burnTimer<=0){this.burnTimer=0;}
   }
   this.animTimer+=dt;if(this.animTimer>130){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase+=dt*0.025*Math.abs(this.vx)*(Math.abs(this.vx)>0.5?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;if(this.attackAnim>0)this.attackAnim-=dt;if(this.hurtTimer>0)this.hurtTimer-=dt;
  }
  shouldJump(){const cx=this.x+(this.facing>0?this.w+5:-5),cy=this.y+this.h-10;for(const o of obstacles){if(!o.passable&&cx>o.x&&cx<o.x+o.w&&cy>o.y&&cy<o.y+o.h)return true;}for(const p of platforms){if(cx>p.x&&cx<p.x+p.w&&this.y+this.h<=p.y+10&&this.y+this.h>p.y-55)return true;}return false;}
- takeDamage(amount,fromX){
+ takeDamage(amount,fromX,weapon){
   if(this.hasShield&&this.shieldHp>0&&fromX!==undefined){
    const afr=fromX>this.x+this.w/2;
    const fa=(this.facing>0&&afr)||(this.facing<0&&!afr);
    if(fa){this.shieldHp-=amount;amount*=0.25;playEnhancedHitEffect('block_hit',this.x+this.w/2,this.y+this.h/2);if(this.shieldHp<=0){this.hasShield=false;playEnhancedHitEffect('block_hit',this.x+this.w/2,this.y+this.h/2);}}}
   // 暴击判定
-  const crit=isCritical();let finalDmg=amount;
+  const crit=isCritical(weapon);let finalDmg=amount;
   if(crit){finalDmg=amount*getCritMultiplier();}
   this.hp-=finalDmg;this.hitFlash=140;this.hurtTimer=100;addDamageAccumulator(finalDmg);battleStats.totalDamage+=finalDmg;
   // 使用30种打击效果系统
   const hitType=crit?'critical_hit':(this.type==='elite'?'elite_hit':'enemy_hit');
   playEnhancedHitEffect(hitType,this.x+this.w/2,this.y+this.h/2,finalDmg,crit);
-  // 击退
-  if(fromX!==undefined){const dir=fromX<this.x+this.w/2?1:-1;this.vx+=dir*(crit?8:5);this.vy-=crit?5:3;}
+  // 击退（虚空行者免疫击退）
+  if(fromX!==undefined&&!this.knockbackImmune){const dir=fromX<this.x+this.w/2?1:-1;this.vx+=dir*(crit?8:5);this.vy-=crit?5:3;}
   addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,crit?1.5:1);
-  if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=this.type==='elite'?120:this.type==='normal'?40:65;addKillStreak();battleStats.totalKills++;
+  // 血液喷溅粒子
+  const _sprayDir=fromX!==undefined?(fromX<this.x+this.w/2?1:-1):1;
+  for(let bi=0;bi<(crit?12:6);bi++){
+   const ba=_sprayDir>0?rand(-0.3,0.6):Math.PI+rand(-0.6,0.3);
+   particles.push({x:this.x+this.w/2,y:this.y+this.h/2,vx:Math.cos(ba)*rand(2,6)*_sprayDir,vy:Math.sin(ba)*rand(2,5)-2,life:rand(300,600),maxLife:600,size:rand(2,4),color:'#a02020'});
+  }
+  if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=this.type==='elite'?120:this.type==='normal'?40:65;addKillStreak();battleStats.totalKills++;
    totalKills++;addCombo();
    // 击杀效果（使用新系统）
    playEnhancedHitEffect('kill_effect',this.x+this.w/2,this.y+this.h/2);
    addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,2);
+   // 敌人类型专属死亡粒子
+   const _cx=this.x+this.w/2,_cy=this.y+this.h/2;
+   if(this.type==='elite'){
+    for(let i=0;i<15;i++){
+     particles.push({x:_cx,y:_cy,vx:Math.cos(i*0.42)*rand(3,7),vy:Math.sin(i*0.42)*rand(3,7)-2,life:rand(400,700),maxLife:700,size:rand(3,5),color:'#ff6040'});
+    }
+   }else if(this.type==='shield'){
+    for(let i=0;i<8;i++){
+     particles.push({x:_cx,y:_cy,vx:rand(-3,3),vy:rand(-5,-1),life:rand(300,500),maxLife:500,size:rand(3,6),color:'#8a9aaa'});
+    }
+   }else if(this.type==='sword'){
+    for(let i=0;i<6;i++){
+     particles.push({x:_cx,y:_cy,vx:Math.cos(i*1.05)*rand(2,5),vy:Math.sin(i*1.05)*rand(2,5),life:rand(250,400),maxLife:400,size:rand(2,4),color:'#c0c8d0'});
+    }
+   }else if(this.type==='void_walker'){
+    for(let i=0;i<12;i++){
+     particles.push({x:_cx,y:_cy,vx:rand(-4,4),vy:rand(-5,-1),life:rand(400,700),maxLife:700,size:rand(3,5),color:'#a040ff'});
+    }
+   }
    // 空中击杀成就
    if(!player.onGround&&!achievements.airKill)unlockAchievement('airKill');
    showKillFeed(`击杀 ${this.type==='elite'?'精英怪':this.type==='shield'?'持盾怪':this.type==='sword'?'剑兵':'小怪'} +${this.type==='elite'?120:this.type==='normal'?40:65}`);
    if(Math.random()<0.3)spawnItem(this.x+this.w/2,this.y,'medkit');
    if(Math.random()<0.18)spawnWeaponPickup(this.x+this.w/2,this.y);
+   if(this.type==='elite'&&Math.random()<0.15&&!player.hasElytra)spawnItem(this.x+this.w/2,this.y,'elytra');
    if(Math.random()<0.12&&this.type!=='normal')spawnArmorPickup(this.x+this.w/2,this.y);
+   // 末影珍珠：极稀有掉落（1%）
+   if(Math.random()<0.01)spawnItem(this.x+this.w/2,this.y,'ender_pearl');
+   // 虚空行者专属掉落
+   if(this.type==='void_walker'){
+    if(Math.random()<0.05)spawnItem(this.x+this.w/2,this.y,'ender_pearl');
+    if(Math.random()<0.10)spawnItem(this.x+this.w/2,this.y,'void_fragment');
+   }
    // 掉落食物
    if(Math.random()<0.2){
     const foods=['bread','apple','cabbage','beetroot','carrot'];
@@ -6823,18 +7034,26 @@ class Enemy{
    ctx.save();
    // 影子
    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.ellipse(sx+this.w/2,CONFIG.world.groundY-camera.y+2,this.w/2,5,0,0,Math.PI*2);ctx.fill();
+   // 虚空行者紫色光环
+   if(this.type==='void_walker'){
+    const va=0.15+Math.sin(now*0.003)*0.08;
+    const vg=ctx.createRadialGradient(sx+this.w/2,sy+this.h/2,0,sx+this.w/2,sy+this.h/2,this.h*0.8);
+    vg.addColorStop(0,`rgba(160,60,255,${va})`);vg.addColorStop(1,'rgba(80,0,120,0)');
+    ctx.fillStyle=vg;ctx.fillRect(sx-this.w,sy-this.h*0.3,this.w*3,this.h*1.5);
+   }
    // 受击震动
    const hurtShake=this.hitFlash>0?Math.sin(now*0.05)*2:0;
    const drawX=sx+hurtShake;
    // 行走动画 - 身体上下起伏
    const moving=this.onGround&&Math.abs(this.vx)>0.5;
-   const bodyBob=moving?Math.sin(this.animFrame*Math.PI/2)*2:Math.sin(now*0.003)*1;
+   const _wSin=Math.sin(this.walkPhase||0);
+   const bodyBob=moving?_wSin*2:Math.sin(now*0.003)*1;
    const drawY=sy+bodyBob;
    // 腿部摆动
-   const legSwing=moving?Math.sin(this.animFrame*Math.PI/2)*6:0;
+   const legSwing=moving?_wSin*6:0;
    // 颜色定义
-   const bc=this.hitFlash>0?'#fff':this.type==='elite'?'#3a1a3a':this.type==='shield'?'#1a2a3a':this.type==='sword'?'#3a2a1a':this.type==='skeleton'?'#e8e8d0':this.type==='zombie'?'#2a4a1a':this.type==='ghost'?'#aaccff':this.type==='demon'?'#4a1a1a':this.type==='goblin'?'#3a5a2a':this.type==='orc'?'#4a3a1a':this.type==='troll'?'#3a4a3a':this.type==='vampire'?'#2a0a2a':this.type==='werewolf'?'#4a3a2a':this.type==='dragon'?'#5a2a1a':this.type==='golem'?'#5a5a5a':this.type==='assassin'?'#1a1a2a':this.type==='mage'?'#2a1a4a':this.type==='archer'?'#2a3a1a':this.type==='brute'?'#3a2a2a':this.type==='runner'?'#1a3a3a':this.type==='tank'?'#2a2a3a':this.type==='ninja'?'#0a0a1a':this.type==='witch'?'#3a1a3a':this.type==='reaper'?'#1a0a1a':'#2a0a0a';
-   const bodyColor=this.hitFlash>0?'#fff':this.type==='elite'?'#5a2a5a':this.type==='shield'?'#2a4a5a':this.type==='sword'?'#5a3a2a':this.type==='skeleton'?'#f0f0e0':this.type==='zombie'?'#4a6a2a':this.type==='ghost'?'#ccddff':this.type==='demon'?'#6a2a2a':this.type==='goblin'?'#5a7a3a':this.type==='orc'?'#6a5a2a':this.type==='troll'?'#5a6a4a':this.type==='vampire'?'#4a1a4a':this.type==='werewolf'?'#6a5a3a':this.type==='dragon'?'#7a3a2a':this.type==='golem'?'#7a7a7a':this.type==='assassin'?'#2a2a4a':this.type==='mage'?'#4a2a6a':this.type==='archer'?'#4a5a2a':this.type==='brute'?'#5a3a3a':this.type==='runner'?'#2a5a5a':this.type==='tank'?'#4a4a5a':this.type==='ninja'?'#1a1a3a':this.type==='witch'?'#5a2a5a':this.type==='reaper'?'#2a1a2a':'#3a1010';
+   const bc=this.hitFlash>0?'#fff':this.type==='elite'?'#3a1a3a':this.type==='shield'?'#1a2a3a':this.type==='sword'?'#3a2a1a':this.type==='skeleton'?'#e8e8d0':this.type==='zombie'?'#2a4a1a':this.type==='ghost'?'#aaccff':this.type==='demon'?'#4a1a1a':this.type==='goblin'?'#3a5a2a':this.type==='orc'?'#4a3a1a':this.type==='troll'?'#3a4a3a':this.type==='vampire'?'#2a0a2a':this.type==='werewolf'?'#4a3a2a':this.type==='dragon'?'#5a2a1a':this.type==='golem'?'#5a5a5a':this.type==='assassin'?'#1a1a2a':this.type==='mage'?'#2a1a4a':this.type==='archer'?'#2a3a1a':this.type==='brute'?'#3a2a2a':this.type==='runner'?'#1a3a3a':this.type==='tank'?'#2a2a3a':this.type==='ninja'?'#0a0a1a':this.type==='witch'?'#3a1a3a':this.type==='reaper'?'#1a0a1a':this.type==='void_walker'?'#1a0a2a':this.type==='mirror'?'#2a2a4a':'#2a0a0a';
+   const bodyColor=this.hitFlash>0?'#fff':this.type==='elite'?'#5a2a5a':this.type==='shield'?'#2a4a5a':this.type==='sword'?'#5a3a2a':this.type==='skeleton'?'#f0f0e0':this.type==='zombie'?'#4a6a2a':this.type==='ghost'?'#ccddff':this.type==='demon'?'#6a2a2a':this.type==='goblin'?'#5a7a3a':this.type==='orc'?'#6a5a2a':this.type==='troll'?'#5a6a4a':this.type==='vampire'?'#4a1a4a':this.type==='werewolf'?'#6a5a3a':this.type==='dragon'?'#7a3a2a':this.type==='golem'?'#7a7a7a':this.type==='assassin'?'#2a2a4a':this.type==='mage'?'#4a2a6a':this.type==='archer'?'#4a5a2a':this.type==='brute'?'#5a3a3a':this.type==='runner'?'#2a5a5a':this.type==='tank'?'#4a4a5a':this.type==='ninja'?'#1a1a3a':this.type==='witch'?'#5a2a5a':this.type==='reaper'?'#2a1a2a':this.type==='void_walker'?'#3a1a5a':this.type==='mirror'?'#4a4a7a':'#3a1010';
    // 腿（更生动的摆动）
    ctx.fillStyle=bc;
    ctx.fillRect(drawX+3,drawY+this.h-15+legSwing,9,15);
@@ -6856,7 +7075,7 @@ class Enemy{
    ctx.fillStyle='rgba(255,255,255,0.1)';
    ctx.fillRect(drawX+5,drawY+14,4,this.h-30);
    // 手臂摆动
-   const armSwing=moving?Math.sin(this.animFrame*Math.PI/2)*4:0;
+   const armSwing=moving?_wSin*4:0;
    ctx.fillStyle=bodyColor;
    ctx.fillRect(drawX-1,drawY+16-armSwing,6,14);
    ctx.fillRect(drawX+this.w-5,drawY+16+armSwing,6,14);
@@ -6866,8 +7085,8 @@ class Enemy{
    ctx.ellipse(drawX+this.w/2,drawY+8-bodyBob*0.5,this.w*0.35,9,0,0,Math.PI*2);
    ctx.fill();
    // 眼睛（发光，朝向玩家）
-   const ec=this.type==='elite'?'#ff40ff':this.type==='shield'?'#4080ff':this.type==='sword'?'#ff8040':'#ff0000';
-   ctx.fillStyle=ec;ctx.shadowColor=ec;ctx.shadowBlur=9;
+   const ec=this.type==='elite'?'#ff40ff':this.type==='shield'?'#4080ff':this.type==='sword'?'#ff8040':this.type==='void_walker'?'#a040ff':this.type==='mirror'?'#80c0ff':'#ff0000';
+   ctx.fillStyle=ec;ctx.shadowColor=ec;ctx.shadowBlur=this.type==='void_walker'?15:9;
    const eo=this.facing>0?3:-3;
    const eyeBlink=Math.sin(now*0.002)>0.95?0:1;
    if(eyeBlink){
@@ -6942,13 +7161,16 @@ class Enemy{
    }
    ctx.restore();
    if(this.deathState!=='alive')ctx.restore();
+   else ctx.restore();
   }
 }
 function playerAttack(){
- if(!player||player.dead)return;const now=performance.now();const w=player.getWeapon();
- const actualCooldown=w.cooldown*(1-getEnchantBonus(w,'swiftness'));if(now-player.lastAttack<actualCooldown)return;
+ if(!player||player.dead||player.stunned>0)return;const now=performance.now();const w=player.getWeapon();
+ const actualCooldown=w.cooldown*(1-getArmorEnchantBonus('swiftness'));if(now-player.lastAttack<actualCooldown)return;
  if(w.ammo!==Infinity&&w.ammo<=0){player.switchWeapon(0);return;}
  player.lastAttack=now;player.attackAnim=280;
+ // 攻击前冲（小位移增加打击感）
+ if(w.type==='melee'){player.vx+=player.facing*3;}
  let angle,dx,dy;
  if(gameSettings.mobileMode){
   // 移动端：攻击方向基于玩家朝向（移动方向），不依赖mouse
@@ -6961,19 +7183,29 @@ function playerAttack(){
   angle=Math.atan2(dy,dx);player.facing=dx>0?1:-1;
  }
  if(w.type==='melee'){
+  // 创世神兵远程模式：发射虚空能量弹
+  if(w.id==='creation'&&w.creationMode==='ranged'){
+   if(w.rangedAmmo<=0){w.creationMode='melee';showGuide('🌟 弹药耗尽，切换为近战模式',1500);return;}
+   const cdmg=w.rangedDamage*(1+getEnchantBonus(w,'power'))*player.getDamageMul();
+   bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*12,vy:Math.sin(angle)*12,damage:cdmg,range:w.rangedRange,traveled:0,color:'#e080ff',size:10,type:'ranged',weaponId:'creation',pierceLeft:1,hitEnemies:[]});
+   spawnParticles(player.x+player.w/2,player.y+player.h/2,8,'#e080ff');
+   w.rangedAmmo--;
+   sfxLaser();
+   return;
+  }
   const ab={x:player.facing>0?player.x+player.w:player.x-w.range,y:player.y,w:w.range,h:player.h};
   let hitAny=false;
-  // 附魔：锋利增加伤害
-  let dmg=w.damage*(1+getEnchantBonus(w,'sharpness'));
+  // 附魔：锋利增加伤害 + 力量Buff
+  let dmg=w.damage*(1+getEnchantBonus(w,'sharpness'))*player.getDamageMul();
   // 附魔：击退
   const kbMul=1+getEnchantBonus(w,'knockback');
   for(const e of enemies){if(!e.dead&&rectCollide(ab,e)){
-   e.takeDamage(dmg,player.x+player.w/2);
+   e.takeDamage(dmg,player.x+player.w/2,w);
    e.vx+=player.facing*4*kbMul;e.vy-=3*kbMul;
    // 武器打击效果
    let weaponHitType='normal_hit';
-   if(w.id==='silver_sword')weaponHitType='silver_hit';
-   else if(w.id==='fists')weaponHitType='punch_hit';
+   if(w.id==='sword')weaponHitType='silver_hit';
+   else if(w.id==='fist')weaponHitType='punch_hit';
    const fireDmg=getEnchantBonus(w,'fire_aspect');
    if(fireDmg>0){weaponHitType='fire_hit';e.burnTimer=3000;e.burnDamage=fireDmg;}
    const ls=getEnchantBonus(w,'lifesteal');
@@ -6996,22 +7228,66 @@ function playerAttack(){
    else if(boss.constructor.name==='WitchBoss')bossHitType='witch_hit';
    else if(boss.constructor.name==='WitherStormBoss')bossHitType='witherstorm_hit';
    // 银剑对凋零风暴弱点
-   if(w.id==='silver_sword'&&boss.constructor.name==='WitherStormBoss')bossHitType='weak_hit';
+   if(w.id==='sword'&&boss.constructor.name==='WitherStormBoss')bossHitType='weak_hit';
    playEnhancedHitEffect(bossHitType,boss.x+boss.w/2,boss.y+boss.h/2);
   }
+  // 巫师Boss近战碰撞
+  if(witchBoss&&!witchBoss.dead&&rectCollide(ab,witchBoss)){
+   witchBoss.takeDamage(dmg);
+   const wbLs=getEnchantBonus(w,'lifesteal');
+   if(wbLs>0)player.heal(dmg*wbLs);
+   hitAny=true;
+   playEnhancedHitEffect('witch_hit',witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2);
+  }
   if(hitAny){
-   addHitStop(80);addScreenShake(5,120);sfxHit();
+   // 武器差异化打击感：重武器更长顿帧+更大震动
+   const isHeavy=w.id==='sword'||w.id==='fist';
+   addHitStop(isHeavy?120:60);addScreenShake(isHeavy?7:4,120);sfxHit();
    if(typeof sfxSwordSwing==='function')sfxSwordSwing();
+   // 命中瞬间轻微慢动作（增强打击感）
+   if(isHeavy)addSlowMo(0.6,80);
    // 攻击命中光效
    const hitX=player.facing>0?player.x+player.w+w.range*0.5:player.x-w.range*0.5;
    const hitY=player.y+player.h/2;
    spawnParticles(hitX,hitY,12,w.color);
    spawnParticles(hitX,hitY,6,'#ffffff');
+   // 武器专属命中特效
+   if(w.id==='spear'){
+    // 长枪：穿刺白色闪光+直线冲击
+    for(let i=0;i<6;i++){
+     particles.push({x:hitX,y:hitY,vx:player.facing*rand(6,12),vy:rand(-1,1),life:rand(150,300),maxLife:300,size:rand(2,4),color:'#e0f0ff'});
+    }
+   }else if(w.id==='sword'){
+    // 银剑：银色斩击弧光
+    for(let i=0;i<8;i++){
+     const a=player.facing>0?rand(-0.8,0.8):Math.PI+rand(-0.8,0.8);
+     particles.push({x:hitX,y:hitY,vx:Math.cos(a)*rand(4,8),vy:Math.sin(a)*rand(-4,4),life:rand(200,350),maxLife:350,size:rand(2,4),color:'#e8f0ff'});
+    }
+   }else if(w.id==='fist'){
+    // 拳头：冲击波纹
+    for(let i=0;i<10;i++){
+     particles.push({x:hitX,y:hitY,vx:Math.cos(i*0.63)*rand(3,6),vy:Math.sin(i*0.63)*rand(3,6),life:rand(180,300),maxLife:300,size:rand(2,3),color:'#ffdd80'});
+    }
+   }else if(w.id==='creation'){
+    // 创世神兵：20%概率虚空爆炸
+    if(Math.random()<0.2){
+     for(let i=0;i<20;i++){
+      const a=i*0.314;
+      particles.push({x:hitX,y:hitY,vx:Math.cos(a)*rand(4,10),vy:Math.sin(a)*rand(4,10),life:rand(300,600),maxLife:600,size:rand(3,6),color:'#e080ff'});
+     }
+     addScreenShake(8,200);
+     // 范围伤害
+     for(const e of enemies){if(!e.dead&&dist(e.x+e.w/2,e.y+e.h/2,hitX,hitY)<100){e.takeDamage(50,hitX,w);}}
+     if(boss&&!boss.dead&&dist(boss.x+boss.w/2,boss.y+boss.h/2,hitX,hitY)<100){boss.takeDamage(50,hitX,w.id);}
+    }
+   }
    // 冲击波效果
    for(let i=0;i<8;i++){
     const angle=player.facing>0?rand(-0.5,0.5):Math.PI+rand(-0.5,0.5);
     particles.push({x:hitX,y:hitY,vx:Math.cos(angle)*rand(3,7),vy:Math.sin(angle)*rand(-3,3),life:rand(200,400),maxLife:400,size:rand(2,5),color:w.color});
    }
+   // 屏幕轻微前冲（打击感）
+   camera.x-=player.facing*3;
   }
   // 剑气/刀光效果
   const slashX=player.facing>0?player.x+player.w:player.x-w.range;
@@ -7021,23 +7297,34 @@ function playerAttack(){
    particles.push({x:slashX,y:slashY,vx:Math.cos(sa)*rand(4,8),vy:Math.sin(sa)*rand(-3,3),life:rand(120,250),maxLife:250,size:rand(2,3),color:hitAny?'#ffffff':w.color});
   }
   spawnParticles(ab.x+(player.facing>0?0:w.range),player.y+player.h/2,hitAny?4:2,w.color);
+  // 创世神兵近战：20%概率触发虚空爆炸
+  if(w.id==='creation'&&w.creationMode!=='ranged'&&hitAny&&Math.random()<0.2){
+   const ex=player.x+player.w/2+player.facing*w.range*0.5,ey=player.y+player.h/2;
+   addShockwave(ex,ey,100,'#a040ff',6);addBloom(ex,ey,100,'rgb(160,64,255)',0.6,400);
+   spawnParticles(ex,ey,25,'#a040ff');spawnParticles(ex,ey,15,'#e080ff');
+   addScreenShake(8,200);addHitStop(80);sfxExplosion();
+   for(const e of enemies){if(!e.dead&&dist(ex,ey,e.x+e.w/2,e.y+e.h/2)<100)e.takeDamage(50,ex);}
+   if(boss&&!boss.dead&&dist(ex,ey,boss.x+boss.w/2,boss.y+boss.h/2)<100)boss.takeDamage(50,ex,'creation');
+  }
  }else if(w.type==='ranged'){
-  let dmg=w.damage*(1+getEnchantBonus(w,'power'));
+  let dmg=w.damage*(1+getEnchantBonus(w,'power'))*player.getDamageMul();
   const pierce=getEnchantBonus(w,'piercing');
   bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:dmg,range:w.range,traveled:0,color:w.color,size:4,type:w.type,weaponId:w.id,pierceLeft:pierce,hitEnemies:[]});
   // 附魔：无限 - 概率不消耗弹药
   const inf=getEnchantBonus(w,'infinity');
   if((inf<=0||Math.random()>inf)&&!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }
- else if(w.type==='shotgun'){for(let i=0;i<w.pellets;i++){const a=angle+rand(-w.spread/2,w.spread/2);bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(a)*w.bulletSpeed,vy:Math.sin(a)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power')),range:w.range,traveled:0,color:w.color,size:4,type:w.type,weaponId:w.id,pierceLeft:0,hitEnemies:[]});}w.ammo--;}
+ else if(w.type==='shotgun'){for(let i=0;i<w.pellets;i++){const a=angle+rand(-w.spread/2,w.spread/2);bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(a)*w.bulletSpeed,vy:Math.sin(a)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power'))*player.getDamageMul(),range:w.range,traveled:0,color:w.color,size:4,type:w.type,weaponId:w.id,pierceLeft:0,hitEnemies:[]});}const _sgInf=getEnchantBonus(w,'infinity');if((_sgInf<=0||Math.random()>_sgInf)&&!(devAuthed&&devCheats.infAmmo))w.ammo--;}
  else if(w.type==='laser'){
   const sx=player.x+player.w/2,sy=player.y+player.h/2;const ex=sx+Math.cos(angle)*w.range,ey=sy+Math.sin(angle)*w.range;
   let hp={x:ex,y:ey};
-  for(const e of enemies){if(!e.dead&&lineRect(sx,sy,ex,ey,e)){e.takeDamage(w.damage,player.x+player.w/2);hp={x:e.x+e.w/2,y:e.y+e.h/2};}}
-  if(boss&&!boss.dead&&lineRect(sx,sy,ex,ey,boss)){boss.takeDamage(w.damage);hp={x:boss.x+boss.w/2,y:boss.y+boss.h/2};}
-  bullets.push({x:sx,y:sy,endX:hp.x,endY:hp.y,type:'laser',color:w.color,life:70,damage:0});if(!(devAuthed&&devCheats.infAmmo))w.ammo--;
+  const _laserDmg=w.damage*(1+getEnchantBonus(w,'power'))*player.getDamageMul();
+  for(const e of enemies){if(!e.dead&&lineRect(sx,sy,ex,ey,e)){e.takeDamage(_laserDmg,player.x+player.w/2);hp={x:e.x+e.w/2,y:e.y+e.h/2};}}
+  if(boss&&!boss.dead&&lineRect(sx,sy,ex,ey,boss)){boss.takeDamage(_laserDmg);hp={x:boss.x+boss.w/2,y:boss.y+boss.h/2};}
+  if(witchBoss&&!witchBoss.dead&&lineRect(sx,sy,ex,ey,witchBoss)){witchBoss.takeDamage(_laserDmg);hp={x:witchBoss.x+witchBoss.w/2,y:witchBoss.y+witchBoss.h/2};}
+  bullets.push({x:sx,y:sy,endX:hp.x,endY:hp.y,type:'laser',color:w.color,life:70,damage:0});const _lsInf=getEnchantBonus(w,'infinity');if((_lsInf<=0||Math.random()>_lsInf)&&!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }else if(w.type==='rocket'){
-  const b={x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power')),range:w.range,traveled:0,color:w.color,size:7,type:w.type,isRocket:true,explosionRadius:w.explosionRadius,weaponId:w.id};bullets.push(b);if(!(devAuthed&&devCheats.infAmmo))w.ammo--;
+  const b={x:player.x+player.w/2,y:player.y+player.h/2,vx:Math.cos(angle)*w.bulletSpeed,vy:Math.sin(angle)*w.bulletSpeed,damage:w.damage*(1+getEnchantBonus(w,'power'))*player.getDamageMul(),range:w.range,traveled:0,color:w.color,size:7,type:w.type,isRocket:true,explosionRadius:w.explosionRadius,weaponId:w.id};bullets.push(b);const _rkInf=getEnchantBonus(w,'infinity');if((_rkInf<=0||Math.random()>_rkInf)&&!(devAuthed&&devCheats.infAmmo))w.ammo--;
  }
  updateWeaponBar();
 }
@@ -7047,28 +7334,49 @@ function playerInteract(){
  for(const d of doors){if(!d.open&&dist(player.x+player.w/2,player.y+player.h/2,d.x+d.w/2,d.y+d.h/2)<ir){
   if(d.locked){if(player.hasItem('key')){player.removeItem('key');d.locked=false;d.open=true;score+=80;spawnParticles(d.x+d.w/2,d.y+d.h/2,10,'#e0c020');}else showInteractHint('需要钥匙！',d.x+d.w/2,d.y-20);}
   else{d.open=true;score+=15;spawnParticles(d.x+d.w/2,d.y+d.h/2,8,'#8a8aaa');showInteractHint('门已打开！',d.x+d.w/2,d.y-20);}return;}}
- for(const item of items){if(!item.collected&&dist(player.x+player.w/2,player.y+player.h/2,item.x,item.y)<ir){item.collected=true;player.addItem(item.type);if(item.type==='lapis_lazuli')lapisCount++;
+ for(const item of items){if(!item.collected&&dist(player.x+player.w/2,player.y+player.h/2,item.x,item.y)<ir){item.collected=true;if(!item.type.startsWith('rune_'))player.addItem(item.type);if(item.type==='lapis_lazuli')lapisCount++;
   if(item.type==='medkit')player.heal(CONFIG.items.medkit.heal);
   if(item.type==='repairkit'&&player.equippedArmor){const _armorDef=CONFIG.armors.find(a=>a.id===player.equippedArmor);if(_armorDef)player.armorDurability=Math.min(_armorDef.maxDurability,player.armorDurability+CONFIG.items.repairkit.repair);}
+  if(item.type==='repairkit'&&player.hasElytra){player.elytraDurability=Math.min(player.elytraMaxDurability,player.elytraDurability+CONFIG.items.repairkit.repair);}
+  if(item.type==='elytra'&&!player.hasElytra){player.hasElytra=true;player.elytraDurability=player.elytraMaxDurability;showGuide('🪽 获得鞘翅！空中按空格展开滑翔！',3000);}
+  if(item.type==='skull'&&currentLevel===2){showGuide('💀 获得洪荒骷髅！即将进入下一关...',2000);setTimeout(()=>{if(gameState==='playing')nextLevel();},1500);}
+  if(item.type==='rune_power'){player.addBuff('rune_power',10000);showGuide('🔴 力量符文！伤害×2，持续10秒！',2500);spawnParticles(item.x,item.y,15,'#ff4040');}
+  if(item.type==='rune_shield'){player.addBuff('rune_shield',15000);showGuide('🔵 护盾符文！免疫伤害，持续15秒！',2500);spawnParticles(item.x,item.y,15,'#4080ff');}
+  if(item.type==='rune_heal'){player.heal(CONFIG.player.maxHp*0.5);showGuide('🟢 治愈符文！回复50%生命！',2500);spawnParticles(item.x,item.y,15,'#40ff40');}
+  if(item.type==='rune_speed'){player.addBuff('rune_speed',8000);showGuide('🟡 速度符文！移速×2，持续8秒！',2500);spawnParticles(item.x,item.y,15,'#ffd040');}
   score+=8;spawnParticles(item.x,item.y,6,'#c0a040');sfxPickup();return;}}
 }
 function pickupNearby(){
  if(!player)return;
+ for(const item of items){if(!item.collected&&dist(player.x+player.w/2,player.y+player.h/2,item.x,item.y)<80){item.collected=true;if(!item.type.startsWith('rune_'))player.addItem(item.type);if(item.type==='lapis_lazuli')lapisCount++;
+  if(item.type==='medkit')player.heal(CONFIG.items.medkit.heal);
+  if(item.type==='repairkit'&&player.equippedArmor){const _armorDef=CONFIG.armors.find(a=>a.id===player.equippedArmor);if(_armorDef)player.armorDurability=Math.min(_armorDef.maxDurability,player.armorDurability+CONFIG.items.repairkit.repair);}
+  if(item.type==='repairkit'&&player.hasElytra){player.elytraDurability=Math.min(player.elytraMaxDurability,player.elytraDurability+CONFIG.items.repairkit.repair);}
+  if(item.type==='elytra'&&!player.hasElytra){player.hasElytra=true;player.elytraDurability=player.elytraMaxDurability;showGuide('🪽 获得鞘翅！空中按空格展开滑翔！',3000);}
+  if(item.type==='skull'&&currentLevel===2){showGuide('💀 获得洪荒骷髅！即将进入下一关...',2000);setTimeout(()=>{if(gameState==='playing')nextLevel();},1500);}
+  if(item.type==='creation_weapon'){const w=player.weapons.find(w=>w.id==='creation');if(w&&!w.unlocked){w.unlocked=true;w.rangedAmmo=w.rangedAmmoMax||50;showGuide('🌟 获得创世神兵·原初！按V切换近/远程模式，R释放创世裁决！',4000);}else if(w){w.rangedAmmo=Math.min(w.rangedAmmoMax||50,(w.rangedAmmo||0)+20);}}
+  if(item.type==='void_armor'){player.addItem('void_armor');showGuide('🌀 获得虚空护甲！致命伤有30%概率触发虚空回溯！',3500);}
+  // 创世符文效果
+  if(item.type==='rune_power'){player.addBuff('rune_power',10000);showGuide('🔴 力量符文！伤害×2，持续10秒！',2500);spawnParticles(item.x,item.y,15,'#ff4040');}
+  if(item.type==='rune_shield'){player.addBuff('rune_shield',15000);showGuide('🔵 护盾符文！免疫伤害，持续15秒！',2500);spawnParticles(item.x,item.y,15,'#4080ff');}
+  if(item.type==='rune_heal'){player.heal(CONFIG.player.maxHp*0.5);showGuide('🟢 治愈符文！回复50%生命！',2500);spawnParticles(item.x,item.y,15,'#40ff40');}
+  if(item.type==='rune_speed'){player.addBuff('rune_speed',8000);showGuide('🟡 速度符文！移速×2，持续8秒！',2500);spawnParticles(item.x,item.y,15,'#ffd040');}
+  score+=8;spawnParticles(item.x,item.y,6,'#c0a040');sfxPickup();showInteractHint('获得 '+item.type,item.x,item.y-20);return;}}
  for(let i=weaponPickups.length-1;i>=0;i--){const wp=weaponPickups[i];if(dist(player.x+player.w/2,player.y+player.h/2,wp.x,wp.y)<55){const w=player.weapons.find(w=>w.id===wp.weaponId);if(w){if(!w.unlocked){w.unlocked=true;showInteractHint(`获得 ${w.name}！`,wp.x,wp.y-20);if(!achievements.firstWeapon)unlockAchievement('firstWeapon');}else{w.ammo=Math.min(w.ammo+wp.ammo,w.ammo+wp.ammo);showInteractHint(`${w.name} 弹药+${wp.ammo}`,wp.x,wp.y-20);}score+=25;weaponPickups.splice(i,1);spawnParticles(wp.x,wp.y,8,w.color);updateWeaponBar();sfxPickup();}return;}}
  for(let i=armorPickups.length-1;i>=0;i--){const ap=armorPickups[i];if(dist(player.x+player.w/2,player.y+player.h/2,ap.x,ap.y)<55){player.addItem(ap.armorId+'_armor');const a=CONFIG.armors.find(a=>a.id===ap.armorId);showInteractHint(`获得 ${a.name}！`,ap.x,ap.y-20);score+=30;armorPickups.splice(i,1);spawnParticles(ap.x,ap.y,8,a.color);sfxPickup();
   // 检查全盔甲收集
-  const owned=player.inventory.filter(i=>i.type.endsWith('_armor')).map(i=>i.type.replace('_armor',''));
+  const owned=player.inventory.filter(i=>i&&i.type.endsWith('_armor')).map(i=>i.type.replace('_armor',''));
   if(player.equippedArmor&&!owned.includes(player.equippedArmor))owned.push(player.equippedArmor);
   if(owned.length>=5&&!achievements.allArmor)unlockAchievement('allArmor');
   return;}}
 }
-function spawnWeaponPickup(x,y){const ids=['sword','pistol','shotgun','laser','rocket'];const id=ids[randInt(0,ids.length-1)];const w=CONFIG.weapons.find(w=>w.id===id);weaponPickups.push({x,y:y-18,weaponId:id,ammo:Math.floor(w.ammo*0.5),bob:rand(0,6.28)});}
+function spawnWeaponPickup(x,y){const ids=['sword','pistol','shotgun','laser','rocket','spear'];const id=ids[randInt(0,ids.length-1)];const w=CONFIG.weapons.find(w=>w.id===id);weaponPickups.push({x,y:y-18,weaponId:id,ammo:Math.floor(w.ammo*0.5),bob:rand(0,6.28)});}
 function spawnArmorPickup(x,y){const ids=['cloth','leather','chain','plate'];const id=ids[randInt(0,ids.length-1)];armorPickups.push({x,y:y-18,armorId:id,bob:rand(0,6.28)});}
 function spawnItem(x,y,t){items.push({x,y:y-18,type:t,collected:false,bob:rand(0,6.28)});}
 
 class HongHuangBoss{
- constructor(x,y){const c={width:110,height:150,maxHp:2800,speed:0.9,damage:12,laserDmg:10,laserCD:5000,laserCharge:1500,laserDur:600,tentacleDmg:9,tentacleCD:6000,tentacleN:3,tentacleR:200,teleportCD:8000,tpMin:180,tpMax:320};
-  Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLaser=0;this.lastTentacle=0;this.lastTeleport=0;this.laserState='idle';this.laserTimer=0;this.laserAngle=0;this.tpEffect=0;this.arenaLeft=x-380;this.arenaRight=x+380;this.name='洪 荒 战 神';this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
+ constructor(x,y){const c={width:110,height:150,maxHp:2000,speed:0.8,damage:9,laserDmg:7,laserCD:5000,laserCharge:1500,laserDur:600,tentacleDmg:6,tentacleCD:6000,tentacleN:3,tentacleR:200,teleportCD:8000,tpMin:180,tpMax:320};
+  Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLaser=0;this.lastTentacle=0;this.lastTeleport=0;this.laserState='idle';this.laserTimer=0;this.laserAngle=0;this.tpEffect=0;this.arenaLeft=x-550;this.arenaRight=x+550;this.name='洪 荒 战 神';this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
   // 初始坐标验证
   if(isNaN(this.x)||isNaN(this.y)){this.x=900;this.y=CONFIG.world.groundY-this.h;}
   if(this.y+this.h>CONFIG.world.groundY+10){this.y=CONFIG.world.groundY-this.h;}
@@ -7112,6 +7420,7 @@ class HongHuangBoss{
   const tpcd=this.phase===2?this.teleportCD*0.75:this.teleportCD;
   if(now-this.lastTeleport>tpcd){this.teleport();this.lastTeleport=now;}
   this.animTimer+=dt;if(this.animTimer>160){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.015*Math.abs(this.vx)*(Math.abs(this.vx)>0.3?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;if(this.tpEffect>0)this.tpEffect-=dt;
  }
  startLaser(){this.laserState='charging';this.laserTimer=this.laserCharge;const dx=player.x+player.w/2-(this.x+this.w/2),dy=player.y+player.h/2-(this.y+this.h/3);this.laserAngle=Math.atan2(dy,dx);}
@@ -7122,7 +7431,7 @@ class HongHuangBoss{
  pInLaser(px,py){if(!laserBeam)return false;const dx=px-laserBeam.x,dy=py-laserBeam.y;const proj=dx*Math.cos(laserBeam.angle)+dy*Math.sin(laserBeam.angle);const perp=-dx*Math.sin(laserBeam.angle)+dy*Math.cos(laserBeam.angle);return proj>0&&proj<900&&Math.abs(perp)<laserBeam.width/2+14;}
  spawnTentacles(){const n=this.phase===2?this.tentacleN+2:this.tentacleN;for(let i=0;i<n;i++){const tx=player.x+rand(-this.tentacleR,this.tentacleR);tentacles.push({x:tx,y:CONFIG.world.groundY,targetY:CONFIG.world.groundY-90,currentY:CONFIG.world.groundY,state:'rising',timer:0,damage:this.tentacleDmg,hit:false,width:22});}}
  teleport(){spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');const a=rand(0,6.28),d=rand(this.tpMin,this.tpMax);let nx=player.x+Math.cos(a)*d;nx=clamp(nx,this.arenaLeft,this.arenaRight-this.w);this.x=nx;this.y=CONFIG.world.groundY-this.h;this.tpEffect=350;spawnParticles(this.x+this.w/2,this.y+this.h/2,18,'#c040ff');}
- takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1100);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;if(currentCheckpoint)currentCheckpoint.bossHp=this.hp;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#ff6060');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1800;addScreenShake(18,600);addSlowMo(0.25,800);addHitStop(200);for(let i=0;i<4;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),18,'#ff8040'),i*140);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'skull');if(!achievements.beatHonghuang)unlockAchievement('beatHonghuang');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');},1100);setTimeout(()=>{if(gameState==='playing'&&!player.hasItem('skull'))nextLevel();},3500);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7150,7 +7459,7 @@ class HongHuangBoss{
   ctx.fillStyle=auraGrad;ctx.fillRect(sx-this.w,drawY-this.h*0.3,this.w*3,this.h*1.5);
   const fl=this.hitFlash>0;const bc=fl?'#fff':this.phase===2?'#5a1580':'#4a1a2a';const ac=fl?'#fff':this.phase===2?'#7a2aa0':'#6a2a3a';
   // 腿部（行走摆动）
-  const lo=Math.sin(this.animFrame*Math.PI/2)*5;
+  const lo=Math.sin(this.walkPhase||0)*5;
   ctx.fillStyle=bc;ctx.fillRect(sx+13,drawY+this.h-38+lo,23,38);ctx.fillRect(sx+this.w-36,drawY+this.h-38-lo,23,38);
   // 脚
   ctx.fillStyle='#1a0a1a';ctx.fillRect(sx+11,drawY+this.h-6+lo,27,6);ctx.fillRect(sx+this.w-38,drawY+this.h-6-lo,27,6);
@@ -7168,7 +7477,7 @@ class HongHuangBoss{
   ctx.fillStyle=bc;ctx.beginPath();ctx.moveTo(sx+5,drawY+42);ctx.lineTo(sx-5,drawY+30);ctx.lineTo(sx+12,drawY+45);ctx.fill();
   ctx.beginPath();ctx.moveTo(sx+this.w-5,drawY+42);ctx.lineTo(sx+this.w+5,drawY+30);ctx.lineTo(sx+this.w-12,drawY+45);ctx.fill();
   // 手臂（随动画摆动）
-  const as=Math.sin(this.animFrame*Math.PI/2)*7;
+  const as=Math.sin(this.walkPhase||0)*7;
   ctx.fillStyle=bc;ctx.fillRect(sx-4,drawY+53+as,18,42);ctx.fillRect(sx+this.w-14,drawY+53-as,18,42);
   // 手臂高光
   ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(sx-3,drawY+54+as,4,40);
@@ -7198,8 +7507,8 @@ class HongHuangBoss{
 }
 
 class TianZunBoss{
- constructor(x,y){const c={width:130,height:170,maxHp:4500,speed:0.75,damage:16,lightningDmg:13,lightningCD:4200,lightningN:3,fireDmg:12,fireCD:3500,fireN:4,blockCD:8500,blockDur:1800,healThresh:0.2,healRate:6,hammerDmg:25,hammerCD:4500,hammerR:120};
-  Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLightning=0;this.lastFire=0;this.lastBlock=0;this.lastHammer=0;this.blocking=false;this.blockTimer=0;this.healing=false;this.hammerMode=false;this.hammerSwing=0;this.arenaLeft=x-420;this.arenaRight=x+420;this.name='万 物 天 尊';this.summonEff=50;this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;}
+ constructor(x,y){const c={width:130,height:170,maxHp:3200,speed:0.7,damage:12,lightningDmg:9,lightningCD:4200,lightningN:3,fireDmg:8,fireCD:3500,fireN:4,blockCD:8500,blockDur:1800,healThresh:0.2,healRate:6,hammerDmg:18,hammerCD:4500,hammerR:120};
+  Object.assign(this,c);this.w=c.width;this.h=c.height;this.x=x;this.y=y;this.hp=c.maxHp;this.maxHp=c.maxHp;this.vx=0;this.vy=0;this.facing=-1;this.dead=false;this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;this.lastLightning=0;this.lastFire=0;this.lastBlock=0;this.lastHammer=0;this.blocking=false;this.blockTimer=0;this.healing=false;this.hammerMode=false;this.hammerSwing=0;this.arenaLeft=x-600;this.arenaRight=x+600;this.name='万 物 天 尊';this.summonEff=50;this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;}
  update(dt){
   // 坐标保护：防止NaN或跑出区域
   if(isNaN(this.x)||isNaN(this.y)||this.y>CONFIG.world.groundY+200||this.y<-500){this.x=clamp(this.x,(this.arenaLeft||0),(this.arenaRight||9999)-this.w);this.y=CONFIG.world.groundY-this.h;this.vx=0;this.vy=0;}
@@ -7240,12 +7549,13 @@ class TianZunBoss{
   if(this.hammerMode&&now-this.lastHammer>this.hammerCD&&this.summonEff<=0){this.castHammer();this.lastHammer=now;}
   if(this.hammerSwing>0)this.hammerSwing-=dt;
   this.animTimer+=dt;if(this.animTimer>160){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.015*Math.abs(this.vx)*(Math.abs(this.vx)>0.3?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
  castLightning(){for(let i=0;i<this.lightningN;i++){const lx=player.x+rand(-130,130);lightnings.push({x:lx,y:CONFIG.world.groundY-280,currentY:CONFIG.world.groundY-280,state:'warning',timer:480,damage:this.lightningDmg,width:28});}}
  castFire(){for(let i=0;i<this.fireN;i++){const angle=Math.atan2(player.y-(this.y+this.h/3),player.x-(this.x+this.w/2))+rand(-0.25,0.25);fireballs.push({x:this.x+this.w/2,y:this.y+this.h/3,vx:Math.cos(angle)*5.5,vy:Math.sin(angle)*5.5-2,damage:this.fireDmg,size:13,life:2800,gravity:0.14});}}
  castHammer(){this.hammerSwing=380;setTimeout(()=>{if(this.dead)return;const hx=this.x+this.w/2+this.facing*75;spawnParticles(hx,CONFIG.world.groundY,25,'#ffd040');if(dist(player.x+player.w/2,player.y+player.h/2,hx,CONFIG.world.groundY-35)<this.hammerR){player.takeDamage(this.hammerDmg);player.vy=-9;}for(let i=0;i<7;i++)particles.push({x:hx,y:CONFIG.world.groundY-8,vx:rand(-7,7),vy:rand(-5,-1),life:450,maxLife:450,size:rand(3,7),color:'#ffd040'});},180);}
- takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');if(gameState==='playing')nextLevel();},1300);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;if(this.blocking){a*=0.12;spawnParticles(this.x+this.w/2,this.y+this.h/2,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h/2,3,'#ffffff');}this.hp-=a;if(currentCheckpoint)currentCheckpoint.bossHp=this.hp;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffd060');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=4000;addScreenShake(20,700);addSlowMo(0.2,900);addHitStop(250);for(let i=0;i<7;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),22,'#ffd040'),i*110);setTimeout(()=>{spawnItem(this.x+this.w/2,this.y,'totem');spawnItem(this.x+this.w/2+35,this.y,'gold_apple');if(!achievements.beatTianzun)unlockAchievement('beatTianzun');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');},1300);setTimeout(()=>{if(gameState==='playing')nextLevel();},3500);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7266,7 +7576,7 @@ class TianZunBoss{
   ctx.fillStyle=rc;ctx.beginPath();ctx.moveTo(sx+13,sy+38);ctx.lineTo(sx+this.w-13,sy+38);ctx.lineTo(sx+this.w-4,sy+this.h);ctx.lineTo(sx+4,sy+this.h);ctx.closePath();ctx.fill();
   ctx.fillStyle=tc;ctx.fillRect(sx+this.w/2-3,sy+43,6,this.h-48);
   ctx.fillStyle=fl?'#fff':this.phase===2?'#c0a040':'#6a4a8a';ctx.beginPath();ctx.arc(sx+17,sy+46,18,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(sx+this.w-17,sy+46,18,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=rc;const as=Math.sin(this.animFrame*Math.PI/2)*5;ctx.fillRect(sx-7,sy+48+as,22,52);ctx.fillRect(sx+this.w-15,sy+48-as,22,52);
+  ctx.fillStyle=rc;const as=Math.sin(this.walkPhase||0)*5;ctx.fillRect(sx-7,sy+48+as,22,52);ctx.fillRect(sx+this.w-15,sy+48-as,22,52);
   ctx.fillStyle=tc;ctx.beginPath();ctx.arc(sx+4,sy+105+as,13,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(sx+this.w-4,sy+105-as,13,0,Math.PI*2);ctx.fill();
   ctx.fillStyle=rc;ctx.beginPath();ctx.ellipse(sx+this.w/2,sy+26,30,26,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle='#0a0a0a';ctx.beginPath();ctx.ellipse(sx+this.w/2,sy+28,19,17,0,0,Math.PI*2);ctx.fill();
@@ -7282,16 +7592,16 @@ class TianZunBoss{
 
 class HammerGuard{
  constructor(x,y,level=1){
-  this.x=x;this.y=y;this.w=60;this.h=85;
-  this.hp=level===2?480:320;this.maxHp=this.hp;
-  this.damage=level===2?22:18;this.speed=0.7;
+  this.x=x;this.y=y;this.w=85;this.h=125;
+  this.hp=level===2?420:300;this.maxHp=this.hp;
+  this.damage=level===2?17:14;this.speed=0.7;
   this.vx=0;this.vy=0;this.onGround=false;this.facing=-1;
   this.lastAttack=0;this.lastSlam=0;this.animFrame=0;this.animTimer=0;
   this.hitFlash=0;this.dead=false;this.isBoss=true;this.isGuard=true;
   this.slamWindup=0;this.slamState='idle';
   this.name=level===2?'精 炼 重 锤 守 卫':'重 锤 守 卫';
   this.guardLevel=level;this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
-   this.arenaLeft=x-300;this.arenaRight=x+300;
+   this.arenaLeft=x-450;this.arenaRight=x+450;
  }
  update(dt){
   // 坐标保护：防止NaN或跑出区域
@@ -7329,58 +7639,64 @@ class HammerGuard{
    this.vx=0;this.slamWindup-=dt;
    if(this.slamWindup<=0){this.slamState='strike';this.slamWindup=200;
     // 判定伤害
-    if(Math.abs(player.x-this.x)<95&&Math.abs(player.y-this.y)<80){player.takeDamage(this.damage);player.vy=-8;}
-    spawnParticles(this.x+this.w/2+this.facing*50,CONFIG.world.groundY,15,'#c0a060');
+    if(Math.abs(player.x-this.x)<110&&Math.abs(player.y-this.y)<90){player.takeDamage(this.damage);player.vy=-9;}
+    addScreenShake(8,250);addHitStop(50);
+    spawnParticles(this.x+this.w/2+this.facing*60,CONFIG.world.groundY,20,'#c0a060');
+    spawnParticles(this.x+this.w/2+this.facing*60,CONFIG.world.groundY,10,'#ff6020');
    }
   }else if(this.slamState==='strike'){
    this.slamWindup-=dt;if(this.slamWindup<=0)this.slamState='idle';
   }else if(this.slamState==='jumping'){
    if(this.onGround&&this.vy===0){this.slamState='idle';
     // 落地砸击
-    if(dist(player.x+player.w/2,player.y+player.h/2,this.x+this.w/2,CONFIG.world.groundY)<100){player.takeDamage(this.damage*0.8);player.vy=-10;}
-    spawnParticles(this.x+this.w/2,CONFIG.world.groundY,20,'#c0a060');
+    if(dist(player.x+player.w/2,player.y+player.h/2,this.x+this.w/2,CONFIG.world.groundY)<120){player.takeDamage(this.damage*0.8);player.vy=-11;}
+    addScreenShake(12,350);addHitStop(60);
+    spawnParticles(this.x+this.w/2,CONFIG.world.groundY,25,'#c0a060');
+    spawnParticles(this.x+this.w/2,CONFIG.world.groundY,15,'#ff8040');
    }
   }
   this.vy+=0.6;if(this.vy>18)this.vy=18;
   this.x+=this.vx;this.y+=this.vy;
   if(this.y+this.h>CONFIG.world.groundY){this.y=CONFIG.world.groundY-this.h;this.vy=0;this.onGround=true;}
   this.animTimer+=dt;if(this.animTimer>180){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.012*Math.abs(this.vx)*(Math.abs(this.vx)>0.3?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;if(currentCheckpoint)currentCheckpoint.bossHp=this.hp;this.hitFlash=140;showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);addScreenShake(2,60);if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=600;addScreenShake(10,300);addHitStop(120);spawnParticles(this.x+this.w/2,this.y+this.h/2,20,'#c0a060');spawnParticles(this.x+this.w/2,this.y+this.h/2,12,'#8a7a5a');addBloodSplat(this.x+this.w/2,CONFIG.world.groundY-3,1.5);spawnItem(this.x+this.w/2,this.y,'medkit');if(Math.random()<0.5)spawnArmorPickup(this.x+this.w/2,this.y);
    if(Math.random()<0.3)spawnItem(this.x+this.w/2+25,this.y,'gold_apple');if(!achievements.beatGuard)unlockAchievement('beatGuard');updateBossBar();}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
+  const W=this.w,H=this.h;
   ctx.save();
   if(this.deathState!=='alive'){
    ctx.globalAlpha=this.deathAlpha;
-   ctx.translate(sx+this.w/2,sy+this.h/2);
+   ctx.translate(sx+W/2,sy+H/2);
    ctx.rotate(this.deathAngle*(this.facing>0?1:-1));
-   ctx.translate(-(sx+this.w/2),-(sy+this.h/2));
+   ctx.translate(-(sx+W/2),-(sy+H/2));
   }
-  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();ctx.ellipse(sx+this.w/2,CONFIG.world.groundY-camera.y+3,this.w/2,8,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();ctx.ellipse(sx+W/2,CONFIG.world.groundY-camera.y+4,W/2,10,0,0,Math.PI*2);ctx.fill();
   const fl=this.hitFlash>0;const bc=fl?'#fff':this.guardLevel===2?'#4a3a1a':'#3a3a2a';
   // 身体（重甲）
-  ctx.fillStyle=bc;ctx.fillRect(sx+5,sy+25,this.w-10,this.h-35);
-  ctx.fillStyle=fl?'#fff':this.guardLevel===2?'#6a5a2a':'#5a5a3a';ctx.fillRect(sx+8,sy+28,this.w-16,8);
+  ctx.fillStyle=bc;ctx.fillRect(sx+W*0.08,sy+H*0.28,W*0.84,H*0.6);
+  ctx.fillStyle=fl?'#fff':this.guardLevel===2?'#6a5a2a':'#5a5a3a';ctx.fillRect(sx+W*0.12,sy+H*0.31,W*0.76,H*0.07);
   // 头盔
-  ctx.fillStyle=bc;ctx.fillRect(sx+12,sy+5,this.w-24,22);
-  ctx.fillStyle='#ff4040';ctx.shadowColor='#ff4040';ctx.shadowBlur=8;ctx.fillRect(sx+this.w/2-8+this.facing*3,sy+13,5,4);ctx.fillRect(sx+this.w/2+3+this.facing*3,sy+13,5,4);ctx.shadowBlur=0;
+  ctx.fillStyle=bc;ctx.fillRect(sx+W*0.18,sy+H*0.06,W*0.64,H*0.2);
+  ctx.fillStyle='#ff4040';ctx.shadowColor='#ff4040';ctx.shadowBlur=8;ctx.fillRect(sx+W/2-W*0.13+this.facing*W*0.04,sy+H*0.15,W*0.08,H*0.04);ctx.fillRect(sx+W/2+W*0.05+this.facing*W*0.04,sy+H*0.15,W*0.08,H*0.04);ctx.shadowBlur=0;
   // 腿
-  const lo=Math.sin(this.animFrame*Math.PI/2)*3;
-  ctx.fillStyle=bc;ctx.fillRect(sx+10,sy+this.h-18+lo,15,18);ctx.fillRect(sx+this.w-25,sy+this.h-18-lo,15,18);
+  const lo=Math.sin(this.walkPhase||0)*4;
+  ctx.fillStyle=bc;ctx.fillRect(sx+W*0.13,sy+H-22+lo,W*0.22,22);ctx.fillRect(sx+W*0.65,sy+H-22-lo,W*0.22,22);
   // 重锤
-  const windupOffset=this.slamState==='windup'?-20:this.slamState==='strike'?25:0;
-  const hx=this.facing>0?sx+this.w-5:sx-35;
-  const hy=sy+30+windupOffset;
-  ctx.save();ctx.translate(hx+18,hy+20);ctx.rotate(this.facing>0?0.3+windupOffset*0.02:-0.3-windupOffset*0.02);
-  ctx.fillStyle='#5a4a2a';ctx.fillRect(-3,-5,6,40);
-  ctx.fillStyle=this.guardLevel===2?'#c0a040':'#8a7a5a';ctx.shadowColor=this.guardLevel===2?'#c0a040':'#8a7a5a';ctx.shadowBlur=8;ctx.fillRect(-18,-15,36,22);ctx.shadowBlur=0;
-  ctx.fillStyle=this.guardLevel===2?'#e0c060':'#aaa080';ctx.fillRect(-15,-13,30,6);
+  const windupOffset=this.slamState==='windup'?-28:this.slamState==='strike'?32:0;
+  const hx=this.facing>0?sx+W-8:sx-48;
+  const hy=sy+H*0.32+windupOffset;
+  ctx.save();ctx.translate(hx+22,hy+24);ctx.rotate(this.facing>0?0.3+windupOffset*0.02:-0.3-windupOffset*0.02);
+  ctx.fillStyle='#5a4a2a';ctx.fillRect(-4,-6,8,52);
+  ctx.fillStyle=this.guardLevel===2?'#c0a040':'#8a7a5a';ctx.shadowColor=this.guardLevel===2?'#c0a040':'#8a7a5a';ctx.shadowBlur=10;ctx.fillRect(-24,-18,48,28);ctx.shadowBlur=0;
+  ctx.fillStyle=this.guardLevel===2?'#e0c060':'#aaa080';ctx.fillRect(-20,-15,40,8);
   ctx.restore();
   // 蓄力预警
-  if(this.slamState==='windup'){ctx.fillStyle='rgba(255,100,0,0.3)';ctx.beginPath();ctx.arc(sx+this.w/2+this.facing*50,CONFIG.world.groundY-camera.y,50,0,Math.PI*2);ctx.fill();}
+  if(this.slamState==='windup'){ctx.fillStyle='rgba(255,100,0,0.3)';ctx.beginPath();ctx.arc(sx+W/2+this.facing*60,CONFIG.world.groundY-camera.y,65,0,Math.PI*2);ctx.fill();}
   ctx.restore();
  }
 }
@@ -7390,13 +7706,13 @@ class StarDeathBoss{
   const ph=CONFIG.player.height;
   this.x=x;this.y=y;
   this.w=70;this.h=ph*5; // 5个玩家高
-  this.hp=6500;this.maxHp=6500;
-  this.speed=0.55;this.damage=22;
+  this.hp=4500;this.maxHp=4500;
+  this.speed=0.5;this.damage=16;
   this.vx=0;this.vy=0;this.facing=-1;this.dead=false;
   this.phase=1;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.lastSlash=0;this.lastVertSlash=0;this.lastSnake=0;
   this.slashWindup=0;this.slashState='idle';this.slashType='horizontal';
-  this.arenaLeft=x-450;this.arenaRight=x+450;
+  this.arenaLeft=x-650;this.arenaRight=x+650;
   this.name='星 辉 死 神';
   this.snakeBlade=false;this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1; // 半血后拿出星辉蛇刃
  }
@@ -7461,9 +7777,10 @@ class StarDeathBoss{
   this.x=clamp(this.x,this.arenaLeft,this.arenaRight-this.w);
   if(rectCollide(this,player)){player.takeDamage(this.damage*0.7);player.vx=(player.x<this.x?-1:1)*10;}
   this.animTimer+=dt;if(this.animTimer>200){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.012*Math.abs(this.vx)*(Math.abs(this.vx)>0.2?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
- takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');nextLevel();},1500);}}
+ takeDamage(a){if(this.dead)return;if(devAuthed&&devCheats.oneHit)a=999999;this.hp-=a;if(currentCheckpoint)currentCheckpoint.bossHp=this.hp;this.hitFlash=130;showDamageNumber(this.x+this.w/2,this.y+this.h*0.3,a,false,false);addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h*0.3,5,'#80c0ff');spawnParticles(this.x+this.w/2,this.y+this.h*0.3,3,'#ffffff');updateBossBar();if(this.hp<=0){this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=8000;addScreenShake(25,800);addSlowMo(0.15,1000);addHitStop(300);for(let i=0;i<10;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),25,'#80c0ff'),i*100);setTimeout(()=>{spawnArmorPickupSpecific(this.x+this.w/2,this.y,'star');spawnWeaponPickup(this.x+this.w/2-60,this.y);spawnItem(this.x+this.w/2+60,this.y,'medkit');if(!achievements.beatStarDeath)unlockAchievement('beatStarDeath');if(!achievements.survivor)unlockAchievement('survivor');if(player.hp<CONFIG.player.maxHp*0.2&&!achievements.berserker)unlockAchievement('berserker');},1500);setTimeout(()=>{if(gameState==='playing')nextLevel();},4000);}}
  draw(){
   if(this.deathState==='removed')return;
   const sx=this.x-camera.x,sy=this.y-camera.y;
@@ -7505,7 +7822,7 @@ class StarDeathBoss{
   for(let i=0;i<4;i++){ctx.fillRect(sx+10,sy+this.h*(0.28+i*0.08),this.w-20,4);}
   // 手臂
   ctx.fillStyle=rc;
-  const armSwing=Math.sin(this.animFrame*Math.PI/2)*8;
+  const armSwing=Math.sin(this.walkPhase||0)*8;
   ctx.fillRect(sx-12,sy+this.h*0.25+armSwing,22,this.h*0.35);
   ctx.fillRect(sx+this.w-10,sy+this.h*0.25-armSwing,22,this.h*0.35);
   // 手（骨爪）
@@ -7536,8 +7853,8 @@ class StarDeathBoss{
    ctx.shadowBlur=0;
    // 剑柄
    ctx.fillStyle='#5a4a2a';ctx.fillRect(-15,-6,15,12);
-   ctx.restore();
   }
+  ctx.restore();
   ctx.restore();
   // 蓄力预警
   if(this.slashState==='windup'){
@@ -7550,16 +7867,18 @@ class StarDeathBoss{
 }
 function spawnArmorPickupSpecific(x,y,id){armorPickups.push({x,y:y-18,armorId:id,bob:rand(0,6.28)});}
 function trySummon(){
- if(currentLevel!==5||!altar||boss)return;
+ if(currentLevel!==5){showGuide('⚠️ 只能在第五关（召唤之殿）召唤万物天尊！',2500);return;}
+ if(!altar){showGuide('⚠️ 召唤台未找到！请重新进入本关。',2500);return;}
+ if(boss){return;}
  if(dist(player.x+player.w/2,player.y+player.h/2,altar.x+altar.w/2,altar.y+altar.h/2)>110){showInteractHint('靠近召唤台 (按H召唤)',altar.x+altar.w/2,altar.y-20,'H');return;}
- if(!player.hasItem('skull')){showInteractHint('需要洪荒骷髅！(按H召唤)',altar.x+altar.w/2,altar.y-20,'H');return;}
+ if(!player.hasItem('skull')){showGuide('⚠️ 需要洪荒骷髅！先击败第二关洪荒战神获取骷髅！',3000);return;}
  player.removeItem('skull');altar.activated=true;
  spawnParticles(altar.x+altar.w/2,altar.y+altar.h/2,35,'#c080ff');
  if(!achievements.summonTianzun)unlockAchievement('summonTianzun');
  setTimeout(()=>{
   if(gameState!=='playing')return;
   boss=new TianZunBoss(altar.x+altar.w/2-65,CONFIG.world.groundY-160);
-  boss.arenaLeft=altar.x-480;boss.arenaRight=altar.x+480;
+  boss.arenaLeft=altar.x-600;boss.arenaRight=altar.x+600;
   document.getElementById('bossName').textContent='万 物 天 尊';
   document.getElementById('bossBar').style.display='block';updateBossBar();
   showLevelBanner('终极之战','万物天尊');
@@ -7573,7 +7892,7 @@ function syncBirthCheckpoint(n){
  const cp=checkpoints.find(c=>c.activated);
  if(!cp)return;
  currentCheckpoint={level:n,x:cp.x,y:cp.y,hp:player.hp,
-  weapons:JSON.parse(JSON.stringify(player.weapons)),
+  weapons:JSON.parse(JSON.stringify(player.weapons)),currentWeapon:player.currentWeapon,
   armor:player.equippedArmor,armorDur:player.armorDurability,
   inventory:JSON.parse(JSON.stringify(player.inventory)),
   foodSlots:JSON.parse(JSON.stringify(foodSlots)),
@@ -7581,7 +7900,7 @@ function syncBirthCheckpoint(n){
   bossHp:boss?boss.hp:null,witchBossHp:witchBoss?witchBoss.hp:null,witherStormHp:witherStorm?witherStorm.hp:null};
 }
 function generateLevel(n){
- platforms=[];obstacles=[];items=[];weaponPickups=[];armorPickups=[];doors=[];enemies=[];particles=[];bullets=[];tentacles=[];laserBeam=null;lightnings=[];fireballs=[];boss=null;witchBoss=null;witherStorm=null;trader=null;portal=null;altar=null;checkpoints=[];lastPlatformX=400;portalTriggered=false;arenaClearTriggered=false;
+ platforms=[];obstacles=[];items=[];weaponPickups=[];armorPickups=[];doors=[];enemies=[];particles=[];bullets=[];tentacles=[];laserBeam=null;lightnings=[];fireballs=[];boss=null;witchBoss=null;witherStorm=null;trader=null;portal=null;altar=null;checkpoints=[];lastPlatformX=400;portalTriggered=false;arenaClearTriggered=false;gravityZones=[];hiddenPortal=null;
  // 巨大优化：根据关卡设置天气
  const levelWeather={1:'fog',2:'none',3:'rain',4:'none',5:'none',6:'none',7:'none',8:'snow',9:'fog',10:'storm'};
  setWeather(levelWeather[n]||'none',0.6);
@@ -7654,6 +7973,37 @@ function generateLevel(n){
   // 守卫也算Boss显示血条（显示第一个）
   document.getElementById('bossName').textContent='重 锤 守 卫';
   document.getElementById('bossBar').style.display='block';updateBossBar();
+ }else if(lvl.type==='void'){
+  // 第十一关：虚空走廊 + 虚空创世神Boss战
+  setQuest('穿越虚空走廊，击败虚空创世神',0,1);
+  platforms.push({x:200,y:CONFIG.world.groundY-110,w:140,h:16});
+  const vChunks=Math.ceil(lvl.distance/200);
+  for(let i=0;i<vChunks;i++)genVoidChunk();
+  // Boss竞技场
+  const arenaX=lastPlatformX+400;
+  platforms.push({x:arenaX-100,y:CONFIG.world.groundY-110,w:200,h:16});
+  // 边界柱
+  obstacles.push({x:arenaX-800,y:CONFIG.world.groundY-250,w:30,h:250,passable:true,type:'pillar'});
+  obstacles.push({x:arenaX+770,y:CONFIG.world.groundY-250,w:30,h:250,passable:true,type:'pillar'});
+  // 竞技场平台
+  platforms.push({x:arenaX-300,y:CONFIG.world.groundY-180,w:120,h:16});
+  platforms.push({x:arenaX+180,y:CONFIG.world.groundY-180,w:120,h:16});
+  platforms.push({x:arenaX-60,y:CONFIG.world.groundY-280,w:120,h:16});
+  // 生成虚空创世神
+  boss=new VoidCreatorBoss(arenaX,CONFIG.world.groundY-200);
+  document.getElementById('bossName').textContent='虚 空 创 世 神 · 原 初';
+  document.getElementById('bossBar').style.display='block';updateBossBar();
+  // 补给
+  spawnItem(arenaX-400,CONFIG.world.groundY,'medkit');
+  spawnItem(arenaX+350,CONFIG.world.groundY,'gold_apple');
+  spawnItem(arenaX-200,CONFIG.world.groundY,'ender_pearl');
+  // 存档点
+  checkpoints.push({x:200,y:CONFIG.world.groundY-CONFIG.player.height,activated:true});
+  checkpoints.push({x:arenaX-500,y:CONFIG.world.groundY-CONFIG.player.height,activated:false});
+  player.x=200;player.y=CONFIG.world.groundY-player.h;
+  camera.x=player.x-canvas.width*0.35;
+  // Boss出场
+  setTimeout(()=>{if(gameState==='playing')startBossIntro('voidcreator');},800);
  }
  syncBirthCheckpoint(n);
 }
@@ -7663,6 +8013,40 @@ function genChunk(lvl){
  if(Math.random()<0.15){const ox=x+rand(0,80),oh=rand(20,40);obstacles.push({x:ox,y:CONFIG.world.groundY-oh,w:rand(18,35),h:oh,passable:false,type:'spike'});}
  if(Math.random()<0.15&&x>500){const dh=80;doors.push({x:x+rand(40,130),y:CONFIG.world.groundY-dh,w:45,h:dh,open:false,locked:Math.random()<0.3});}
  if(Math.random()<0.22){const ts=['medkit','battery','key'];items.push({x:x+rand(0,180),y:CONFIG.world.groundY-18,type:ts[randInt(0,ts.length-1)],collected:false,bob:rand(0,6.28)});}
+ lastPlatformX=x+180;
+}
+function genVoidChunk(){
+ const bx=lastPlatformX,gap=rand(180,320),x=bx+gap;
+ // 不稳定平台（50%概率）：3秒循环消失/出现
+ if(Math.random()<0.6){
+  const py=CONFIG.world.groundY-rand(80,180),pw=rand(100,180);
+  platforms.push({x,y:py,w:pw,h:16,unstable:true,phase:rand(0,3000),cycle:3000,visible:true});
+  if(Math.random()<0.3){items.push({x:x+pw/2,y:py-18,type:'medkit',collected:false,bob:rand(0,6.28)});}
+ }else{
+  // 稳定平台
+  const py=CONFIG.world.groundY-rand(60,150),pw=rand(100,200);
+  platforms.push({x,y:py,w:pw,h:16});
+ }
+ // 重力异常区（30%概率）：重力减半区域
+ if(Math.random()<0.3){
+  gravityZones.push({x:x+rand(-50,50),y:CONFIG.world.groundY-300,w:rand(150,250),h:300,scale:0.5});
+ }
+ // 虚空行者
+ if(Math.random()<0.4&&x>500){
+  enemies.push(new Enemy(x+rand(0,100),CONFIG.world.groundY,'void_walker',1));
+ }
+ // 镜像怪
+ if(Math.random()<0.25&&x>800){
+  enemies.push(new Enemy(x+rand(0,80),CONFIG.world.groundY,'mirror',1));
+ }
+ // 创世符文（20%概率）
+ if(Math.random()<0.2){
+  const runeTypes=['power','shield','heal','speed'];
+  const rt=runeTypes[randInt(0,3)];
+  items.push({x:x+rand(0,120),y:CONFIG.world.groundY-rand(80,160),type:'rune_'+rt,collected:false,bob:rand(0,6.28),runeType:rt});
+ }
+ // 补给
+ if(Math.random()<0.2){items.push({x:x+rand(0,150),y:CONFIG.world.groundY-18,type:Math.random()<0.5?'medkit':'bread',collected:false,bob:rand(0,6.28)});}
  lastPlatformX=x+180;
 }
 function spawnEnemy(){
@@ -8270,7 +8654,7 @@ function useWeaponSkill(){
  const dir=player.facing>0?1:-1;
  skill.current=skill.cooldown;
  // 根据武器类型执行技能
- if(player.weapons[player.currentWeapon].id==='fists'){
+ if(player.weapons[player.currentWeapon].id==='fist'){
   // 爆裂拳：范围冲击波
   addShockwave(wx,wy,skill.range,'#ffaa44',8);
   addBloom(wx,wy,150,'rgb(255,170,68)',0.8,500);
@@ -8278,9 +8662,10 @@ function useWeaponSkill(){
   addScreenShake(12,300);addHitStop(100);
   for(const e of enemies){if(!e.dead&&dist(wx,wy,e.x+e.w/2,e.y+e.h/2)<skill.range){e.takeDamage(skill.damage,wx);addHitRating('perfect');}}
   if(boss&&!boss.dead&&dist(wx,wy,boss.x+boss.w/2,boss.y+boss.h/2)<skill.range)boss.takeDamage(skill.damage,wx);
+  if(witchBoss&&!witchBoss.dead&&dist(wx,wy,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<skill.range)witchBoss.takeDamage(skill.damage);
   spawnParticles(wx,wy,30,'#ffaa44');
  }
- else if(player.weapons[player.currentWeapon].id==='silver_sword'){
+ else if(player.weapons[player.currentWeapon].id==='sword'){
   // 银月斩：大范围剑气
   addEnergyRing(wx,wy,skill.range,'#c0c0ff');
   addShockwave(wx,wy,skill.range*0.8,'#aaddff',5);
@@ -8288,6 +8673,7 @@ function useWeaponSkill(){
   addScreenShake(8,200);addHitStop(80);
   for(const e of enemies){if(!e.dead&&Math.abs(e.x-wx)<skill.range&&Math.abs(e.y-wy)<150){e.takeDamage(skill.damage,wx);addHitRating('perfect');}}
   if(boss&&!boss.dead&&Math.abs(boss.x-wx)<skill.range)boss.takeDamage(skill.damage,wx);
+  if(witchBoss&&!witchBoss.dead&&Math.abs(witchBoss.x-wx)<skill.range)witchBoss.takeDamage(skill.damage);
   spawnParticles(wx,wy,25,'#c0c0ff');
  }
  else if(player.weapons[player.currentWeapon].id==='pistol'){
@@ -8309,9 +8695,22 @@ function useWeaponSkill(){
   addScreenShake(10,250);addHitStop(90);
   for(const e of enemies){if(!e.dead&&dist(wx,wy,e.x+e.w/2,e.y+e.h/2)<skill.range&&(e.x-wx)*dir>0){e.takeDamage(skill.damage,wx);e.burning=3000;addHitRating('perfect');}}
   if(boss&&!boss.dead&&(boss.x-wx)*dir>0&&dist(wx,wy,boss.x+boss.w/2,boss.y+boss.h/2)<skill.range)boss.takeDamage(skill.damage,wx);
+  if(witchBoss&&!witchBoss.dead&&(witchBoss.x-wx)*dir>0&&dist(wx,wy,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<skill.range)witchBoss.takeDamage(skill.damage);
   for(let i=0;i<40;i++){spawnParticles(wx+dir*rand(0,100),wy+rand(-30,30),1,'#ff6600');}
  }
- else if(player.weapons[player.currentWeapon].id==='laser_gun'){
+ else if(player.weapons[player.currentWeapon].id==='spear'){
+  // 龙牙突刺：超远距离穿刺
+  addShockwave(wx+dir*150,wy,skill.range*0.5,'#80c0e0',6);
+  addEnergyRing(wx+dir*skill.range/2,wy,skill.range*0.6,'#a0e0ff');
+  addBloom(wx+dir*skill.range/2,wy,200,'rgb(128,192,224)',0.8,600);
+  triggerScreenFlash('#80c0e0',0.4,300);
+  addScreenShake(10,250);addHitStop(90);
+  for(const e of enemies){if(!e.dead&&Math.abs(e.y-wy)<100&&(e.x-wx)*dir>0&&e.x<wx+dir*skill.range){e.takeDamage(skill.damage,wx);addHitRating('perfect');}}
+  if(boss&&!boss.dead&&(boss.x-wx)*dir>0&&dist(wx,wy,boss.x+boss.w/2,boss.y+boss.h/2)<skill.range)boss.takeDamage(skill.damage,wx);
+  if(witchBoss&&!witchBoss.dead&&(witchBoss.x-wx)*dir>0&&dist(wx,wy,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<skill.range)witchBoss.takeDamage(skill.damage);
+  for(let i=0;i<20;i++){spawnParticles(wx+dir*rand(0,skill.range),wy+rand(-20,20),1,'#e0f0ff');}
+ }
+ else if(player.weapons[player.currentWeapon].id==='laser'){
   // 超载激光：贯穿激光
   laserBeam={x:wx,y:wy-10,endX:wx+dir*skill.range,endY:wy-10,life:800,maxLife:800,damage:skill.damage,color:'#44ffff',width:12};
   addBloom(wx+dir*skill.range/2,wy,250,'rgb(68,255,255)',1,800);
@@ -8319,8 +8718,9 @@ function useWeaponSkill(){
   addScreenShake(15,400);addHitStop(120);addSlowMo(0.3,300);
   for(const e of enemies){if(!e.dead&&Math.abs(e.y-wy)<80&&(e.x-wx)*dir>0&&e.x<wx+dir*skill.range){e.takeDamage(skill.damage,wx);addHitRating('perfect');}}
   if(boss&&!boss.dead&&Math.abs(boss.y-wy)<100)boss.takeDamage(skill.damage,wx);
+  if(witchBoss&&!witchBoss.dead&&Math.abs(witchBoss.y-wy)<100)witchBoss.takeDamage(skill.damage);
  }
- else if(player.weapons[player.currentWeapon].id==='rocket_launcher'){
+ else if(player.weapons[player.currentWeapon].id==='rocket'){
   // 核弹：超大范围爆炸
   const nukeX=wx+dir*300,nukeY=wy;
   setTimeout(()=>{
@@ -8332,11 +8732,26 @@ function useWeaponSkill(){
    addTimeRift(nukeX,nukeY,150);
    for(const e of enemies){if(!e.dead&&dist(nukeX,nukeY,e.x+e.w/2,e.y+e.h/2)<skill.range){e.takeDamage(skill.damage,nukeX);addHitRating('perfect');}}
    if(boss&&!boss.dead&&dist(nukeX,nukeY,boss.x+boss.w/2,boss.y+boss.h/2)<skill.range)boss.takeDamage(skill.damage,nukeX);
+   if(witchBoss&&!witchBoss.dead&&dist(nukeX,nukeY,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<skill.range)witchBoss.takeDamage(skill.damage);
    if(dist(nukeX,nukeY,player.x+player.w/2,player.y+player.h/2)<skill.range*0.5)player.takeDamage(30);
    spawnParticles(nukeX,nukeY,80,'#ff4400');spawnParticles(nukeX,nukeY,50,'#ffdd44');spawnParticles(nukeX,nukeY,30,'#ffffff');
   },500);
   // 发射火箭
   bullets.push({x:wx,y:wy-10,vx:dir*12,vy:0,damage:0,range:300,traveled:0,type:'rocket',color:'#ff4400',size:8,isRocket:true,explosionRadius:0,weaponId:'rocket_launcher'});
+ }
+ else if(player.weapons[player.currentWeapon].id==='creation'){
+  // 创世裁决：虚空能量爆发，超大范围伤害
+  addShockwave(wx,wy,skill.range,'#e080ff',15);
+  addEnergyRing(wx,wy,skill.range*1.2,'#a040ff');
+  addEnergyRing(wx,wy,skill.range*0.6,'#ff80ff');
+  addBloom(wx,wy,400,'rgb(224,128,255)',1.5,1000);
+  triggerScreenFlash('#e080ff',0.7,500);
+  addScreenShake(20,500);addHitStop(150);addSlowMo(0.2,400);
+  for(const e of enemies){if(!e.dead&&dist(wx,wy,e.x+e.w/2,e.y+e.h/2)<skill.range){e.takeDamage(skill.damage,wx);addHitRating('perfect');}}
+  if(boss&&!boss.dead&&dist(wx,wy,boss.x+boss.w/2,boss.y+boss.h/2)<skill.range)boss.takeDamage(skill.damage,wx,'creation');
+  if(witchBoss&&!witchBoss.dead&&dist(wx,wy,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<skill.range)witchBoss.takeDamage(skill.damage);
+  for(let i=0;i<60;i++){spawnParticles(wx+rand(-skill.range,skill.range),wy+rand(-100,100),rand(3,8),'#e080ff');}
+  for(let i=0;i<30;i++){spawnParticles(wx+rand(-skill.range,skill.range),wy+rand(-100,100),rand(2,5),'#a040ff');}
  }
  addLensFlare(wx,wy,100,'rgb(255,220,100)',0.5,700);showFloatingText(wx,wy-50,skill.name+'!','#ffdd44',28);
  battleStats.weaponUsage[player.weapons[player.currentWeapon].id]=(battleStats.weaponUsage[player.weapons[player.currentWeapon].id]||0)+1;
@@ -8350,16 +8765,16 @@ function updateWeaponCooldowns(dt){
 function drawSkillCooldownUI(){
  const skill=getCurrentWeaponSkill();
  if(!skill)return;
- const sx=canvas.width/2-60,sy=canvas.height-100,w=120,h=50;
+ const sx=canvas.width/2-55,sy=canvas.height-155,w=110,h=42;
  ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(sx,sy,w,h);
  ctx.strokeStyle=skill.current<=0?'#ffdd44':'#666666';ctx.lineWidth=2;ctx.strokeRect(sx,sy,w,h);
- ctx.font='bold 14px Arial';ctx.fillStyle=skill.current<=0?'#ffdd44':'#888888';ctx.textAlign='center';
- ctx.fillText(skill.name,sx+w/2,sy+20);
+ ctx.font='bold 13px Arial';ctx.fillStyle=skill.current<=0?'#ffdd44':'#888888';ctx.textAlign='center';
+ ctx.fillText(skill.name,sx+w/2,sy+18);
  if(skill.current>0){
   ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(sx,sy,w,h*(skill.current/skill.cooldown));
-  ctx.font='16px Arial';ctx.fillStyle='#ffffff';ctx.fillText(Math.ceil(skill.current/1000)+'s',sx+w/2,sy+38);
+  ctx.font='14px Arial';ctx.fillStyle='#ffffff';ctx.fillText(Math.ceil(skill.current/1000)+'s',sx+w/2,sy+34);
  }else{
-  ctx.font='12px Arial';ctx.fillStyle='#88ff88';ctx.fillText('[R] 释放',sx+w/2,sy+38);
+  ctx.font='11px Arial';ctx.fillStyle='#88ff88';ctx.fillText('[R] 释放',sx+w/2,sy+34);
  }
 }
 
@@ -9086,12 +9501,17 @@ function updateBullets(dt){
   if(isNaN(b.x)||isNaN(b.y)||(b.vx!==undefined&&isNaN(b.vx))){bullets.splice(i,1);continue;}
   if(b.type==='laser'&&!b.vx){b.life-=dt;if(b.life<=0)bullets.splice(i,1);continue;}
   b.x+=b.vx;b.y+=b.vy;b.traveled+=Math.sqrt(b.vx**2+b.vy**2);
+  // Boss子弹：检测与玩家碰撞
+  if(b.fromBoss&&!player.dead&&b.x>player.x&&b.x<player.x+player.w&&b.y>player.y&&b.y<player.y+player.h){
+   player.takeDamage(b.damage);spawnParticles(b.x,b.y,8,b.color);bullets.splice(i,1);continue;
+  }
   let hit=false;
   for(const e of enemies){
    if(!e.dead&&b.x>e.x&&b.x<e.x+e.w&&b.y>e.y&&b.y<e.y+e.h){
     // 穿透检查
     if(b.hitEnemies&&b.hitEnemies.includes(e))continue;
-    e.takeDamage(b.damage,b.x);
+    const _bWpn=player.weapons.find(w=>w.id===b.weaponId);
+    e.takeDamage(b.damage,b.x,_bWpn);
     // 远程武器打击效果
     let bulletHitType='gunshot_hit';
     if(b.type==='shotgun')bulletHitType='shotgun_hit';
@@ -9112,10 +9532,14 @@ function updateBullets(dt){
     if(boss.constructor.name==='WitherStormBoss'&&b.type==='laser')bossBulletType='weak_hit';
     playEnhancedHitEffect(bossBulletType,boss.x+boss.w/2,boss.y+boss.h/2);
    }
+   if(!hit&&witchBoss&&!witchBoss.dead&&b.x>witchBoss.x&&b.x<witchBoss.x+witchBoss.w&&b.y>witchBoss.y&&b.y<witchBoss.y+witchBoss.h){
+    witchBoss.takeDamage(b.damage);hit=true;addHitStop(30);addScreenShake(2,80);if(b.isRocket)explode(b);
+    playEnhancedHitEffect('witch_hit',witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2);
+   }
    if(hit||b.traveled>b.range||b.y>CONFIG.world.groundY+40){if(b.isRocket&&!hit)explode(b);bullets.splice(i,1);}
   }
  }
-function explode(b){spawnParticles(b.x,b.y,25,'#ff8040');sfxExplosion();spawnParticles(b.x,b.y,15,'#ffc040');spawnParticles(b.x,b.y,10,'#ff4020');addScreenShake(10,250);addHitStop(100);addSlowMo(0.5,200);addBloodSplat(b.x,CONFIG.world.groundY-3,1.5);for(const e of enemies){if(!e.dead&&dist(b.x,b.y,e.x+e.w/2,e.y+e.h/2)<b.explosionRadius){e.takeDamage(b.damage*0.6,b.x);if(e.hp<=0&&!achievements.rocketKill)unlockAchievement('rocketKill');}}if(boss&&!boss.dead&&dist(b.x,b.y,boss.x+boss.w/2,boss.y+boss.h/2)<b.explosionRadius)boss.takeDamage(b.damage*0.6,b.x,b.weaponId);if(dist(b.x,b.y,player.x+player.w/2,player.y+player.h/2)<b.explosionRadius*0.6)player.takeDamage(8);}
+function explode(b){spawnParticles(b.x,b.y,25,'#ff8040');sfxExplosion();spawnParticles(b.x,b.y,15,'#ffc040');spawnParticles(b.x,b.y,10,'#ff4020');addScreenShake(10,250);addHitStop(100);addSlowMo(0.5,200);addBloodSplat(b.x,CONFIG.world.groundY-3,1.5);for(const e of enemies){if(!e.dead&&dist(b.x,b.y,e.x+e.w/2,e.y+e.h/2)<b.explosionRadius){e.takeDamage(b.damage*0.6,b.x,player.weapons.find(w=>w.id===b.weaponId));if(e.hp<=0&&!achievements.rocketKill)unlockAchievement('rocketKill');}}if(boss&&!boss.dead&&dist(b.x,b.y,boss.x+boss.w/2,boss.y+boss.h/2)<b.explosionRadius)boss.takeDamage(b.damage*0.6,b.x,b.weaponId);if(witchBoss&&!witchBoss.dead&&dist(b.x,b.y,witchBoss.x+witchBoss.w/2,witchBoss.y+witchBoss.h/2)<b.explosionRadius)witchBoss.takeDamage(b.damage*0.6);if(dist(b.x,b.y,player.x+player.w/2,player.y+player.h/2)<b.explosionRadius*0.6)player.takeDamage(8);}
 function drawBullets(){
  for(const b of bullets){
   // 【防御】跳过NaN坐标子弹，防止绘制异常
@@ -9180,9 +9604,12 @@ function drawTentacles(){
 }
 function drawLaserBeam(){
  if(!laserBeam)return;const sx=laserBeam.x-camera.x,sy=laserBeam.y-camera.y;
- const ex=sx+Math.cos(laserBeam.angle)*900,ey=sy+Math.sin(laserBeam.angle)*900;
- ctx.strokeStyle='rgba(255,60,60,0.25)';ctx.lineWidth=laserBeam.width+16;ctx.shadowColor='#ff4040';ctx.shadowBlur=25;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
- ctx.strokeStyle='#fff';ctx.lineWidth=laserBeam.width*0.35;ctx.shadowBlur=12;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();ctx.shadowBlur=0;
+ let ex,ey;
+ if(laserBeam.angle!==undefined){ex=sx+Math.cos(laserBeam.angle)*900;ey=sy+Math.sin(laserBeam.angle)*900;}
+ else{ex=(laserBeam.endX||laserBeam.x)-camera.x;ey=(laserBeam.endY||laserBeam.y)-camera.y;}
+ const fade=laserBeam.life!==undefined?(laserBeam.life/(laserBeam.maxLife||1)):1;
+ ctx.strokeStyle=(laserBeam.color||'rgba(255,60,60,0.25)');ctx.globalAlpha=0.25*fade;ctx.lineWidth=(laserBeam.width||18)+16;ctx.shadowColor='#ff4040';ctx.shadowBlur=25;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
+ ctx.strokeStyle='#fff';ctx.globalAlpha=fade;ctx.lineWidth=(laserBeam.width||18)*0.35;ctx.shadowBlur=12;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1;
 }
 function updateLightnings(dt){
  for(let i=lightnings.length-1;i>=0;i--){
@@ -9217,7 +9644,7 @@ function drawFireballs(){
 function drawBackground(){
  const grad=ctx.createLinearGradient(0,0,0,canvas.height);
  const colors=[['#1a1a2e','#1e1e32','#141420'],['#120a14','#1a0a1a','#0e0610'],['#140e08','#1c140a','#0e0a04'],['#1a0808','#220a0a','#100404'],['#0a0818','#100a22','#060410'],['#18140a','#201a0e','#0e0c06'],['#1a1008','#24160c','#100804'],['#080c18','#0a1020','#04060e']];
- const c=colors[(currentLevel-1)%8];
+ const c=currentLevel===11?['#0a0218','#120628','#050110']:colors[(currentLevel-1)%8];
  grad.addColorStop(0,c[0]);grad.addColorStop(0.5,c[1]);grad.addColorStop(1,c[2]);
  ctx.fillStyle=grad;ctx.fillRect(0,0,canvas.width,canvas.height);
  // 漂浮尘埃粒子
@@ -9230,6 +9657,24 @@ function drawBackground(){
   ctx.beginPath();ctx.arc(px,py,size,0,Math.PI*2);ctx.fill();
  }
  ctx.fillStyle=c[2];const p1=camera.x*0.18;
+ // 星空
+ ctx.fillStyle='rgba(255,255,255,0.6)';
+ for(let i=0;i<30;i++){
+  const sx=((i*67.3+camera.x*0.02)%canvas.width);
+  const sy=(i*37.7)%(canvas.height*0.5);
+  const tw=0.3+Math.sin(performance.now()*0.002+i)*0.3;
+  ctx.globalAlpha=tw;
+  ctx.fillRect(sx,sy,1.5,1.5);
+ }
+ ctx.globalAlpha=1;
+ // 月亮
+ const mx=canvas.width*0.8-camera.x*0.05,my=canvas.height*0.2-camera.y*0.02;
+ const moonGrad=ctx.createRadialGradient(mx,my,5,mx,my,40);
+ moonGrad.addColorStop(0,'rgba(255,250,220,0.9)');
+ moonGrad.addColorStop(0.5,'rgba(255,240,180,0.3)');
+ moonGrad.addColorStop(1,'rgba(255,240,180,0)');
+ ctx.fillStyle=moonGrad;ctx.beginPath();ctx.arc(mx,my,40,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='rgba(255,250,220,0.9)';ctx.beginPath();ctx.arc(mx,my,18,0,Math.PI*2);ctx.fill();
  for(let i=0;i<18;i++){const tx=(i*220-p1%220)-110;const th=130+Math.sin(i*1.7)*45;ctx.beginPath();ctx.moveTo(tx,CONFIG.world.groundY-camera.y);ctx.lineTo(tx+28,CONFIG.world.groundY-camera.y-th);ctx.lineTo(tx+56,CONFIG.world.groundY-camera.y);ctx.fill();}
  ctx.fillStyle=c[1];const p2=camera.x*0.35;
  for(let i=0;i<13;i++){const tx=(i*300-p2%300)-150;const th=180+Math.sin(i*2.3)*55;ctx.beginPath();ctx.moveTo(tx,CONFIG.world.groundY-camera.y);ctx.lineTo(tx+38,CONFIG.world.groundY-camera.y-th);ctx.lineTo(tx+76,CONFIG.world.groundY-camera.y);ctx.fill();}
@@ -9269,10 +9714,20 @@ function drawBackground(){
   }
   ctx.globalAlpha=1;
  }
+ if(currentLevel===11){
+  // 虚空走廊 - 漂浮的紫色虚空粒子
+  for(let i=0;i<30;i++){
+   const wx=((i*97+weatherT*(20+i%4)*0.5+camera.x*0.06)%(canvas.width+60))-30;
+   const wy=((i*63+weatherT*(10+i%6)*0.4+Math.sin(weatherT*0.001+i)*30)%(canvas.height*0.95));
+   const ps=2+Math.sin(weatherT*0.003+i)*1.5;
+   ctx.fillStyle=`rgba(${140+Math.sin(i)*40},${40+Math.cos(i)*20},${200+Math.sin(i*2)*40},${0.25+Math.sin(weatherT*0.002+i)*0.15})`;
+   ctx.beginPath();ctx.arc(wx,wy,ps,0,Math.PI*2);ctx.fill();
+  }
+ }
 }
 function drawGround(){
  const gy=CONFIG.world.groundY-camera.y;
- const gc=currentLevel===3?'#1a1610':currentLevel===4?'#1a0a0a':currentLevel===6?'#1a160c':currentLevel===7?'#1c1208':currentLevel===8?'#0a0e1a':'#14141e';
+ const gc=currentLevel===3?'#1a1610':currentLevel===4?'#1a0a0a':currentLevel===6?'#1a160c':currentLevel===7?'#1c1208':currentLevel===8?'#0a0e1a':currentLevel===11?'#0a0515':'#14141e';
  ctx.fillStyle=gc;ctx.fillRect(0,gy,canvas.width,canvas.height-gy);
  ctx.strokeStyle=currentLevel===3?'#282018':currentLevel===4?'#281010':currentLevel===6?'#282010':currentLevel===7?'#2c1a10':currentLevel===8?'#101428':'#1e1e2e';
  ctx.lineWidth=1;const off=camera.x%38;
@@ -9281,7 +9736,7 @@ function drawGround(){
  ctx.fillRect(0,gy,canvas.width,3);
  if(boss&&boss.arenaLeft!==undefined){const lx=boss.arenaLeft-camera.x,rx=boss.arenaRight-camera.x;ctx.fillStyle='rgba(80,25,80,0.25)';ctx.fillRect(lx-8,gy-180,8,180);ctx.fillRect(rx,gy-180,8,180);}
 }
-function drawPlatforms(){for(const p of platforms){const sx=p.x-camera.x,sy=p.y-camera.y;if(sx+p.w<-40||sx>canvas.width+40)continue;ctx.fillStyle=currentLevel===3?'#1c1812':currentLevel===4?'#1c0e0e':'#1c1c2a';ctx.fillRect(sx,sy,p.w,p.h);ctx.fillStyle=currentLevel===3?'#282018':currentLevel===4?'#281010':'#28283a';ctx.fillRect(sx,sy,p.w,3);}}
+function drawPlatforms(){for(const p of platforms){const sx=p.x-camera.x,sy=p.y-camera.y;if(sx+p.w<-40||sx>canvas.width+40)continue;if(p.unstable){if(!p.visible){ctx.globalAlpha=0.2;ctx.fillStyle='#6020a0';ctx.fillRect(sx,sy,p.w,p.h);ctx.globalAlpha=1;continue;}ctx.fillStyle='#3a1a5a';ctx.fillRect(sx,sy,p.w,p.h);ctx.fillStyle='#6030a0';ctx.fillRect(sx,sy,p.w,3);ctx.fillStyle='#a060ff';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText('⚠',sx+p.w/2,sy+p.h-4);continue;}ctx.fillStyle=currentLevel===3?'#1c1812':currentLevel===4?'#1c0e0e':currentLevel===11?'#1a0a2a':'#1c1c2a';ctx.fillRect(sx,sy,p.w,p.h);ctx.fillStyle=currentLevel===3?'#282018':currentLevel===4?'#281010':currentLevel===11?'#2a1a4a':'#28283a';ctx.fillRect(sx,sy,p.w,3);}}
 function drawObstacles(){
  for(const o of obstacles){const sx=o.x-camera.x,sy=o.y-camera.y;if(sx+o.w<-40||sx>canvas.width+40)continue;
   if(o.type==='spike'){ctx.fillStyle='#3a3a4a';const sp=Math.floor(o.w/9);for(let i=0;i<sp;i++){ctx.beginPath();ctx.moveTo(sx+i*9,sy+o.h);ctx.lineTo(sx+i*9+4.5,sy);ctx.lineTo(sx+i*9+9,sy+o.h);ctx.fill();}ctx.fillStyle='#5a5a6a';for(let i=0;i<sp;i++)ctx.fillRect(sx+i*9+3.5,sy+2,2,o.h-3);}
@@ -9306,6 +9761,30 @@ function drawPortal(){
  for(let i=3;i>=0;i--){const r=36+i*9+Math.sin(t+i)*4;ctx.strokeStyle=`rgba(${90+i*28},${45+i*18},${180-i*18},${0.28-i*0.045})`;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(sx+portal.w/2,sy+portal.h/2,r*0.55,r,0,0,Math.PI*2);ctx.stroke();}
  const g=ctx.createRadialGradient(sx+portal.w/2,sy+portal.h/2,0,sx+portal.w/2,sy+portal.h/2,45);g.addColorStop(0,'rgba(160,100,240,0.5)');g.addColorStop(1,'rgba(60,30,120,0)');ctx.fillStyle=g;ctx.fillRect(sx-25,sy-25,portal.w+50,portal.h+50);
  if(dist(player.x+player.w/2,player.y+player.h/2,portal.x+portal.w/2,portal.y+portal.h/2)<130){ctx.fillStyle='#b090e8';ctx.font='13px monospace';ctx.textAlign='center';ctx.fillText('进入传送门 →',sx+portal.w/2,sy-18);}
+}
+function drawGravityZones(){
+ for(const gz of gravityZones){
+  const sx=gz.x-camera.x,sy=gz.y-camera.y;
+  if(sx+gz.w<-40||sx>canvas.width+40)continue;
+  const g=ctx.createLinearGradient(sx,sy,sx,sy+gz.h);
+  g.addColorStop(0,'rgba(100,200,255,0.08)');
+  g.addColorStop(0.5,'rgba(100,200,255,0.15)');
+  g.addColorStop(1,'rgba(100,200,255,0.08)');
+  ctx.fillStyle=g;ctx.fillRect(sx,sy,gz.w,gz.h);
+  ctx.strokeStyle='rgba(100,200,255,0.3)';ctx.lineWidth=1;ctx.setLineDash([5,5]);
+  ctx.strokeRect(sx,sy,gz.w,gz.h);ctx.setLineDash([]);
+  ctx.fillStyle='rgba(150,220,255,0.6)';ctx.font='11px monospace';ctx.textAlign='center';
+  ctx.fillText('↓ 重力减弱',sx+gz.w/2,sy+18);
+ }
+}
+function drawHiddenPortal(){
+ if(!hiddenPortal)return;const sx=hiddenPortal.x-camera.x,sy=hiddenPortal.y-camera.y,t=performance.now()/200;
+ // 紫黑色虚空裂隙
+ for(let i=4;i>=0;i--){const r=40+i*12+Math.sin(t+i*0.7)*6;ctx.strokeStyle=`rgba(${120+i*20},0,${160+i*15},${0.35-i*0.05})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(sx+hiddenPortal.w/2,sy+hiddenPortal.h/2,r*0.5,r,0,0,Math.PI*2);ctx.stroke();}
+ const g=ctx.createRadialGradient(sx+hiddenPortal.w/2,sy+hiddenPortal.h/2,0,sx+hiddenPortal.w/2,sy+hiddenPortal.h/2,55);g.addColorStop(0,'rgba(160,0,200,0.6)');g.addColorStop(0.5,'rgba(80,0,120,0.3)');g.addColorStop(1,'rgba(20,0,40,0)');ctx.fillStyle=g;ctx.fillRect(sx-30,sy-30,hiddenPortal.w+60,hiddenPortal.h+60);
+ // 旋转的虚空粒子
+ for(let i=0;i<8;i++){const a=t+i*0.785;const px=sx+hiddenPortal.w/2+Math.cos(a)*35;const py=sy+hiddenPortal.h/2+Math.sin(a)*50;ctx.fillStyle=`rgba(180,80,255,${0.5+Math.sin(t*2+i)*0.3})`;ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fill();}
+ if(dist(player.x+player.w/2,player.y+player.h/2,hiddenPortal.x+hiddenPortal.w/2,hiddenPortal.y+hiddenPortal.h/2)<150){ctx.fillStyle='#d080ff';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText('🌀 进入虚空裂隙（第十一关）',sx+hiddenPortal.w/2,sy-20);}
 }
 function drawAltar(){
  if(!altar)return;const sx=altar.x-camera.x,sy=altar.y-camera.y;
@@ -9366,7 +9845,7 @@ function updateUI(){
  dc('armorFill').style.width=player.equippedArmor?(player.armorDurability/amax*100)+'%':'0%';
  dc('distance').textContent=Math.floor(distance);
  dc('score').textContent=score;
- const ki=player.inventory.find(i=>i.type==='key');dc('keyCount').textContent=ki?ki.count:0;
+ const ki=player.inventory.find(i=>i&&i.type==='key');dc('keyCount').textContent=ki?ki.count:0;
 }
 function updateBossBar(){
  // 凋零风暴Boss
@@ -9407,7 +9886,7 @@ function updateWeaponBar(){
   const slot=document.createElement('div');slot.className='weapon-slot';
   if(i===player.currentWeapon)slot.classList.add('active');
   if(!w.unlocked)slot.classList.add('locked');
-  const at=w.ammo===Infinity?'∞':w.ammo;
+  const at=w.id==='creation'&&w.creationMode==='ranged'?w.rangedAmmo:(w.ammo===Infinity?'∞':w.ammo);
   slot.innerHTML=`<span class="weapon-key">${i+1}</span>${w.icon}<span class="weapon-ammo">${at}</span>`;
   slot.title=w.name;bar.appendChild(slot);
  });
@@ -9465,25 +9944,25 @@ function updateInventoryUI(){
   setupSlotDragEvents(slot,'inventory',i);
   grid.appendChild(slot);
  }
- // 快捷栏（9格：6武器+3食物）
+ // 快捷栏（11格：8武器+3食物）
  const hotbar=document.getElementById('mcHotbar');hotbar.innerHTML='';
- for(let i=0;i<9;i++){
+ for(let i=0;i<11;i++){
   const slot=document.createElement('div');
   slot.className='mc-slot';
   slot.dataset.slotType='hotbar';
   slot.dataset.slotIndex=i;
-  if(i<6){
+  if(i<8){
     // 武器槽
     const w=player.weapons[i];
     if(w&&w.unlocked){
       slot.classList.add('has-item');
-      slot.innerHTML=`<span class="mc-item-icon">${w.icon}</span><span class="mc-item-count">${w.ammo===Infinity?'∞':w.ammo}</span>`;
+      slot.innerHTML=`<span class="mc-item-icon">${w.icon}</span><span class="mc-item-count">${w.id==='creation'&&w.creationMode==='ranged'?w.rangedAmmo:(w.ammo===Infinity?'∞':w.ammo)}</span>`;
       slot.title=w.name+' (伤害'+w.damage+')';
       if(player.currentWeapon===i)slot.classList.add('selected');
     }
   }else{
     // 食物槽
-    const fi=i-6;
+    const fi=i-8;
     slot.classList.add('food-slot');
     if(foodSlots[fi]){
       slot.classList.add('has-item');
@@ -9520,11 +9999,11 @@ function setupSlotDragEvents(slot,slotType,slotIndex){
     if(slotType==='inventory'){
       item=player.inventory[slotIndex];
     }else if(slotType==='hotbar'){
-      if(slotIndex<6){
+      if(slotIndex<8){
         const w=player.weapons[slotIndex];
         if(w&&w.unlocked)item={weaponIndex:slotIndex,weaponData:w};
       }else{
-        item=foodSlots[slotIndex-6];
+        item=foodSlots[slotIndex-8];
       }
     }else if(slotType==='armor'){
       if(slotIndex===0&&player.equippedArmor)item={type:player.equippedArmor+'_armor',count:1};
@@ -9543,12 +10022,12 @@ function setupSlotDragEvents(slot,slotType,slotIndex){
     if(slotType==='inventory'){
       player.inventory[slotIndex]=null;
     }else if(slotType==='hotbar'){
-      if(slotIndex<6){
+      if(slotIndex<8){
         dragState.weaponDragging=true;
         dragState.weaponBackup=player.weapons[slotIndex];
         player.weapons[slotIndex]=null;
       }else{
-        foodSlots[slotIndex-6]=null;
+        foodSlots[slotIndex-8]=null;
       }
     }else if(slotType==='armor'&&slotIndex===0){
       player.unequipArmor();
@@ -9606,7 +10085,7 @@ document.addEventListener('mouseup',function(e){
     if(target){
       const tType=target.dataset.slotType;
       const tIndex=parseInt(target.dataset.slotIndex);
-      if(tType==='hotbar'&&tIndex<6&&tIndex!==srcIdx){
+      if(tType==='hotbar'&&tIndex<8&&tIndex!==srcIdx){
         const tmp=player.weapons[tIndex];
         player.weapons[tIndex]=dragState.weaponBackup;
         player.weapons[srcIdx]=tmp;
@@ -9638,23 +10117,23 @@ document.addEventListener('mouseup',function(e){
           player.inventory[tIndex]=item;
           if(dragState.sourceType==='inventory'){
             player.inventory[dragState.sourceIndex]=existing;
-          }else if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=6){
-            foodSlots[dragState.sourceIndex-6]=existing;
+          }else if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=8){
+            foodSlots[dragState.sourceIndex-8]=existing;
           }
         }
-      }else if(tType==='hotbar'&&tIndex>=6&&isFood){
-        const existing=foodSlots[tIndex-6];
+      }else if(tType==='hotbar'&&tIndex>=8&&isFood){
+        const existing=foodSlots[tIndex-8];
         if(existing&&existing.type===item.type){
           existing.count+=item.count;
         }else if(existing){
-          foodSlots[tIndex-6]=item;
-          if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=6){
-            foodSlots[dragState.sourceIndex-6]=existing;
+          foodSlots[tIndex-8]=item;
+          if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=8){
+            foodSlots[dragState.sourceIndex-8]=existing;
           }else if(dragState.sourceType==='inventory'){
             player.inventory[dragState.sourceIndex]=existing;
           }
         }else{
-          foodSlots[tIndex-6]=item;
+          foodSlots[tIndex-8]=item;
         }
       }else if(tType==='armor'&&tIndex===0&&isArmor){
         const aid=item.type.replace('_armor','');
@@ -9704,8 +10183,8 @@ function returnItemToSource(){
   if(!item)return;
   if(dragState.sourceType==='inventory'){
     player.inventory[dragState.sourceIndex]=item;
-  }else if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=6){
-    foodSlots[dragState.sourceIndex-6]=item;
+  }else if(dragState.sourceType==='hotbar'&&dragState.sourceIndex>=8){
+    foodSlots[dragState.sourceIndex-8]=item;
   }else if(dragState.sourceType==='armor'&&item.type){
     const aid=item.type.replace('_armor','');
     player.equipArmor(aid);
@@ -9731,11 +10210,11 @@ function consumeFood(slotIndex){
   const def=CONFIG.items[food.type]||{};
   if(!def)return;
   // 恢复饥饿值（立即恢复，避免持续掉血）
-  player.hunger=Math.min(CONFIG.player.maxHunger,player.hunger+(def.hunger||10));
+  player.hunger=Math.min(CONFIG.player.maxHunger,player.hunger+(def.hunger!==undefined?def.hunger:10));
   // 恢复生命值
   if(def.hp)player.heal(def.hp);if(def.heal)player.heal(def.heal);
   // 重置饥饿掉血状态
-  if(player.hunger>0&&player.hp>0)player.dead=false;
+  if(player.hunger>0&&player.hp>0){player.dead=false;player.deathState='alive';player.deathTimer=0;player.deathAlpha=1;}
   // 金苹果特殊效果
   if(food.type==='gold_apple'){
     player.addBuff('regeneration');
@@ -9751,6 +10230,15 @@ function consumeFood(slotIndex){
   if(food.type==='milk'){
     activeBuffs=[];
     if(typeof updateBuffBar==='function')updateBuffBar();
+  }
+  // 末影珍珠：传送
+  if(food.type==='ender_pearl'){
+    const _tx=player.x+player.facing*200;
+    spawnParticles(player.x+player.w/2,player.y+player.h/2,15,'#aa44ff');
+    player.x=Math.max(50,Math.min(_tx,CONFIG.world.levelWidth||5000));
+    spawnParticles(player.x+player.w/2,player.y+player.h/2,15,'#aa44ff');
+    player.lastDamage=performance.now();
+    showGuide('🟣 末影珍珠传送！',1500);
   }
   // 减少食物数量
   food.count--;
@@ -9925,11 +10413,23 @@ function gameLoop(ts){
  if(gameState==='bossIntro'){updateBossIntro(dt);}
  if(gameState==='playing'||gameState==='bossIntro'){
   gameTime+=dt;
+  // 游戏开始60秒后自动隐藏操作提示（F1可切换）
+  if(gameTime>60000){const _bh=document.getElementById('bottomHint');if(_bh&&_bh.style.display!=='none')_bh.style.display='none';}
   player.update(dt);
   for(const e of enemies)e.update(dt);
   enemies=enemies.filter(e=>e.deathState!=='removed');
   if(boss)boss.update(dt);
+  // 不稳定平台更新
+  if(currentLevel===11){
+   for(const p of platforms){
+    if(p.unstable){
+     p.phase=(p.phase+dt)%p.cycle;
+     p.visible=p.phase<p.cycle*0.6; // 60%时间可见
+    }
+   }
+  }
   updateBullets(dt);updateTentacles(dt);updateLightnings(dt);updateFireballs(dt);updateParticles(dt);updateAmbientParticles(dt);
+  if(laserBeam&&laserBeam.life!==undefined){laserBeam.life-=dt;if(laserBeam.life<=0)laserBeam=null;}
   updateScreenShake(dt);updateSlowMo(dt);updateCombo();
   updateWeather(dt);updateDynamicLights(dt);updateScreenEffects(dt);
   updatePostEffects(dt);updatePerfectDodge(dt);updateBulletTime(dt);updateWeaponCooldowns(dt);
@@ -9946,8 +10446,8 @@ function gameLoop(ts){
   recordFrameTime(dt);
   if(gameSettings.showFPS){const instFPS=1000/dt;updateFPS(Math.min(120,instFPS));}
   const lvl=CONFIG.levels[currentLevel-1];
-  if(lvl.type==='runner'&&gameTime-lastEnemySpawn>(CONFIG.enemy.spawnInterval||3200)*(lvl.spawnMul||1)){let aliveCount=0;for(let _i=0;_i<enemies.length;_i++){if(!enemies[_i].dead)aliveCount++;if(aliveCount>=(CONFIG.enemy.maxConcurrent||5))break;}if(aliveCount<(CONFIG.enemy.maxConcurrent||5)){spawnEnemy();lastEnemySpawn=gameTime;}}
-  if(lvl.type==='runner'&&player.x>lastPlatformX-canvas.width)genChunk(lvl);
+  if((lvl.type==='runner'||lvl.type==='void')&&gameTime-lastEnemySpawn>(CONFIG.enemy.spawnInterval||3200)*(lvl.spawnMul||1)){let aliveCount=0;for(let _i=0;_i<enemies.length;_i++){if(!enemies[_i].dead)aliveCount++;if(aliveCount>=(CONFIG.enemy.maxConcurrent||5))break;}if(aliveCount<(CONFIG.enemy.maxConcurrent||5)){spawnEnemy();lastEnemySpawn=gameTime;}}
+  if((lvl.type==='runner'||lvl.type==='void')&&player.x>lastPlatformX-canvas.width){if(lvl.type==='void')genVoidChunk();else genChunk(lvl);}
   // 智能相机系统
  const targetCamX=player.x-canvas.width*0.35+player.vx*15;
  camera.x+=(targetCamX-camera.x)*0.08;
@@ -10005,8 +10505,6 @@ function gameLoop(ts){
   }
   // 巫师Boss更新
   if(witchBoss&&!witchBoss.dead)witchBoss.update(dt);
-  // 凋零风暴更新
-  if(witherStorm&&!witherStorm.dead)witherStorm.update(dt);
   // 饥饿值UI
   if(player)dc('hungerFill').style.width=(player.hunger/CONFIG.player.maxHunger*100)+'%';
   // 竞技场关卡胜利条件（复用上方 lvl，避免重复取 CONFIG）
@@ -10021,12 +10519,12 @@ function gameLoop(ts){
    }
   }
  }
- drawBackground();drawAmbientParticles();drawGround();drawBloodSplats();drawPlatforms();drawObstacles();drawDoors();drawPortal();drawAltar();drawCheckpoints();drawItems();drawWeaponPickups();drawArmorPickups();
+ drawBackground();drawAmbientParticles();drawGround();drawBloodSplats();drawPlatforms();drawGravityZones();drawObstacles();drawDoors();drawPortal();drawHiddenPortal();drawAltar();drawCheckpoints();drawItems();drawWeaponPickups();drawArmorPickups();
  drawTentacles();drawLightnings();drawFireballs();
  drawAfterimages();
  if(trader)drawTrader();
  if(enchantingTable)drawEnchantingTable();
- if(witchBoss&&!witchBoss.dead)witchBoss.draw();
+ if(witchBoss&&witchBoss.deathState!=='removed')witchBoss.draw();
  for(const e of enemies)e.draw();
  if(boss)boss.draw();
   // 调试：更新HTML div
@@ -10045,6 +10543,15 @@ function gameLoop(ts){
  drawPostEffects();
  drawStatusOverlays();
  drawEnhancedVignette();
+ // Boss战斗红色脉冲
+ const _activeBoss=(boss&&!boss.dead)||(witchBoss&&!witchBoss.dead)||(witherStorm&&!witherStorm.dead);
+ if(_activeBoss&&gameState==='playing'){
+  const _pulse=0.08+Math.sin(performance.now()*0.003)*0.04;
+  const _bg=ctx.createRadialGradient(canvas.width/2,canvas.height/2,canvas.height*0.3,canvas.width/2,canvas.height/2,canvas.height*0.9);
+  _bg.addColorStop(0,'rgba(120,0,0,0)');
+  _bg.addColorStop(1,`rgba(120,0,0,${_pulse})`);
+  ctx.fillStyle=_bg;ctx.fillRect(0,0,canvas.width,canvas.height);
+ }
  drawAmbientOcclusion();
  drawColorGrading();
  drawDepthOfField();
@@ -10303,7 +10810,7 @@ const gameKnowledge=[
  '按 E 键打开背包，查看和管理你的装备与物品',
  '按 H 键使用召唤台，召唤强大的盟友助你战斗',
  '按 R 键在存档点复活，死亡不会丢失进度',
- '按 1-6 数字键快速切换武器，找到最适合你的战斗风格',
+ '按 1-7 数字键快速切换武器，找到最适合你的战斗风格',
  '按 Q 键拾取附近的物品，包括武器、盔甲和消耗品',
  '按 Shift 键冲刺，可以快速躲避敌人攻击',
  '武器可以附魔，锋利提升伤害、击退增加冲击力、火焰附加灼烧效果',
@@ -10454,13 +10961,20 @@ function startGame(){
  document.getElementById('gameOver').style.display='none';
  document.getElementById('victoryScreen').style.display='none';
  document.getElementById('bossBar').style.display='none';
+ document.getElementById('pauseMenu').style.display='none';
+ document.getElementById('settingsMenu').style.display='none';
+ document.getElementById('inventory').style.display='none';
+ document.getElementById('traderUI').style.display='none';
+ document.getElementById('enchantUI').style.display='none';
+ isPaused=false;
  const introEl=document.getElementById('introScreen');
  if(introEl)introEl.style.display='none';
- gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;scoredX=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
- achievements={};guideShown={};currentCheckpoint=null;
+ gameState='playing';currentLevel=1;gameTime=0;score=0;distance=0;maxDistance=0;scoredX=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;enchantMaxLevel=3;gravityZones=[];hiddenPortal=null;
+ achievements={};guideShown={};currentCheckpoint=null;foodSlots=[null,null,null];selectedFoodSlot=0;lapisCount=0;totemActive=false;traderUsed=false;bossIntro={active:false,timer:0,bossType:null};combo={count:0,lastKill:0,display:0};battleStats={totalDamage:0,totalKills:0,maxCombo:0,perfectHits:0,critHits:0,weaponUsage:{},damageTaken:0,dodges:0,perfectDodges:0};
  document.getElementById('levelNum').textContent='1';
  generateLevel(1);
  player=new Player(100,CONFIG.world.groundY-CONFIG.player.height);
+ armorEnchants=[];
  // ===== 【开发者作弊应用】 =====
  if(devAuthed){
    if(devCheats.allWeapons)player.weapons.forEach(w=>w.unlocked=true);
@@ -10481,6 +10995,7 @@ function startGame(){
  }
 }
 function gameOver(){
+ if(player&&!player.dead&&player.deathState==='alive')return;
  document.getElementById('mobileControls').style.display='none';
 
  gameState='gameover';
@@ -10493,6 +11008,9 @@ function gameOver(){
 function respawnAtCheckpoint(){
  if(!currentCheckpoint){startGame();return;}
  document.getElementById('gameOver').style.display='none';
+ document.getElementById('pauseMenu').style.display='none';
+ document.getElementById('settingsMenu').style.display='none';
+ isPaused=false;
  gameState='playing';
  currentLevel=currentCheckpoint.level;
  // 清空所有buff
@@ -10501,8 +11019,8 @@ function respawnAtCheckpoint(){
  // 重置游戏时间和怪物生成计时器
  gameTime=0;lastEnemySpawn=0;portalTriggered=false;arenaClearTriggered=false;
  // 重置打击感和特效系统
- screenShake={x:0,y:0,intensity:0,duration:0};hitStop=0;
- slowMo={active:false,timeScale:1,duration:0};combo={count:0,lastKill:0,display:0};
+ screenShake={x:0,y:0,intensity:0,duration:0,initialDuration:0};hitStop=0;
+ slowMo={active:false,timeScale:1,duration:0};document.getElementById('slowMoOverlay').style.opacity='0';combo={count:0,lastKill:0,display:0};
  damageNumbers=[];bloodSplats=[];afterimages=[];particles=[];bullets=[];
  tentacles=[];laserBeam=null;lightnings=[];fireballs=[];
  // 重置其他状态
@@ -10514,8 +11032,11 @@ function respawnAtCheckpoint(){
  player.weapons=JSON.parse(JSON.stringify(currentCheckpoint.weapons||[]));
    // 恢复Infinity弹药值（JSON.stringify会把Infinity变成null）
    for(const w of player.weapons){if(w.ammo===null)w.ammo=Infinity;}
+   if(currentCheckpoint.currentWeapon!==undefined&&player.weapons[currentCheckpoint.currentWeapon]&&player.weapons[currentCheckpoint.currentWeapon].unlocked)player.currentWeapon=currentCheckpoint.currentWeapon;
  player.equippedArmor=currentCheckpoint.armor||null;
  player.armorDurability=currentCheckpoint.armorDur||0;
+ player.hasElytra=currentCheckpoint.hasElytra||false;
+ player.elytraDurability=currentCheckpoint.elytraDur||0;
  player.inventory=JSON.parse(JSON.stringify(currentCheckpoint.inventory||[]));
   // 恢复食物槽
   if(currentCheckpoint.foodSlots){
@@ -10523,6 +11044,11 @@ function respawnAtCheckpoint(){
   }else{
     foodSlots=[null,null,null];
   }
+ // 恢复盔甲附魔（从装备的盔甲物品加载）
+ if(player.equippedArmor&&player.armorDurability>0){
+   const _armorItem=player.inventory.find(i=>i&&i.type===player.equippedArmor+'_armor');
+   armorEnchants=(_armorItem&&_armorItem.enchants)?JSON.parse(JSON.stringify(_armorItem.enchants)):[];
+ }else{armorEnchants=[];}
  player.dead=false;player.deathState='alive';player.deathTimer=0;player.deathAlpha=1;
  score=currentCheckpoint.score||0;
  distance=currentCheckpoint.distance||0;
@@ -10637,7 +11163,7 @@ function drawTrader(){
 
 function openTrader(){
  if(!trader||trader.interacted)return;
- gameState='paused';
+ gameState='paused';isPaused=true;
  document.getElementById('traderUI').style.display='block';
  renderTraderDeals();
 }
@@ -10650,7 +11176,7 @@ function renderTraderDeals(){
   div.className='trader-deal'+(traderDealStates[i]?' done':'');
   const giveItem=CONFIG.items[deal.give]||{};
   const getItem=CONFIG.items[deal.get]||{};
-  const _giveItem=player.inventory.find(it=>it.type===deal.give);const canAfford=player.hasItem(deal.give)&&_giveItem&&_giveItem.count>=deal.giveCount;
+  const _giveItem=player.inventory.find(it=>it&&it.type===deal.give);const canAfford=player.hasItem(deal.give)&&_giveItem&&_giveItem.count>=deal.giveCount;
   div.innerHTML=`
    <div class="deal-side">${giveItem.icon} ${giveItem.name} x${deal.giveCount}</div>
    <div class="deal-arrow">→</div>
@@ -10665,7 +11191,7 @@ function doTraderDeal(i){
  const deal=traderDeals[i];
  if(traderDealStates[i])return;
  if(!player.hasItem(deal.give))return;
- const inv=player.inventory.find(it=>it.type===deal.give);
+ const inv=player.inventory.find(it=>it&&it.type===deal.give);
  if(!inv||inv.count<deal.giveCount)return;
  // 扣除
  for(let j=0;j<deal.giveCount;j++)player.removeItem(deal.give);
@@ -10680,15 +11206,15 @@ function doTraderDeal(i){
 
 function closeTrader(){
  document.getElementById('traderUI').style.display='none';
- gameState='playing';
+ gameState='playing';isPaused=false;
 }
 
 // ===== 巫师Boss =====
 class WitchBoss{
  constructor(x,y){
   this.x=x;this.y=y;this.w=50;this.h=75;
-  this.hp=1000;this.maxHp=1000;
-  this.speed=1.2;this.damage=15;
+  this.hp=700;this.maxHp=700;
+  this.speed=1.1;this.damage=11;
   this.vx=0;this.vy=0;this.facing=-1;
   this.dead=false;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.lastPotion=0;this.lastSummon=0;this.lastHeal=0;
@@ -10748,6 +11274,7 @@ class WitchBoss{
    showGuide('🧪 巫师喝下了解药，恢复了生命值！',2500);
   }
   this.animTimer+=dt;if(this.animTimer>150){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.02*Math.abs(this.vx)*(Math.abs(this.vx)>0.3?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;
   // Boss血条
   if(dist(player.x,this.x)<500){
@@ -10778,11 +11305,11 @@ class WitchBoss{
  }
  takeDamage(a){
   if(this.dead)return;
-  this.hp-=a;this.hitFlash=130;
+  this.hp-=a;if(currentCheckpoint)currentCheckpoint.witchBossHp=this.hp;this.hitFlash=130;
   showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);
   addScreenShake(5,120);spawnParticles(this.x+this.w/2,this.y+this.h/3,5,'#8040a0');spawnParticles(this.x+this.w/2,this.y+this.h/3,3,'#ffffff');
   if(this.hp<=0){
-   this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1500;
+   this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=1500;
    addScreenShake(12,400);addSlowMo(0.3,500);
    spawnParticles(this.x+this.w/2,this.y+this.h/2,25,'#8040a0');
    spawnParticles(this.x+this.w/2,this.y+this.h/2,15,'#40ff40');
@@ -10837,8 +11364,8 @@ class WitchBoss{
 class WitherStormBoss{
  constructor(x,y){
   this.x=x;this.y=y;this.w=140;this.h=180;
-  this.hp=12000;this.maxHp=12000;
-  this.speed=0.7;this.damage=24;
+  this.hp=8000;this.maxHp=8000;
+  this.speed=0.6;this.damage=17;
   this.vx=0;this.vy=0;this.facing=-1;
   this.dead=false;this.hitFlash=0;this.animFrame=0;this.animTimer=0;
   this.phase=1;
@@ -10855,7 +11382,7 @@ class WitherStormBoss{
   this.lastSummon=0;this.summonCD=10000;
   // 星辉死神技能
   this.lastSlash=0;this.slashState='idle';this.slashWindup=0;
-  this.arenaLeft=x-500;this.arenaRight=x+500;
+  this.arenaLeft=x-700;this.arenaRight=x+700;
   this.name='凋 零 风 暴';
   this.isBoss=true;
   this.silverWeakness=2.5; // 银制武器伤害倍率this.deathState="alive";this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
@@ -10971,6 +11498,7 @@ class WitherStormBoss{
    this.slashWindup-=dt;if(this.slashWindup<=0)this.slashState='idle';
   }
   this.animTimer+=dt;if(this.animTimer>180){this.animTimer=0;this.animFrame=(this.animFrame+1)%4;}
+  this.walkPhase=(this.walkPhase||0)+dt*0.015*Math.abs(this.vx)*(Math.abs(this.vx)>0.2?1:0);
   if(this.hitFlash>0)this.hitFlash-=dt;
  }
  updateLaser(dt){
@@ -11009,7 +11537,7 @@ class WitherStormBoss{
    a*=this.silverWeakness;
    spawnParticles(this.x+this.w/2,this.y+this.h/3,6,'#e0e8f0');
   }
-  this.hp-=a;this.hitFlash=90;
+  this.hp-=a;if(currentCheckpoint){currentCheckpoint.witherStormHp=this.hp;currentCheckpoint.bossHp=this.hp;}this.hitFlash=90;
   showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);
   addScreenShake(3,80);
   if(this.hp<=0){
@@ -11023,7 +11551,13 @@ class WitherStormBoss{
     if(!achievements.beatWitherStorm)unlockAchievement('beatWitherStorm');
     if(weaponId==='sword'&&!achievements.silverHero)unlockAchievement('silverHero');
     if(!achievements.allClear)unlockAchievement('allClear');
-    victory();
+    // 隐藏传送门：持有洪荒骷髅+不死图腾时触发
+    if(player.hasItem('skull')&&player.hasItem('totem')){
+     hiddenPortal={x:this.x+this.w/2,y:CONFIG.world.groundY-120,w:60,h:120};
+     showGuide('🌀 虚空裂隙已开启！持有洪荒骷髅和不死图腾，进入裂隙挑战第十一关！',5000);
+    }else{
+     victory();
+    }
    },1500);
   }
  }
@@ -11068,7 +11602,6 @@ class WitherStormBoss{
    // 牙齿
    ctx.fillStyle='#c0c0c0';
    for(let i=0;i<3;i++)ctx.fillRect(h.x-5+i*4,h.y+6,2,4);
-   ctx.restore();
   }
   // 触手/肋骨
   ctx.fillStyle=fl?'#fff':'#1a051a';
@@ -11095,6 +11628,246 @@ class WitherStormBoss{
    ctx.fillStyle='rgba(120,40,160,0.3)';
    ctx.fillRect(this.facing>0?sx+this.w:sx-this.h*0.5,sy,this.h*0.5,this.h);
   }
+  ctx.restore();
+ }
+}
+
+// ===== 虚空创世神·原初（第11关最终Boss，5阶段） =====
+class VoidCreatorBoss{
+ constructor(x,y){
+  this.x=x;this.y=y;this.w=160;this.h=200;
+  this.hp=12000;this.maxHp=12000;
+  this.speed=0.5;this.damage=20;
+  this.vx=0;this.vy=0;this.facing=-1;
+  this.dead=false;this.hitFlash=0;
+  this.phase=1;this.phaseChanged=false;
+  this.arenaLeft=x-800;this.arenaRight=x+800;
+  this.name='虚 空 创 世 神 · 原 初';
+  this.isBoss=true;
+  this.silverWeakness=1.5;
+  this.deathState='alive';this.deathTimer=0;this.deathAngle=0;this.deathAlpha=1;
+  // 阶段1技能
+  this.lastGrab=0;this.grabCD=6000;this.grabState='idle';this.grabX=0;this.grabTimer=0;
+  this.lastShard=0;this.shardCD=2500;
+  // 阶段2技能
+  this.lastSlowField=0;this.slowFieldCD=8000;this.slowField=null;
+  this.lastRewind=0;this.rewindCD=5000;this.playerPosHistory=[];
+  // 阶段3技能
+  this.lastBlackhole=0;this.blackholeCD=10000;this.blackhole=null;
+  this.lastBeam=0;this.beamCD=7000;this.beamState='idle';this.beamAngle=0;this.beamTimer=0;
+  this.lastSummon=0;this.summonCD=12000;
+  // 阶段4技能
+  this.lastBarrage=0;this.barrageCD=4000;this.barrageActive=false;this.barrageTimer=0;
+  this.lastStorm=0;this.stormCD=3000;this.stormMarkers=[];
+  this.regenTimer=0;
+  // 阶段5
+  this.coreExposed=false;this.coreHp=0;this.coreY=0;
+  // 6个创世碎片（背后漂浮）
+  this.shards=[];
+  for(let i=0;i<6;i++){this.shards.push({angle:i*Math.PI/3,dist:80,color:['#ff4040','#ff8040','#ffd040','#40ff80','#4080ff','#a040ff'][i]});}
+ }
+ update(dt){
+  if(isNaN(this.x)||isNaN(this.y)){this.x=clamp(this.x,this.arenaLeft,this.arenaRight-this.w);this.y=CONFIG.world.groundY-this.h;}
+  if(gameState==='bossIntro'){this.vx*=0.8;return;}
+  if(this.deathState!=='alive'){
+   this.deathTimer+=dt;
+   if(this.deathState==='falling'){this.deathAngle=Math.min(Math.PI/2,this.deathAngle+dt*0.005);this.vy+=0.4;this.y+=this.vy;if(this.y+this.h>CONFIG.world.groundY){this.y=CONFIG.world.groundY-this.h;this.vy=0;}if(this.deathTimer>600){this.deathState='fading';this.deathTimer=0;}}
+   else if(this.deathState==='fading'){this.deathAlpha=Math.max(0,1-this.deathTimer/1200);if(Math.random()<0.4){particles.push({x:this.x+rand(0,this.w),y:this.y+rand(0,this.h),vx:rand(-2,2),vy:rand(-3,0),life:rand(400,800),maxLife:800,size:rand(3,6),color:'#a040ff'});}if(this.deathTimer>1200){this.deathState='removed';}}
+   return;
+  }
+  const now=performance.now();
+  const dx=player.x-this.x,adx=Math.abs(dx);
+  this.facing=dx>0?1:-1;
+  // 阶段切换检测
+  const hpPct=this.hp/this.maxHp;
+  if(hpPct<=0.2&&this.phase<5){this.phase=5;this.onPhaseChange(5);}
+  else if(hpPct<=0.4&&this.phase<4){this.phase=4;this.onPhaseChange(4);}
+  else if(hpPct<=0.6&&this.phase<3){this.phase=3;this.onPhaseChange(3);}
+  else if(hpPct<=0.8&&this.phase<2){this.phase=2;this.onPhaseChange(2);}
+  // 缓慢移动
+  if(adx>200){this.vx=this.facing*this.speed;}else{this.vx*=0.9;}
+  this.x+=this.vx;
+  this.x=clamp(this.x,this.arenaLeft,this.arenaRight-this.w);
+  // 碎片旋转
+  for(const s of this.shards){s.angle+=dt*0.001;}
+  // 记录玩家位置历史（用于倒转攻击）
+  this.playerPosHistory.push({x:player.x,y:player.y,t:now});
+  if(this.playerPosHistory.length>20)this.playerPosHistory.shift();
+  // ===== 阶段1技能 =====
+  if(this.phase>=1){
+   // 虚空抓取
+   if(now-this.lastGrab>this.grabCD&&this.grabState==='idle'){this.lastGrab=now;this.grabState='warning';this.grabX=player.x;this.grabTimer=0;}
+   if(this.grabState==='warning'){this.grabTimer+=dt;if(this.grabTimer>2000){this.grabState='grab';this.grabTimer=0;spawnParticles(this.grabX,CONFIG.world.groundY,20,'#a040ff');}}
+   if(this.grabState==='grab'){this.grabTimer+=dt;if(Math.abs(player.x-this.grabX)<60&&player.onGround){player.takeDamage(30);player.vx=0;player.stunned=1500;}if(this.grabTimer>500){this.grabState='idle';}}
+   // 碎片射击
+   if(now-this.lastShard>this.shardCD){this.lastShard=now;const shard=this.shards[randInt(0,5)];const sx=this.x+this.w/2+Math.cos(shard.angle)*shard.dist;const sy=this.y+40+Math.sin(shard.angle)*shard.dist*0.5;bullets.push({x:sx,y:sy,vx:this.facing*6,vy:0,damage:12,fromBoss:true,color:shard.color,size:8,life:3000});}
+  }
+  // ===== 阶段2技能 =====
+  if(this.phase>=2){
+   // 时间减速场
+   if(now-this.lastSlowField>this.slowFieldCD&&!this.slowField){this.lastSlowField=now;this.slowField={x:player.x,y:player.y,r:200,life:5000};}
+   if(this.slowField){this.slowField.life-=dt;if(this.slowField.life<=0)this.slowField=null;}
+   // 倒转攻击
+   if(now-this.lastRewind>this.rewindCD&&this.playerPosHistory.length>5){this.lastRewind=now;const oldPos=this.playerPosHistory[0];particles.push({x:oldPos.x,y:oldPos.y,vx:0,vy:0,life:800,maxLife:800,size:60,color:'#ff40ff',type:'explosion'});setTimeout(()=>{if(!this.dead&&gameState==='playing'&&dist(player.x,player.y,oldPos.x,oldPos.y)<80)player.takeDamage(25);spawnParticles(oldPos.x,oldPos.y,20,'#ff40ff');},800);}
+  }
+  // ===== 阶段3技能 =====
+  if(this.phase>=3){
+   // 黑洞牵引
+   if(now-this.lastBlackhole>this.blackholeCD&&!this.blackhole){this.lastBlackhole=now;this.blackhole={x:this.x+this.w/2,y:this.y+this.h/2,life:4000,r:50};}
+   if(this.blackhole){this.blackhole.life-=dt;this.blackhole.r=Math.min(120,this.blackhole.r+dt*0.05);if(this.blackhole.life<=0)this.blackhole=null;else{const bdx=this.blackhole.x-(player.x+player.w/2),bdy=this.blackhole.y-(player.y+player.h/2),bd=Math.sqrt(bdx*bdx+bdy*bdy);if(bd<400&&bd>10){player.x+=bdx/bd*2;player.y+=bdy/bd*1;}}}
+   // 吞噬射线
+   if(now-this.lastBeam>this.beamCD&&this.beamState==='idle'){this.lastBeam=now;this.beamState='charging';this.beamTimer=0;this.beamAngle=0;}
+   if(this.beamState==='charging'){this.beamTimer+=dt;if(this.beamTimer>1500){this.beamState='firing';this.beamTimer=0;}}
+   if(this.beamState==='firing'){this.beamTimer+=dt;this.beamAngle+=dt*0.0008;const bx=this.x+this.w/2,by=this.y+60;const ex=bx+Math.cos(this.beamAngle)*1000,ey=by+Math.sin(this.beamAngle)*1000;if(this.pointToLineDist(player.x+player.w/2,player.y+player.h/2,bx,by,ex,ey)<50){player.takeDamage(40);player.vx+=Math.cos(this.beamAngle)*8;}if(this.beamTimer>2500)this.beamState='idle';}
+   // 召唤残影
+   if(now-this.lastSummon>this.summonCD){this.lastSummon=now;for(let i=0;i<2;i++){const ghost=new Enemy(this.x+rand(-200,200),CONFIG.world.groundY,'reaper',1);ghost.hp=100;ghost.maxHp=100;ghost.isEcho=true;enemies.push(ghost);}showGuide('⚠️ 虚空创世神召唤了残影！',2000);}
+  }
+  // ===== 阶段4技能 =====
+  if(this.phase>=4){
+   // 全屏弹幕
+   if(now-this.lastBarrage>this.barrageCD&&!this.barrageActive){this.lastBarrage=now;this.barrageActive=true;this.barrageTimer=0;}
+   if(this.barrageActive){this.barrageTimer+=dt;if(this.barrageTimer%300<dt){for(let i=0;i<8;i++){const a=i*Math.PI/4+this.barrageTimer*0.002;bullets.push({x:this.x+this.w/2,y:this.y+this.h/2,vx:Math.cos(a)*5,vy:Math.sin(a)*5,damage:15,fromBoss:true,color:'#c040ff',size:7,life:4000});}}if(this.barrageTimer>3000)this.barrageActive=false;}
+   // 虚空风暴光柱
+   if(now-this.lastStorm>this.stormCD){this.lastStorm=now;for(let i=0;i<3;i++){this.stormMarkers.push({x:player.x+rand(-300,300),timer:0,warning:1000});}}
+   for(let i=this.stormMarkers.length-1;i>=0;i--){const m=this.stormMarkers[i];m.timer+=dt;if(m.timer>m.warning&&m.timer<m.warning+500){if(Math.abs(player.x-m.x)<60)player.takeDamage(25);spawnParticles(m.x,CONFIG.world.groundY-100,15,'#8040ff');}if(m.timer>m.warning+500)this.stormMarkers.splice(i,1);}
+   // 自愈
+   this.regenTimer+=dt;if(this.regenTimer>1000){this.regenTimer=0;this.hp=Math.min(this.maxHp,this.hp+this.maxHp*0.005);}
+  }
+  // ===== 阶段5：核心暴露 =====
+  if(this.phase>=5&&!this.coreExposed){this.coreExposed=true;this.coreHp=this.hp;this.coreY=this.y-60;}
+  if(this.coreExposed){this.coreY=this.y-60+Math.sin(now*0.003)*15;}
+  // 普攻
+  if(adx<this.w+player.w&&Math.abs(player.y-this.y)<100){if(now-this.lastAttack>1500){this.lastAttack=now;player.takeDamage(this.damage);this.vx=-this.facing*3;}}
+  if(this.hitFlash>0)this.hitFlash-=dt;
+  this.lastAttack=this.lastAttack||0;
+ }
+ pointToLineDist(px,py,x1,y1,x2,y2){const A=px-x1,B=py-y1,C=x2-x1,D=y2-y1;const dot=A*C+B*D;const lenSq=C*C+D*D;let param=lenSq!==0?dot/lenSq:-1;let xx,yy;if(param<0){xx=x1;yy=y1;}else if(param>1){xx=x2;yy=y2;}else{xx=x1+param*C;yy=y1+param*D;}return Math.sqrt((px-xx)**2+(py-yy)**2);}
+ onPhaseChange(p){
+  addScreenShake(15,800);addSlowMo(0.2,1000);
+  const msgs=['阶段2：时空扭曲！','阶段3：万物吞噬！','阶段4：创世狂暴！','阶段5：终焉之核！核心暴露，空中攻击！'];
+  showGuide('🌀 '+msgs[p-2],3000);
+  for(let i=0;i<30;i++){particles.push({x:this.x+rand(0,this.w),y:this.y+rand(0,this.h),vx:rand(-5,5),vy:rand(-5,5),life:rand(500,1000),maxLife:1000,size:rand(3,7),color:'#a040ff'});}
+ }
+ takeDamage(a,fromX,weaponId){
+  if(this.dead)return;
+  // 阶段5：只有远程武器能打到核心，近战无效
+  if(this.phase===5&&this.coreExposed){
+   const w=player.weapons[player.currentWeapon];
+   const isMelee=w&&w.type==='melee'&&!(w.id==='creation'&&w.creationMode==='ranged');
+   if(isMelee){spawnParticles(player.x+player.w/2,player.y,5,'#888');return;}
+   // 远程伤害×3
+   a*=3;
+  }
+  if(weaponId==='sword')a*=this.silverWeakness;
+  this.hp-=a;this.hitFlash=90;
+  showDamageNumber(this.x+this.w/2,this.y+this.h/3,a,false,false);
+  addScreenShake(3,80);
+  if(this.hp<=0){
+   this.hp=0;this.dead=true;this.deathState='falling';this.deathTimer=0;score+=20000;
+   addScreenShake(40,1500);addSlowMo(0.1,2000);addHitStop(500);
+   for(let i=0;i<20;i++)setTimeout(()=>spawnParticles(this.x+rand(0,this.w),this.y+rand(0,this.h),40,'#a040ff'),i*100);
+   setTimeout(()=>{
+    spawnItem(this.x+this.w/2,this.y,'creation_weapon');
+    spawnItem(this.x+this.w/2+50,this.y,'void_armor');
+    spawnItem(this.x+this.w/2-50,this.y,'enchanted_gold_apple');
+    spawnItem(this.x+this.w/2+80,this.y,'gold_apple');
+    if(!achievements.beatVoidCreator)unlockAchievement('beatVoidCreator');
+    if(!achievements.trueEnding)unlockAchievement('trueEnding');
+    victory();
+   },2000);
+  }
+ }
+ draw(){
+  if(this.dead&&this.deathState==='removed')return;
+  const sx=this.x-camera.x,sy=this.y-camera.y;
+  ctx.save();
+  if(this.dead){ctx.globalAlpha=this.deathAlpha;ctx.translate(sx+this.w/2,sy+this.h/2);ctx.rotate(this.deathAngle*(this.facing>0?1:-1));ctx.translate(-(sx+this.w/2),-(sy+this.h/2));}
+  const fl=this.hitFlash>0;
+  const now=performance.now();
+  // 阴影
+  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();ctx.ellipse(sx+this.w/2,CONFIG.world.groundY-camera.y+3,this.w*0.6,10,0,0,Math.PI*2);ctx.fill();
+  // 虚空光环
+  const auraR=120+Math.sin(now*0.002)*15;
+  const ag=ctx.createRadialGradient(sx+this.w/2,sy+this.h/2,0,sx+this.w/2,sy+this.h/2,auraR);
+  ag.addColorStop(0,'rgba(120,30,180,0.2)');ag.addColorStop(0.5,'rgba(80,10,120,0.1)');ag.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=ag;ctx.fillRect(sx-this.w,sy-this.h*0.5,this.w*3,this.h*2);
+  // 半透明紫黑色躯体
+  ctx.globalAlpha=0.85;
+  ctx.fillStyle=fl?'#fff':'#1a0a2a';
+  ctx.beginPath();ctx.moveTo(sx+20,sy+40);ctx.lineTo(sx+this.w-20,sy+40);ctx.lineTo(sx+this.w+10,sy+this.h);ctx.lineTo(sx-10,sy+this.h);ctx.closePath();ctx.fill();
+  ctx.globalAlpha=1;
+  // 内部旋转星系
+  ctx.save();ctx.beginPath();ctx.moveTo(sx+25,sy+45);ctx.lineTo(sx+this.w-25,sy+45);ctx.lineTo(sx+this.w-5,sy+this.h-5);ctx.lineTo(sx+5,sy+this.h-5);ctx.closePath();ctx.clip();
+  for(let i=0;i<20;i++){const ga=now*0.0005+i*0.3;const gx=sx+this.w/2+Math.cos(ga)*(30+i%5*8);const gy=sy+80+Math.sin(ga)*(40+i%3*10);ctx.fillStyle=`rgba(${150+i*5},${50+i*3},${200+i*2},0.6)`;ctx.beginPath();ctx.arc(gx,gy,2+i%3,0,Math.PI*2);ctx.fill();}
+  ctx.restore();
+  // 头部巨眼
+  const eyeY=sy+35;
+  ctx.fillStyle=fl?'#fff':'#0a0015';ctx.beginPath();ctx.ellipse(sx+this.w/2,eyeY,35,28,0,0,Math.PI*2);ctx.fill();
+  // 瞳孔（倒映玩家）
+  const pupilOff=(player.x-this.x)/50;
+  ctx.fillStyle='#e040ff';ctx.shadowColor='#e040ff';ctx.shadowBlur=20;
+  ctx.beginPath();ctx.arc(sx+this.w/2+clamp(pupilOff,-12,12),eyeY,14,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(sx+this.w/2+clamp(pupilOff,-12,12)-4,eyeY-4,4,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+  // 6个创世碎片
+  for(const s of this.shards){
+   const shx=sx+this.w/2+Math.cos(s.angle)*s.dist;
+   const shy=sy+50+Math.sin(s.angle)*s.dist*0.4;
+   ctx.fillStyle=s.color;ctx.shadowColor=s.color;ctx.shadowBlur=12;
+   ctx.beginPath();ctx.moveTo(shx,shy-10);ctx.lineTo(shx+8,shy);ctx.lineTo(shx,shy+10);ctx.lineTo(shx-8,shy);ctx.closePath();ctx.fill();
+   ctx.shadowBlur=0;
+  }
+  // 阶段5：暴露的核心
+  if(this.coreExposed){
+   const csx=sx+this.w/2,csy=this.coreY-camera.y;
+   const cg=ctx.createRadialGradient(csx,csy,0,csx,csy,40);
+   cg.addColorStop(0,'#fff');cg.addColorStop(0.3,'#ff80ff');cg.addColorStop(0.7,'#a040ff');cg.addColorStop(1,'rgba(80,0,120,0)');
+   ctx.fillStyle=cg;ctx.beginPath();ctx.arc(csx,csy,40,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle='#fff';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('核心',csx,csy-50);
+  }
+  // 技能特效绘制
+  // 虚空抓取预警
+  if(this.grabState==='warning'){
+   const gx=this.grabX-camera.x;
+   ctx.fillStyle=`rgba(160,60,255,${0.3+Math.sin(now*0.01)*0.2})`;
+   ctx.fillRect(gx-30,CONFIG.world.groundY-camera.y-100,60,100);
+   ctx.strokeStyle='#a040ff';ctx.lineWidth=2;ctx.strokeRect(gx-30,CONFIG.world.groundY-camera.y-100,60,100);
+  }
+  // 减速场
+  if(this.slowField){
+   const fx=this.slowField.x-camera.x,fy=this.slowField.y-camera.y;
+   ctx.fillStyle='rgba(100,150,255,0.15)';ctx.beginPath();ctx.arc(fx,fy,this.slowField.r,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='rgba(100,150,255,0.5)';ctx.lineWidth=2;ctx.setLineDash([10,5]);ctx.stroke();ctx.setLineDash([]);
+  }
+  // 黑洞
+  if(this.blackhole){
+   const bx=this.blackhole.x-camera.x,by=this.blackhole.y-camera.y;
+   const bg=ctx.createRadialGradient(bx,by,0,bx,by,this.blackhole.r);
+   bg.addColorStop(0,'#000');bg.addColorStop(0.7,'rgba(40,0,60,0.8)');bg.addColorStop(1,'rgba(80,0,120,0)');
+   ctx.fillStyle=bg;ctx.beginPath();ctx.arc(bx,by,this.blackhole.r,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='#a040ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx,by,this.blackhole.r+Math.sin(now*0.01)*5,0,Math.PI*2);ctx.stroke();
+  }
+  // 吞噬射线
+  if(this.beamState==='charging'){
+   const bx=sx+this.w/2,by=sy+60;
+   ctx.strokeStyle=`rgba(255,60,255,${0.3+Math.sin(now*0.02)*0.3})`;ctx.lineWidth=3;
+   ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx+Math.cos(this.beamAngle)*1000,by+Math.sin(this.beamAngle)*1000);ctx.stroke();
+  }
+  if(this.beamState==='firing'){
+   const bx=sx+this.w/2,by=sy+60;
+   const ex=bx+Math.cos(this.beamAngle)*1000,ey=by+Math.sin(this.beamAngle)*1000;
+   ctx.strokeStyle='rgba(255,80,255,0.8)';ctx.lineWidth=50;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(ex,ey);ctx.stroke();
+   ctx.strokeStyle='#fff';ctx.lineWidth=15;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(ex,ey);ctx.stroke();
+  }
+  // 虚空风暴预警
+  for(const m of this.stormMarkers){
+   const mx=m.x-camera.x;
+   if(m.timer<m.warning){
+    ctx.fillStyle=`rgba(255,60,255,${0.2+Math.sin(now*0.02)*0.15})`;
+    ctx.fillRect(mx-30,CONFIG.world.groundY-camera.y-200,60,200);
+   }
+  }
+  ctx.restore();
  }
 }
 
@@ -11104,21 +11877,43 @@ function showGuidePage(){
  const content=document.getElementById('guideContent');
  content.innerHTML=`
 <div class="guide-section">
+<h3>⚔️ 游戏概述</h3>
+<p><strong>万物起源1无尽吞噬</strong>是一款2D横版动作跑酷游戏。玩家将穿越10个关卡，从黑暗森林出发，历经洪荒战神、腐朽战场、炼狱深渊、召唤之殿、重锤守卫厅、双锤炼狱、星辉之巅、诅咒沼泽，最终抵达凋零深渊，击败终极Boss凋零风暴。</p>
+<p>游戏融合了<span class="item">动作格斗</span>、<span class="item">跑酷探索</span>、<span class="item">装备收集</span>、<span class="item">附魔强化</span>、<span class="item">Boss挑战</span>等多种玩法。7种武器各有特色，6个Boss技能各异，30种打击效果带来极致战斗体验。</p>
+<p>吞噬万物之力，超越起源之境！</p>
+</div>
+<div class="guide-section">
 <h3>🎮 基本操作</h3>
 <p><span class="item">WASD</span> 移动 | <span class="item">空格</span> 跳跃 | <span class="item">Shift</span> 冲刺</p>
 <p><span class="item">Shift+空格</span> 翻滚闪避（无敌帧+可触发完美闪避）| <span class="item">S</span> 下蹲</p>
 <p><span class="item">左键</span> 攻击 | <span class="item">右键</span> 交互/开门 | <span class="item">E</span> 背包（背包内右键点击食物食用）</p>
-<p><span class="item">1-6</span> 切换武器 | <span class="item">Q</span> 拾取 | <span class="item">H</span> 召唤 | <span class="item">R</span> 武器技能 | <span class="item">F</span> 子弹时间 | <span class="item">ESC</span> 暂停菜单</p>
+<p><span class="item">1-7</span> 切换武器 | <span class="item">Q</span> 拾取 | <span class="item">H</span> 召唤 | <span class="item">R</span> 武器技能 | <span class="item">F</span> 子弹时间 | <span class="item">G</span> 全屏 | <span class="item">ESC</span> 暂停菜单</p>
+<p><span class="item">空中空格</span> 展开鞘翅滑翔（需获得鞘翅） | <span class="item">末影珍珠</span> 使用后向朝向方向传送200像素</p>
 </div>
 <div class="guide-section">
-<h3>⚔️ 武器系统（6种，各有专属技能）</h3>
-<p><span class="item">✊ 拳套</span> 伤害25，无限弹药 | <strong>技能：爆裂拳</strong> - 范围冲击波+50伤害</p>
-<p><span class="item">🗡️ 银剑</span> 伤害42，对凋零风暴2.5倍伤害 | <strong>技能：银月斩</strong> - 大范围剑气+80伤害</p>
-<p><span class="item">🔫 火铳</span> 伤害32，快速射击，30发 | <strong>技能：连射模式</strong> - 8发快速连射</p>
-<p><span class="item">💥 散弹</span> 伤害20x5，近距离爆发，16发 | <strong>技能：龙息弹</strong> - 火焰喷射+120伤害+燃烧</p>
-<p><span class="item">⚡ 雷光</span> 伤害8，激光穿透，200发 | <strong>技能：超载激光</strong> - 贯穿激光+200伤害</p>
-<p><span class="item">🚀 轰天</span> 伤害120，范围爆炸，5发 | <strong>技能：核弹</strong> - 500伤害超大范围爆炸+时间裂缝</p>
-<p>按 <span class="item">R</span> 释放当前武器专属技能，有冷却时间。</p>
+<h3>⚔️ 武器系统（7神兵·完整数值）</h3>
+<p><span class="item">✊ 【爆裂拳套】</span> 伤害25 | 射程55 | 冷却340ms | 弹药∞ | DPS≈73</p>
+<p>　技能【爆裂拳】：伤害50，范围120，冷却5秒，金色冲击波全屏震荡</p>
+<p>　<strong>弱点</strong>：射程最短，需贴脸输出 | <strong>优势</strong>：无限弹药，攻速最快</p>
+<p><span class="item">🗡️ 【银月之剑】</span> 伤害42 | 射程72 | 冷却360ms | 弹药∞ | DPS≈117</p>
+<p>　技能【银月斩】：伤害80，范围200，冷却6秒，银色剑气横扫千军</p>
+<p>　<strong>弱点</strong>：无明显弱点 | <strong>优势</strong>：对凋零风暴<strong>2.5倍伤害</strong>，终极Boss克星</p>
+<p><span class="item">🔱 【深渊长枪】</span> 伤害55 | 射程110 | 冷却480ms | 弹药∞ | DPS≈115</p>
+<p>　技能【龙牙突刺】：伤害120，范围250，冷却7秒，超远穿刺贯穿敌阵</p>
+<p>　<strong>弱点</strong>：攻速较慢 | <strong>优势</strong>：近战最远射程，安全输出距离</p>
+<p><span class="item">🔫 【赤焰火铳】</span> 伤害32 | 射程500 | 冷却280ms | 弹药30 | DPS≈114</p>
+<p>　技能【连射模式】：伤害15×8发，冷却8秒，弹幕风暴倾泻如雨</p>
+<p>　<strong>弱点</strong>：弹药有限，单发伤害低 | <strong>优势</strong>：远程压制，射速极快</p>
+<p><span class="item">💥 【雷霆散弹】</span> 伤害20×5 | 射程300 | 冷却620ms | 弹药16 | DPS≈161(贴脸)</p>
+<p>　技能【龙息弹】：伤害120，范围300，冷却10秒，火焰喷射+灼烧3秒</p>
+<p>　<strong>弱点</strong>：远距离伤害衰减 | <strong>优势</strong>：贴脸爆发最高，附带燃烧</p>
+<p><span class="item">⚡ 【雷光激光】</span> 伤害8 | 射程600 | 冷却65ms | 弹药200 | DPS≈123</p>
+<p>　技能【超载激光】：伤害200，范围800，冷却12秒，贯穿激光湮灭一切</p>
+<p>　<strong>弱点</strong>：单发伤害极低 | <strong>优势</strong>：穿透所有敌人，DPS稳定</p>
+<p><span class="item">🚀 【轰天火箭炮】</span> 伤害120 | 射程700 | 冷却1200ms | 弹药5 | 爆炸半径90</p>
+<p>　技能【核弹】：伤害500，范围500，冷却15秒，核爆冲击毁天灭地（自伤30）</p>
+<p>　<strong>弱点</strong>：弹药极少，冷却最长，有自伤风险 | <strong>优势</strong>：单发最高伤害，范围爆炸</p>
+<p>按 <span class="item">R</span> 释放当前武器专属技能，逆转战局！</p>
 </div>
 <div class="guide-section">
 <h3>🛡️ 盔甲系统（5种）</h3>
@@ -11142,13 +11937,35 @@ function showGuidePage(){
 <p>背包内右键点击食物直接食用，无需长按。</p>
 </div>
 <div class="guide-section">
-<h3>💀 Boss系统（6个）</h3>
-<p><span class="item">⚔️ 洪荒战神</span> 血量2800，激光+触手+瞬移，第2关</p>
-<p><span class="item">🌟 万物天尊</span> 血量4500，雷电+天火+格挡+回血+创世神锤，第5关(需召唤)</p>
-<p><span class="item">🔨 重锤守卫</span> 血量320/480，蓄力锤击+跳砸，第6/7关(2只)</p>
-<p><span class="item">☠️ 星辉死神</span> 血量6500，横斩+纵斩+星辉蛇刃，第8关</p>
-<p><span class="item">🧙 诅咒巫师</span> 血量1000，毒药+缓慢药水+召唤精英怪，第9关</p>
-<p><span class="item">🌪️ 凋零风暴</span> 血量12000，融合所有Boss技能，怕银剑(2.5倍伤害)，第10关</p>
+<h3>🪽 特殊道具</h3>
+<p><span class="item">🪽 鞘翅</span> 精英怪15%掉落。获得后<strong>空中按空格</strong>展开翅膀滑翔，缓慢下落+水平滑行，A/D转向。</p>
+<p><span class="item">🟣 末影珍珠</span> 全敌人1%稀有掉落。使用后向朝向方向传送200像素，附带短暂无敌。</p>
+</div>
+<div class="guide-section">
+<h3>💀 Boss系统（6大魔王·完整数值）</h3>
+<p><span class="item">⚔️ 【洪荒战神】</span> 血量2000 | 体型110×150 | 速度0.8 | 普攻伤害9 | 第2关</p>
+<p>　【毁灭激光】伤害7，冷却5秒，蓄力1.5秒，持续0.6秒 | 【深渊触手】伤害6，冷却6秒，3根，范围200</p>
+<p>　【虚空瞬移】冷却8秒，瞬移距离180-320</p>
+<p>　<strong>弱点</strong>：激光蓄力时可打断，触手有预警 | <strong>掉落</strong>：洪荒骷髅（召唤万物天尊）</p>
+<p><span class="item">🌟 【万物天尊】</span> 血量3200 | 体型130×170 | 速度0.7 | 普攻伤害12 | 第5关（需骷髅召唤）</p>
+<p>　【九天神雷】伤害9，冷却4.2秒，3道 | 【天火焚世】伤害8，冷却3.5秒，4团</p>
+<p>　【金刚格挡】冷却8.5秒，持续1.8秒（减伤88%）| 【涅槃回血】血量低于20%时每秒回6</p>
+<p>　【创世神锤】伤害18，冷却4.5秒，范围120</p>
+<p>　<strong>弱点</strong>：格挡时绕后攻击，回血前速杀 | <strong>掉落</strong>：不死图腾+金苹果</p>
+<p><span class="item">🔨 【重锤守卫】</span> 血量300(Lv1)/420(Lv2) | 体型85×125 | 速度0.7 | 普攻伤害14/17 | 第6/7关</p>
+<p>　【蓄力锤击】范围伤害，蓄力后重击 | 【飞天跳砸】大范围AOE，落地震荡</p>
+<p>　<strong>弱点</strong>：速度极慢，蓄力时可绕后 | <strong>优势</strong>：双守卫同时出击，体型巨大</p>
+<p><span class="item">☠️ 【星辉死神】</span> 血量4500 | 体型70×(玩家高×5) | 速度0.5 | 普攻伤害16 | 第8关</p>
+<p>　【横斩万里】大范围横向斩击 | 【纵斩裂空】纵向重劈 | 【星辉蛇刃】半血后拔出，腐蚀伤害</p>
+<p>　<strong>弱点</strong>：半血前较温和，蛇刃攻击有前摇 | <strong>掉落</strong>：星辉甲（最强护甲，防42）</p>
+<p><span class="item">🧙 【诅咒巫师】</span> 血量700 | 体型50×75 | 速度1.1 | 普攻伤害11 | 第9关</p>
+<p>　【剧毒药水】冷却2.5秒，中毒持续掉血 | 【缓慢诅咒】降低移速 | 【召唤精英】冷却8秒，召唤精英怪</p>
+<p>　【自我治疗】冷却12秒</p>
+<p>　<strong>弱点</strong>：血量最低，喝牛奶可解毒 | <strong>掉落</strong>：牛奶+金苹果</p>
+<p><span class="item">🌪️ 【凋零风暴】</span> 血量8000 | 体型140×180 | 速度0.6 | 普攻伤害17 | 第10关（终极Boss）</p>
+<p>　融合所有Boss技能：洪荒激光/触手/瞬移 + 天尊雷电/天火 + 巫师毒药/召唤 + 死神斩击</p>
+<p>　<strong>弱点</strong>：<strong>银剑造成2.5倍伤害</strong>！务必携带银剑 | 雷暴天气中战力倍增</p>
+<p>　<strong>关卡补给</strong>：牛奶×2 + 金苹果×2 + 面包，充足补给应对终极之战</p>
 </div>
 <div class="guide-section">
 <h3>👾 怪物系统（30种：24普通敌人+6Boss）</h3>
@@ -11251,7 +12068,7 @@ function showGuidePage(){
 <p><strong>通知系统</strong>：右上角滑入通知，4种类型（信息/成功/警告/错误），左侧色条+图标+文字，最多5条，自动淡出。</p>
 <p><strong>工具提示</strong>：鼠标悬停显示，自动避免超出屏幕，深色背景+金色边框。</p>
 <p><strong>发光标题</strong>：多层发光（20px+10px）+渐变文字+白色高光偏移，drawGlowingTitle函数。</p>
-<p><strong>极致HUD</strong>：玻璃拟态状态面板（生命/能量/经验三条高级进度条）、右上角关卡信息、底部武器栏（6格+快捷键+稀有度边框）、状态效果图标（带剩余时间）、连击显示（缩放动画+评级）、子弹时间指示器。</p>
+<p><strong>极致HUD</strong>：玻璃拟态状态面板（生命/能量/经验三条高级进度条）、右上角关卡信息、底部武器栏（7格+快捷键+稀有度边框）、状态效果图标（带剩余时间）、连击显示（缩放动画+评级）、子弹时间指示器。</p>
 <p><strong>极致Boss血条</strong>：发光Boss名称+玻璃拟态背景+条纹动画进度条+光泽动画+阶段指示器（圆点）。</p>
 <p><strong>极致浮动文字</strong>：上浮动画+缩放+透明度渐变+阴影+暴击发光。</p>
 <p><strong>极致面板界面</strong>：背包（标签页+物品格子+底部信息栏）、设置（滑块+开关+交替行背景）、暂停（霓虹面板+4按钮+游戏时间）。</p>
@@ -11295,39 +12112,27 @@ function showGuidePage(){
 </div>
 <div class="guide-section">
 <h3>💡 小贴士</h3>
-<p>• 玩家最大生命120，冲刺速度6.5，跳跃力13.5</p>
+<p>• 玩家最大生命150，移动速度4.8，冲刺速度7，跳跃力14，受伤无敌1.5秒</p>
 <p>• 15%暴击率，造成1.8-2.2倍伤害（附魔可提升）</p>
 <p>• 2.5秒内连续击杀累积连击，解锁连击评级和成就</p>
 <p>• 翻滚有短暂无敌帧，在敌人攻击前翻滚可触发完美闪避！</p>
 <p>• 按住F键进入子弹时间，可轻松躲避密集攻击</p>
 <p>• 按R键释放武器专属技能，Boss战中合理使用可大幅提升输出</p>
+<p>• 按G键切换全屏模式，获得更佳沉浸体验</p>
 <p>• 银剑对凋零风暴有2.5倍伤害，务必准备！</p>
 <p>• 牛奶可以解毒，打巫师前多准备几瓶</p>
 <p>• 凋零风暴关有牛奶、金苹果、面包等丰富补给</p>
+<p>• 精英怪15%掉落鞘翅，空中按空格展开滑翔</p>
+<p>• 全敌人1%稀有掉落末影珍珠，使用后向朝向传送200像素</p>
 <p>• 卡顿可在设置中关闭粒子效果和屏幕震动</p>
 <p>• 每关都有存档点，死亡后不用从头开始</p>
-</div>
-<div class="guide-section">
-<h3>🐛 Bug修复与稳定性优化</h3>
-<p><strong>已修复的关键Bug：</strong></p>
-<p>✅ <span class="item">吃完卡住</span> - 吃完食物后自动关闭背包，恢复游戏状态，不再卡住</p>
-<p>✅ <span class="item">连续开关背包卡住</span> - 添加200ms切换冷却+50ms切换锁定，防止连续快速切换导致状态混乱</p>
-<p>✅ <span class="item">按键重复触发</span> - E键添加!e.repeat防护，防止键盘自动重复导致连续触发</p>
-<p>✅ <span class="item">定时器未清理</span> - 背包预览定时器保存ID，关闭背包时自动清理</p>
-<p><strong>稳定性系统（5大系统）：</strong></p>
-<p>⏱️ <span class="item">定时器管理系统</span> - 统一管理所有setTimeout/setInterval，确保可清理，防止内存泄漏</p>
-<p>🛡️ <span class="item">Player安全访问系统</span> - 安全获取player属性，防止空值崩溃，提升游戏稳定性</p>
-<p>🚨 <span class="item">全局异常捕获系统</span> - 捕获所有未处理的JavaScript错误和Promise拒绝，防止游戏崩溃</p>
-<p>🔍 <span class="item">空值检查工具系统</span> - 全面的空值安全工具集（safeGet/safeSet/safeCall/safeJSONParse等）</p>
-<p>🧹 <span class="item">资源清理系统</span> - 统一清理所有资源（粒子/敌人/子弹/定时器/缓存），防止内存泄漏</p>
-<p><strong>代码质量：</strong>0个严重bug，0个普通bug，JavaScript语法验证通过，游戏运行稳定无崩溃。</p>
 </div>
 <div class="guide-section">
 <h3>🏷️ 关于游戏</h3>
 <p><strong>万物起源1无尽吞噬 (ENDLESS DEVOUR)</strong></p>
 <p>春秋科技 研发 | 联动 BCM炎黄春秋工作室</p>
 <p>2D横版动作跑酷游戏，单文件HTML5，无需安装，浏览器即开即玩。</p>
-<p>6种武器+专属技能 | 6个Boss | 10个关卡 | 30种打击效果 | 子弹时间 | 完美闪避 | 连击评级 | 动态天气 | 后处理特效 | 帧率自适应 | 4档难度 | UI极致优化 | 首页粒子背景</p>
+<p>7种武器+专属技能 | 6个Boss | 10个关卡 | 30种打击效果 | 子弹时间 | 完美闪避 | 连击评级 | 动态天气 | 后处理特效 | 帧率自适应 | 4档难度 | 鞘翅滑翔 | 末影珍珠 | 全屏模式</p>
 <p>吞噬万物之力，超越起源之境！</p>
 </div>
 `;
@@ -11403,7 +12208,7 @@ function drawEnchantingTable(){
 // ===== 附魔台UI =====
 function openEnchant(){
  if(!enchantingTable)return;
- gameState='paused';
+ gameState='paused';isPaused=true;
  enchantTab='weapon';
  document.getElementById('enchantUI').style.display='block';
  updateEnchantUI();
@@ -11411,7 +12216,7 @@ function openEnchant(){
 function closeEnchant(){
  document.getElementById('enchantUI').style.display='none';
  document.getElementById('enchantResult').style.display='none';
- gameState='playing';
+ gameState='playing';isPaused=false;
 }
 function switchEnchantTab(tab){
  enchantTab=tab;
@@ -11451,13 +12256,46 @@ function updateEnchantUI(){
    display.innerHTML='<div class="weapon-icon">❌</div><div class="weapon-info"><div class="weapon-name" style="color:#7a5a5a">未装备盔甲</div><div class="weapon-enchants" style="color:#5a5a7a">请先装备盔甲</div></div>';
   }
  }
- const lapisItem=player.inventory.find(i=>i.type==='lapis_lazuli');
+ const lapisItem=player.inventory.find(i=>i&&i.type==='lapis_lazuli');
  lapisCount=lapisItem?lapisItem.count:0;
  document.getElementById('enchantLapisCount').textContent=lapisCount;
+ // 虚空碎片：提升附魔上限
+ const voidFrag=player.inventory.find(i=>i&&i.type==='void_fragment');
+ const voidCount=voidFrag?voidFrag.count:0;
+ const voidBtn=document.getElementById('voidUpgradeBtn');
+ if(voidBtn){
+  voidBtn.style.display=enchantMaxLevel<4?'block':'none';
+  voidBtn.textContent=`💜 消耗3虚空碎片+5青金石 提升附魔上限至4级 (当前:${voidCount}碎片)`;
+  voidBtn.disabled=voidCount<3||lapisCount<5;
+ }
+ const maxLvlEl=document.getElementById('enchantMaxLevelDisplay');
+ if(maxLvlEl)maxLvlEl.textContent=`附魔上限: ${enchantMaxLevel}级`;
  const btn=document.getElementById('enchantBtn');
  const canEnchant=enchantTab==='weapon'||(enchantTab==='armor'&&player.equippedArmor);
  btn.disabled=lapisCount<1||!canEnchant;
  btn.textContent=enchantTab==='weapon'?'消 耗 青 金 石 附 魔 武 器':'消 耗 青 金 石 附 魔 盔 甲';
+}
+function upgradeEnchantMax(){
+ if(enchantMaxLevel>=4)return;
+ const voidFrag=player.inventory.find(i=>i&&i.type==='void_fragment');
+ if(!voidFrag||voidFrag.count<3||lapisCount<5)return;
+ for(let i=0;i<3;i++)player.removeItem('void_fragment');
+ for(let i=0;i<5;i++)player.removeItem('lapis_lazuli');
+ lapisCount-=5;
+ enchantMaxLevel=4;
+ // 为所有附魔添加4级数值
+ for(const key in CONFIG.enchantments){
+  const e=CONFIG.enchantments[key];
+  if(e.values.length===3){
+   const lastVal=e.values[2];
+   const firstVal=e.values[0];
+   e.values.push(lastVal+(lastVal-firstVal)*0.5);
+   e.maxLevel=4;
+  }
+ }
+ showGuide('💜 附魔上限已提升至4级！高等级附魔可出现4级效果！',3500);
+ sfxEnchant();
+ updateEnchantUI();
 }
 function doEnchant(){
  if(lapisCount<1)return;
@@ -11467,7 +12305,8 @@ function doEnchant(){
  let numEnchants,maxLevel;
  if(useCount<=3){numEnchants=1;maxLevel=1;}
  else if(useCount<=6){numEnchants=randInt(1,2);maxLevel=2;}
- else{numEnchants=randInt(2,3);maxLevel=3;}
+ else{numEnchants=randInt(2,3);maxLevel=Math.min(3,enchantMaxLevel);}
+ if(enchantMaxLevel>3&&useCount>=8)maxLevel=enchantMaxLevel;
  // 获取适用的附魔列表
  let applicable;
  if(enchantTab==='weapon'){
@@ -11499,6 +12338,11 @@ function doEnchant(){
    if(existing){existing.level=Math.min(CONFIG.enchantments[e.id].maxLevel,existing.level+e.level);}
    else{armorEnchants.push(e);}
   }
+  // 保存附魔到盔甲物品
+  if(player.equippedArmor){
+   const armorItem=player.inventory.find(i=>i&&i.type===player.equippedArmor+'_armor');
+   if(armorItem)armorItem.enchants=JSON.parse(JSON.stringify(armorEnchants));
+  }
  }
  sfxEnchant();
  const result=document.getElementById('enchantResult');
@@ -11509,6 +12353,7 @@ function doEnchant(){
 }
 // 获取盔甲附魔加成
 function getArmorEnchantBonus(enchantId){
+ if(!player||!player.equippedArmor||player.armorDurability<=0)return 0;
  if(!armorEnchants)return 0;
  const e=armorEnchants.find(x=>x.id===enchantId);
  if(!e)return 0;
@@ -11610,20 +12455,20 @@ document.addEventListener('click',(e)=>{
 // 实际进入下一关（剧情结束后调用）
 function enterNextLevel(){
  currentLevel++;
- if(currentLevel>10){if(!achievements.allClear)unlockAchievement('allClear');victory();return;}
+ if(currentLevel>11){if(!achievements.allClear)unlockAchievement('allClear');victory();return;}
  document.getElementById('levelNum').textContent=currentLevel;
  document.getElementById('bossBar').style.display='none';
  maxDistance=0;distance=0;scoredX=0;
  const lvl=CONFIG.levels[currentLevel-1];
  generateLevel(currentLevel);
  levelStartHp=player?player.hp:100;levelStartTime=performance.now();
- trader=null;witchBoss=null;witherStorm=null;traderUsed=false;enchantingTable=null;
+ trader=null;traderUsed=false;enchantingTable=null;
  activeBuffs=[];
  showLevelBanner(lvl.title,lvl.subtitle);
  sfxLevelUp();
  // Boss关卡触发出场特效
  if(lvl.type==='boss'&&boss){
-   setTimeout(()=>startBossIntro(lvl.boss),500);
+   setTimeout(()=>{if(gameState==='playing')startBossIntro(lvl.boss);},500);
  }
  gameState='playing';
  // 引导
@@ -11646,7 +12491,7 @@ function startBossIntro(type){if(typeof sfxBossIntro==='function')sfxBossIntro()
  // 爆发粒子
  if(boss){
    for(let i=0;i<40;i++){
-     particles.push({x:boss.x+boss.w/2,y:boss.y+boss.h/2,vx:rand(-6,6),vy:rand(-8,-2),life:rand(600,1200),maxLife:1200,size:rand(3,7),color:type==='honghuang'?'#a040ff':type==='stardeath'?'#80c0ff':type==='witherstorm'?'#600060':'#ff8040'});
+     particles.push({x:boss.x+boss.w/2,y:boss.y+boss.h/2,vx:rand(-6,6),vy:rand(-8,-2),life:rand(600,1200),maxLife:1200,size:rand(3,7),color:type==='honghuang'?'#a040ff':type==='stardeath'?'#80c0ff':type==='witherstorm'?'#600060':type==='voidcreator'?'#a040ff':'#ff8040'});
    }
  }
  if(witchBoss){
@@ -11736,11 +12581,13 @@ function closeSettings(){
 }
 function quitToMenu(){
  document.getElementById('mobileControls').style.display='none';
-
  isPaused=false;
  gameState='menu';
  document.getElementById('pauseMenu').style.display='none';
  document.getElementById('settingsMenu').style.display='none';
+ document.getElementById('inventory').style.display='none';
+ document.getElementById('traderUI').style.display='none';
+ document.getElementById('enchantUI').style.display='none';
  document.getElementById('startScreen').style.display='flex';
  document.getElementById('bossBar').style.display='none';
 }
@@ -11803,6 +12650,10 @@ function toggleDark(){
  const value=document.getElementById('darkValue');
  toggle.classList.toggle('active',gameSettings.darkEffect);
  value.textContent=gameSettings.darkEffect?'开启':'关闭';
+}
+function toggleFullscreen(){
+ if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});}
+ else{document.exitFullscreen();}
 }
 function toggleMobileMode(){
  gameSettings.mobileMode=!gameSettings.mobileMode;
